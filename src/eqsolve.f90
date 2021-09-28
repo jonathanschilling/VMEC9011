@@ -1,14 +1,56 @@
-subroutine eqsolve(nsval, intflag, ierflag)
+subroutine eqsolve(ns, intflag, ierflag)
 
       use stel_kinds, only: dp
+      use name0,      only: c1pm13, &
+                            c2pm8,  &
+                            c1p0,   &
+                            c100p
+      use name1,      only: mnd,    &
+                            nznt,   &
+                            mnmax,  &
+                            nsd
+      use scalars,    only: hs,     &
+                            ohs,    &
+                            mns,    &
+                            neqs,   &
+                            nrzt,   &
+                            iter1,  &
+                            iter2,  &
+                            irst,   &
+                            ijacob, &
+                            itfsq
+      use inputdat,   only: niter,  &
+                            gam,    &
+                            ftol
+      use time,       only: delt,   &
+                            timer
+      use xstuff,     only: xc
+      use mnarray,    only: mscale, &
+                            nscale
+      use fsqu,       only: wb,     &
+                            wp,     &
+                            fsq,    &
+                            fsqr,   &
+                            fsqz,   &
+                            fsql,   &
+                            fsqt,   &
+                            wdot
+      use extfld,     only: ivac,   &
+                            bscale
 
       implicit none
 
-      integer       :: miter
+      integer, intent(in)  :: ns
+      integer, intent(in)  :: intflag
+      integer, intent(out) :: ierflag
 
+      integer       :: miter
       real(kind=dp) :: w1   = 0.0_dp
       real(kind=dp) :: r01  = 0.0_dp
       real(kind=dp) :: res1 = 1.0_dp
+      real(kind=dp) :: r00, w0
+      real(kind=dp) :: r0dot, wdota
+      real(kind=dp) :: res0
 
       !         INDEX OF LOCAL VARIABLES
       !
@@ -37,7 +79,6 @@ subroutine eqsolve(nsval, intflag, ierflag)
       !   1+5*mns,neqs => lmnsc Fourier coefficients
 
       ! INITIALIZE MESH-DEPENDENT SCALARS
-      ns    = nsval
       hs    = c1p0/real(ns-1)
       ohs   = c1p0/hs
       mns   = ns*mnd
@@ -80,8 +121,8 @@ subroutine eqsolve(nsval, intflag, ierflag)
         !
         r00 = xc(1)*mscale(0)*nscale(0)
         w0  = wb + wp/(gam-c1p0) ! total energy
-        wdota = abs(w0 - w1)/w0
         r0dot = abs(r00 - r01)/r00
+        wdota = abs(w0 - w1)/w0
         r01 = r00
         w1  = w0
 

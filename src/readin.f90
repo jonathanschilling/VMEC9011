@@ -1,12 +1,38 @@
 subroutine readin(nsin, ierflag)
 
       use stel_kinds, only: dp
-      use name0, only:
-      use name1, only:
-      use  , only:
+      use name0,      only: czero
+      use name1,      only: mpol,     &
+                            mpol1,    &
+                            nmax,     &
+                            nsd,      &
+                            ntheta1,  &
+                            nzeta
+      use inputdat,   only: nfp,      &
+                            ncurr,    &
+                            niter,    &
+                            nstep,    &
+                            ftol,     &
+                            gam,      &
+                            nvacskip, &
+                            am,       &
+                            ai,       &
+                            ac
+      use magfield,   only: phiedge,  &
+                            curpol,   &
+                            curtor
 
       implicit none
 
+      integer, intent(out) :: nsin
+      integer, intent(out) :: ierflag
+
+      integer       :: i, j, m, n
+      integer       :: n1 ! abs(n)
+      integer       :: isgn
+      integer       :: mnbound ! unused?
+      logical       :: done
+      real(kind=dp) :: FOURNORM
       real(kind=dp) :: rc(0:mpol1,-nmax:nmax)
       real(kind=dp) :: zs(0:mpol1,-nmax:nmax)
       real(kind=dp) :: rmag(-nmax:nmax)
@@ -102,7 +128,7 @@ subroutine readin(nsin, ierflag)
           return
 
         if (m.eq.0) then
-          backspace 5
+          backspace 5 ! TODO: circumvent this somehow...
           read(5,*) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
         endif
       enddo
@@ -131,17 +157,18 @@ subroutine readin(nsin, ierflag)
       enddo
       ! E_NORMIERUNG SGG
 
-      do 60 m=0,mpol1
-        do 60 n=-nmax,nmax
+      done = .false.
+      do m = 0, mpol1
+        do n = -nmax, nmax
           n1 = iabs(n)
 
           isgn = 1
-          if (n .lt. 0) &
+          if (n.lt.0) &
             isgn = -1
 
           if (m.eq.0) then
-            raxis(n1)=raxis(n1) + rmag(n)
-            zaxis(n1)=zaxis(n1) - zmag(n)*isgn
+            raxis(n1) = raxis(n1) + rmag(n)
+            zaxis(n1) = zaxis(n1) - zmag(n)*isgn
           endif
 
           rb(n1,m,1) = rb(n1,m,1) +      rc(m,n)
@@ -155,17 +182,24 @@ subroutine readin(nsin, ierflag)
             zb(n1,m,1) = czero
           if (m.eq.0) &
             zb(n1,m,2) = czero
-          if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) &
-            goto 60
 
-          if (m.eq.0) &
+          ! TODO: maybe problematic if specific intermedia mode numbers need to be both zero... ?
+          if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) then
+            done = .true.
+            break
+          end if
+
+          if (m.eq.0) then
             write(3,65) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
-          if (m.ne.0) &
+          else
             write(3,65) m, n, rc(m,n), zs(m,n)
+          endif
         enddo
+
+        if (done) &
+          break
       enddo
 
- 60   continue
  65   format(i5,i4,1p4e12.4)
 
       WRITE(3,70)

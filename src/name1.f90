@@ -1,6 +1,9 @@
 module name1
+
       use stel_kinds, only: dp
+
       implicit none
+
       integer, parameter :: nsd     = 33 ! 41       ! number of flux surfaces
       integer, parameter :: mpol    =  8 ! 9        ! number of poloidal modes incl. 0
       integer, parameter :: nmax    =  7 ! 13       ! number of toroidal modes 2*nmax+1 (?)

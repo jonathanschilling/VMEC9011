@@ -1,2 +1,3 @@
-# vmec_1
-first version of VMEC
+# VMEC 1.0
+
+This is the first version of VMEC.

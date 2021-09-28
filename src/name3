@@ -1,4 +1,0 @@
-        common/realsp/r1(2*nrztd),ru(2*nrztd),rv(2*nrztd),
-     >                z1(2*nrztd),zu(2*nrztd),zv(2*nrztd),
-     >                rcon(2*nrztd),zcon(2*nrztd),gcon(nrztd),
-     >                ru0(nrztd),zu0(nrztd),rcon0(nrztd),zcon0(nrztd)

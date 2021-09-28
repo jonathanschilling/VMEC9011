@@ -27,15 +27,15 @@
            phipog(l) = cp5*sqrts(lme)*sqrts(lme)
            guu(l) = guu(l) + cp5*(ru(lme)*ru(lme) + zu(lme)*zu(lme))
      >               + phipog(l)*(ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo))
-     >               + shalf(l)*(ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
+     >               +  shalf(l)*(ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
            guv(l) = guv(l) + cp5*(ru(lme)*rv(lme) + zu(lme)*zv(lme))
      >               + phipog(l)*(ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo))
      >            + cp5*shalf(l)*(ru(lme)*rv(lmo) + rv(lme)*ru(lmo)
-     >                         + zu(lme)*zv(lmo) + zv(lme)*zu(lmo))
+     >            +               zu(lme)*zv(lmo) + zv(lme)*zu(lmo))
            gvv(l) = gvv(l) + cp5*(rv(lme)*rv(lme) + zv(lme)*zv(lme))
      >               + phipog(l)*(rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo))
-     >               + shalf(l)*(rv(lme)*rv(lmo) + zv(lme)*zv(lmo))
-     >                      + cp5*r1(lme)*r1(lme) + r1(lmo)*r1(lmo)
+     >               +  shalf(l)*(rv(lme)*rv(lmo) + zv(lme)*zv(lmo))
+     >               +       cp5* r1(lme)*r1(lme) + r1(lmo)*r1(lmo)
      >                      * phipog(l)  + shalf(l)*r1(lme)*r1(lmo)
  20     continue
 *************
@@ -45,9 +45,9 @@ CDIR$ IVDEP
         do 30 l = nrzt,2,-1
         phipog(l) = phip(l)/gsqrt(l)
         lu(l,0) = cp5*phipog(l)*(lu(l,0)+lu(l-1,0)
-     >          +     shalf(l)*(lu(l,1)+lu(l-1,1)))
+     >          +      shalf(l)*(lu(l,1)+lu(l-1,1)))
  30     lv(l,0) = cp5*phipog(l)*(lv(l,0)+lv(l-1,0)
-     >          +     shalf(l)*(lv(l,1)+lv(l-1,1)))
+     >          +      shalf(l)*(lv(l,1)+lv(l-1,1)))
 *************
 *                 COMPUTE IOTA PROFILE
 *************

@@ -10,6 +10,7 @@
         common /bounds/ mupper(3),mlower(3)
 
         data mupper/nmax,mup2,mnd1/, mlower/0,nmax1,mlo3/
+
         DATA NDAMP/10/, NS4/25/, ISIGNG/-1/,
      >  meven/0/, modd/1/, jmin1/1,1,mpol1*2/, jmin2/1,2,mpol1*3/,
      >  jlam/2,3,mpol1*3/,phips(1)/zerod/,mscale/cp707d,mpol1*oned/,

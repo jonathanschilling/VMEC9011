@@ -1,7 +1,0 @@
-        parameter(nsd=33, mpol=8 ,nmax=7 , ntheta=32, nzeta=28, nvac=0,
-*       parameter(nsd=41, mpol=9 , nmax=13, ntheta=36, nzeta=44, nvac=0,
-     >  nsd1=nsd+1, ntheta1=2*(ntheta/2), ntheta2=1+ntheta1/2, nznt=
-     >  nzeta*ntheta2, nrztd=nznt*nsd+1, mpol1 = mpol-1,
-     >  nmax1=1+nmax, mnd=mpol*nmax1, mnd1=mnd-1, mnd2=2*mnd,
-     >  mnmax=nmax1+mpol1*(1+2*nmax), neq=6*nsd*mnd)
-      IMPLICIT real*8           (A-H,O-Z)

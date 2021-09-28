@@ -100,7 +100,7 @@ program vmec
       endif
 
       ! MAKE INITIAL CALL TO EQUILIBRIUM SOLVER
-      if (nsin.lt.2 .or. nsin.ge.nsd) then
+      if (nsin.lt.2 .or. nsin.gt.nsd) then
         nsin = nsd
       endif
       call eqsolve(nsin, intflag, ierflag)

@@ -2,33 +2,30 @@ program vmec
 
       !             D * I * S * C * L * A * I * M * E * R
       !
-      ! You are using a BETA version of the program VMEC, which is curre
-      ! under development by S. P. Hirshman at the Fusion Energy Divisio
-      ! Oak Ridge National Laboratory.  Please report any problems or co
+      ! You are using a BETA version of the program VMEC, which is currently
+      ! under development by S. P. Hirshman at the Fusion Energy Division of
+      ! Oak Ridge National Laboratory.  Please report any problems or comments
       ! to him.  As a BETA version, this program is subject to change
       ! and improvement without notice.
       !
-      ! THIS PROGRAM - VMEC (Variational Moments Equilibrium Code)  -
-      ! SOLVES THREE-DIMENSIONAL MHD EQUILIBRIUM EQUATIONS USING
-      ! FOURIER SPECTRAL (MOMENTS) METHODS. A CYLINDRICAL COORDINATE
-      ! REPRESENTATION IS USED (R-Z COORDINATES). THE POLOIDAL
-      ! ANGLE VARIABLE IS RENORMALIZED THROUGH THE STREAM FUNCTION
-      ! LAMBDA, WHICH IS SELF-CONSISTENTLY DETERMINED AND DIFFERENCED
-      ! VARIATIONALLY ON THE FULL-RADIAL MESH. THE POLOIDAL ANGLE IS
-      ! DETERMINED BY MINIMIZING <M> = m**2 S(m) , WHERE S(m) =
-      ! Rm**2 + Zm**2 . AN EVEN-ODD DECOMPOSITION IN THE POLOIDAL MODE
-      ! NO. OF R,Z, AND LAMDA IS USED TO IMPROVE RADIAL RESOLUTION.
-      ! A FREE-BOUNDARY OPTION IS AVAILABLE (FOR nvac > 0), WITH A
-      ! USER-SUPPLIED SUBROUTINE "VACUUM" NEEDED TO COMPUTE THE PLASMA
-      ! BOUNDARY VALUE OF B**2.
+      ! THIS PROGRAM - VMEC (Variational Moments Equilibrium Code) -
+      ! SOLVES THREE-DIMENSIONAL MHD EQUILIBRIUM EQUATIONS USING FOURIER SPECTRAL (MOMENTS) METHODS.
+      ! A CYLINDRICAL COORDINATE REPRESENTATION IS USED (R-Z COORDINATES).
+      ! THE POLOIDAL ANGLE VARIABLE IS RENORMALIZED THROUGH THE STREAM FUNCTION LAMBDA,
+      ! WHICH IS SELF-CONSISTENTLY DETERMINED AND DIFFERENCED VARIATIONALLY ON THE FULL-RADIAL MESH.
+      ! THE POLOIDAL ANGLE IS DETERMINED BY MINIMIZING <M> = m**2 S(m) , WHERE S(m) = Rm**2 + Zm**2 .
+      ! AN EVEN-ODD DECOMPOSITION IN THE POLOIDAL MODE NO. OF R,Z, AND LAMDA
+      ! IS USED TO IMPROVE RADIAL RESOLUTION.
+      ! A FREE-BOUNDARY OPTION IS AVAILABLE (FOR nvac > 0),
+      ! WITH A USER-SUPPLIED SUBROUTINE "VACUUM" NEEDED TO COMPUTE THE PLASMA BOUNDARY VALUE OF B**2.
       !
       ! Added features since last edition
       ! 1.  Implemented preconditioning algorithm for R,Z
       ! 2.  The physical (unpreconditioned) residuals are used
-      !     to determine the level of convergence
+      !     to determine the level of convergence.
       ! 3.  The original (MOMCON) scaling of lambda is used, i.e.,
       !     Bsupu = phip*(iota - lamda[sub]v)/sqrt(g). This is needed to
-      !     maintain consistency with the time-stepper for arbitrary PHI
+      !     maintain consistency with the time-stepper for arbitrary PHI.
       !
       ! WRITTEN BY S. P. HIRSHMAN (8/28/85 - REVISED 3/1/86) BASED ON
       ! 1. S. P. Hirshman and J. C. Whitson, Phys. Fluids 26, 3553 (1983

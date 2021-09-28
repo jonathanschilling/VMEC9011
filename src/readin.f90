@@ -107,50 +107,71 @@ subroutine readin(nsin, ierflag)
         endif
       enddo
 
- 51     WRITE(3,55)
- 55     format
-     >  (/,'   mb  nb     rbc         zbs        raxis       zaxis',/)
+ 51   WRITE(3,55)
+ 55   format(/,'   mb  nb     rbc         zbs        raxis       zaxis',/)
 
-*A_NORMIERUNG SGG
-        IF((RC(1,0)+ZS(1,0)).EQ.0)STOP'KANN FOURKOEF. NICHT NORMIEREN'
-        FOURNORM=2./(abs(RC(1,0))+abs(ZS(1,0)))
-*       FOURNORM=1.
-         DO 47 I=0,MPOL1
-            DO 47 J=-NMAX,NMAX
-               RC(I,J)=RC(I,J)*FOURNORM
-               ZS(I,J)=ZS(I,J)*FOURNORM
-  47     CONTINUE
-         DO 48 J=-NMAX,NMAX
-           RMAG(J)=RMAG(J)*FOURNORM
-           ZMAG(J)=ZMAG(J)*FOURNORM
-  48     CONTINUE
-*E_NORMIERUNG SGG
+      ! A_NORMIERUNG SGG
+      IF ((RC(1,0)+ZS(1,0)).EQ.0) &
+        STOP'KANN FOURKOEF. NICHT NORMIEREN'
 
-        do 60 m=0,mpol1
+      ! TODO: computation of norm relies on sum of _abs_ values not being 0 ???
+      FOURNORM=2./(abs(RC(1,0))+abs(ZS(1,0)))
+      ! FOURNORM=1.
+
+      DO I = 0, MPOL1
+        DO J = -NMAX, NMAX
+          RC(I,J) = RC(I,J)*FOURNORM
+          ZS(I,J) = ZS(I,J)*FOURNORM
+        enddo
+      enddo
+
+      DO J = -NMAX, NMAX
+        RMAG(J) = RMAG(J)*FOURNORM
+        ZMAG(J) = ZMAG(J)*FOURNORM
+      enddo
+      ! E_NORMIERUNG SGG
+
+      do 60 m=0,mpol1
         do 60 n=-nmax,nmax
-        n1 = iabs(n)
-        isgn = 1
-        if(n .lt. 0)isgn = -1
-        if(m.eq.0)raxis(n1)=raxis(n1) + rmag(n)
-        if(m.eq.0)zaxis(n1)=zaxis(n1) - zmag(n)*isgn
-        rb(n1,m,1) = rb(n1,m,1) + rc(m,n)
-        rb(n1,m,2) = rb(n1,m,2) + isgn*rc(m,n)
-        zb(n1,m,1) = zb(n1,m,1) - isgn*zs(m,n)
-        zb(n1,m,2) = zb(n1,m,2) + zs(m,n)
-        if(n.eq.0 .or. m.eq.0)rb(n1,m,2) = czero
-        if(n.eq.0)zb(n1,m,1) = czero
-        if(m.eq.0)zb(n1,m,2) = czero
-        if(rc(m,n).eq.czero.and.zs(m,n).eq.czero)goto 60
-        if(m.eq.0)write(3,65)m,n,rc(m,n),zs(m,n),rmag(n),zmag(n)
-        if(m.ne.0)write(3,65)m,n,rc(m,n),zs(m,n)
- 60     continue
+          n1 = iabs(n)
 
- 65     format(i5,i4,1p4e12.4)
+          isgn = 1
+          if (n .lt. 0) &
+            isgn = -1
 
-        WRITE(3,70)
- 70     format(/,' LEGEND: FSQR, FSQZ = Normalized Physical Force ',
-     >  'Residuals;    fsqr, fsqz = Preconditioned Force Residuals'/)
+          if (m.eq.0) then
+            raxis(n1)=raxis(n1) + rmag(n)
+            zaxis(n1)=zaxis(n1) - zmag(n)*isgn
+          endif
 
-        return
+          rb(n1,m,1) = rb(n1,m,1) +      rc(m,n)
+          rb(n1,m,2) = rb(n1,m,2) + isgn*rc(m,n)
+          zb(n1,m,1) = zb(n1,m,1) - isgn*zs(m,n)
+          zb(n1,m,2) = zb(n1,m,2) +      zs(m,n)
 
-        end
+          if (n.eq.0 .or. m.eq.0) &
+            rb(n1,m,2) = czero
+          if (n.eq.0) &
+            zb(n1,m,1) = czero
+          if (m.eq.0) &
+            zb(n1,m,2) = czero
+          if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) &
+            goto 60
+
+          if (m.eq.0) &
+            write(3,65) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
+          if (m.ne.0) &
+            write(3,65) m, n, rc(m,n), zs(m,n)
+        enddo
+      enddo
+
+ 60   continue
+ 65   format(i5,i4,1p4e12.4)
+
+      WRITE(3,70)
+ 70   format(/,' LEGEND: FSQR, FSQZ = Normalized Physical Force Residuals',/, &
+               '         fsqr, fsqz =      Preconditioned Force Residuals'/)
+
+      return
+
+end

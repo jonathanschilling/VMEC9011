@@ -1,16 +1,6 @@
-module name2
-      use stel_kinds, only: dp
-      implicit none
-      real(kind=dp) :: iotas
-      real(kind=dp) :: mass
-      real(kind=dp) :: mscale
-      real(kind=dp) :: nscale
-      real(kind=dp) :: ju
-      real(kind=dp) :: jv
-end module name2
-
 module current
       use stel_kinds, only: dp
+      use name1,      only: nsd
       implicit none
       real(kind=dp) :: buco(nsd)
       real(kind=dp) :: bvco(nsd)
@@ -20,6 +10,7 @@ end module current
 
 module extfld
       use stel_kinds, only: dp
+      use name1,      only: nznt
       implicit none
       real(kind=dp) :: potvac(nznt)
       real(kind=dp) :: xmpot(nznt)
@@ -35,6 +26,7 @@ end module extfld
 
 module fsqu
       use stel_kinds, only: dp
+      use name1,      only: nsd
       implicit none
       real(kind=dp) :: fnorm
       real(kind=dp) :: fsqr
@@ -55,6 +47,8 @@ end module fsqu
 
 module inputdat
       use stel_kinds, only: dp
+      use name1,      only: nmax, &
+                            mpol1
       implicit none
       real(kind=dp) :: am(0:5)
       real(kind=dp) :: ai(0:5)
@@ -74,6 +68,9 @@ end module inputdat
 
 module mnarray
       use stel_kinds, only: dp
+      use name1,      only: nmax, &
+                            mpol, &
+                            mpol1
       implicit none
       real(kind=dp) :: xrz3(0:nmax,0:mpol1)
       real(kind=dp) :: xrz4(0:nmax,0:mpol1)
@@ -87,6 +84,9 @@ end module mnarray
 
 module profs
       use stel_kinds, only: dp
+      use name1,      only: nsd,  &
+                            nsd1, &
+                            nrztd
       implicit none
       real(kind=dp) :: iotas(nsd)
       real(kind=dp) :: mass(nsd)
@@ -123,6 +123,10 @@ end module scalars
 
 module scalefac
       use stel_kinds, only: dp
+      use name1,      only: mnd2,  &
+                            nsd,   &
+                            nrztd, &
+                            neq
       implicit none
       real(kind=dp) :: faclam(mnd2*nsd)
       real(kind=dp) :: shalf(nrztd)
@@ -133,6 +137,9 @@ end module scalefac
 
 module spectra
       use stel_kinds, only: dp
+      use name1,      only: nmax,  &
+                            mpol1, &
+                            nsd
       implicit none
       real(kind=dp) :: faccon(0:nmax,0:mpol1)
       real(kind=dp) :: specw(nsd)
@@ -150,6 +157,10 @@ end module time
 
 module trignew
       use stel_kinds, only: dp
+      use name1,      only: ntheta2, &
+                            nzeta,   &
+                            mpol1,   &
+                            nmax
       implicit none
       real(kind=dp) :: cosmu  (ntheta2,0:mpol1)
       real(kind=dp) :: sinmu  (ntheta2,0:mpol1)
@@ -165,6 +176,7 @@ end module trignew
 
 module magfield
       use stel_kinds, only: dp
+      use name1,      only: nznt
       implicit none
       real(kind=dp) :: bsqsav(nznt,3)
       real(kind=dp) :: dbsq(nznt)
@@ -180,6 +192,7 @@ end module magfield
 
 module xstuff
       use stel_kinds, only: dp
+      use name1,      only: neq
       implicit none
       real(kind=dp) :: xcdot(neq)
       real(kind=dp) :: xstore(neq)

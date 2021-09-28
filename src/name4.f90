@@ -1,5 +1,6 @@
 module rforces
       use stel_kinds, only: dp
+      use name1,      only: nrztd
       implicit none
       real(kind=dp) :: armn(2*nrztd)
       real(kind=dp) :: brmn(2*nrztd)

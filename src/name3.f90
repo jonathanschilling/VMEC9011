@@ -1,5 +1,6 @@
 module realsp
       use stel_kinds, only: dp
+      use name1,      only: nrztd
       implicit none
       real(kind=dp) :: r1(2*nrztd)
       real(kind=dp) :: ru(2*nrztd)

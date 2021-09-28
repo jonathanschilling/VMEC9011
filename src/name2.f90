@@ -1,3 +1,17 @@
+module bounds
+      use name1,      only: nmax,  &
+                            nmax1, &
+                            nsd,   &
+                            mnd1
+      implicit none
+
+      integer, parameter :: mup2 = nmax+nmax1
+      integer, parameter :: mlo3 = mup2+1
+
+      integer       :: mupper(3) = (/nmax, mup2,  mnd1/)
+      integer       :: mlower(3) = (/   0, nmax1, mlo3/)
+end module bounds
+
 module current
       use stel_kinds, only: dp
       use name1,      only: nsd
@@ -68,29 +82,33 @@ end module inputdat
 
 module mnarray
       use stel_kinds, only: dp
-      use name1,      only: nmax, &
-                            mpol, &
+      use name0,      only: cp707d, &
+                            oned
+      use name1,      only: nmax,  &
+                            nmax1, &
+                            mpol,  &
                             mpol1
       implicit none
       real(kind=dp) :: xrz3(0:nmax,0:mpol1)
       real(kind=dp) :: xrz4(0:nmax,0:mpol1)
       real(kind=dp) :: xmpq(0:mpol1,3)
-      integer       :: mscale(0:mpol1)
-      integer       :: nscale(0:nmax1)
-      integer       :: jmin1(0:mpol)
-      integer       :: jmin2(0:mpol)
-      integer       :: jlam(0:mpol)
+      integer       :: mscale(0:mpol1)      = (/cp707d,mpol1*oned/)
+      integer       :: nscale(0:nmax1)      = (/cp707d,nmax1*oned/)
+      integer       :: jmin1(0:mpol)        = (/1, 1, mpol1*2/)
+      integer       :: jmin2(0:mpol)        = (/1, 2, mpol1*3/)
+      integer       :: jlam(0:mpol)         = (/2, 3, mpol1*3/)
 end module mnarray
 
 module profs
       use stel_kinds, only: dp
+      use name0,      only: zerod
       use name1,      only: nsd,  &
                             nsd1, &
                             nrztd
       implicit none
       real(kind=dp) :: iotas(nsd)
       real(kind=dp) :: mass(nsd)
-      real(kind=dp) :: phips(nsd1)
+      real(kind=dp) :: phips(nsd1) = (/zerod/)
       real(kind=dp) :: pres(nsd)
       real(kind=dp) :: vp(nsd)
       real(kind=dp) :: phip(nrztd)
@@ -110,12 +128,12 @@ module scalars
       integer       :: irst
       integer       :: iter1
       integer       :: iter2
-      integer       :: isigng
-      integer       :: meven
-      integer       :: modd
-      integer       :: ndamp
+      integer       :: isigng = -1
+      integer       :: meven  = 0
+      integer       :: modd   = 1
+      integer       :: ndamp  = 10
       integer       :: ns
-      integer       :: ns4
+      integer       :: ns4    = 25
       integer       :: neqs
       integer       :: nrzt
       integer       :: mns

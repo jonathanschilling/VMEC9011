@@ -9,6 +9,7 @@
         sy(ind(i)) = sa*sx(i) + sy(ind(i))
       enddo
       end
+
       SUBROUTINE SOLR(NP,A,INCA,B,INCB,C,INCC)
       IMPLICIT double precision (A-H,O-Z)
       DIMENSION A(1),B(1),C(1)
@@ -30,6 +31,7 @@
    10 CONTINUE
       RETURN
       END
+
       SUBROUTINE MXV (A, NA, B, NB, C)
       IMPLICIT double precision (A-H,O-Z)
       DIMENSION A(NA,NB), B(NB   ), C(NA   )
@@ -40,6 +42,7 @@
    20    CONTINUE
       RETURN
       END
+
       SUBROUTINE MXM (A, NA, B, NB, C, NC)
       IMPLICIT double precision (A-H,O-Z)
       DIMENSION A(NA,NB), B(NB,NC), C(NA,NC)
@@ -52,32 +55,38 @@
    30 CONTINUE
       RETURN
       END
+
       FUNCTION CVMGT (A, B, C)
       LOGICAL C
       CVMGT = B
       IF ( C ) CVMGT = A
       RETURN
       END
+
       FUNCTION CVMGM (A, B, C)
       CVMGM = B
       IF (C .LT. 0.0) CVMGM = A
       RETURN
       END
+
       FUNCTION CVMGP (A, B, C)
       CVMGP = B
       IF (C .GE. 0.0) CVMGP = A
       RETURN
       END
+
       FUNCTION CVMGZ (A, B, C)
       CVMGZ = B
       IF (C .EQ. 0.0) CVMGZ = A
       RETURN
       END
+
       FUNCTION CVMGN (A, B, C)
       CVMGN = B
       IF (C .NE. 0.0) CVMGN = A
       RETURN
       END
+
       SUBROUTINE ORDERS (MODE, S1, E, IX, NP, I1, I8, I2)
 C
 C     ALTERNATIVUM TO CRAY-SORT ROUTINE
@@ -108,6 +117,7 @@ C
   100 CONTINUE
       RETURN
       END
+
       SUBROUTINE MINV (AB, N, ND, SCR, DET, EPS, M, MODE)
 C
 C     LINPACK SIMULATION OF CRAY-MINV
@@ -148,6 +158,7 @@ C
       DET = DT(1) * (10.0**DT(2))
       RETURN
       END
+
       SUBROUTINE SGEFAL(A, LDA, N, IPVT, INFO)
       IMPLICIT double precision (A-H,O-Z)
       INTEGER LDA,N,IPVT(1),INFO
@@ -247,6 +258,7 @@ C
       IF (A(N,N) .EQ. 0.0E0) INFO = N
       RETURN
       END
+
       SUBROUTINE SGESLL(A,LDA,N,IPVT,B,JOB)
       INTEGER LDA,N,IPVT(1),JOB
       IMPLICIT double precision (A-H,O-Z)
@@ -364,6 +376,7 @@ C
   100 CONTINUE
       RETURN
       END
+
       SUBROUTINE SGEDIL (A,LDA,N,IPVT,DET,WORK,JOB)
       IMPLICIT double precision (A-H,O-Z)
       INTEGER LDA,N,IPVT(1),JOB
@@ -488,6 +501,7 @@ C
   150 CONTINUE
       RETURN
       END
+
       SUBROUTINE SGBFAL (ABD,LDA,N,ML,MU,IPVT,INFO)
 C
 C     SGBFA FACTORS A REAL BAND MATRIX BY ELIMINATION.
@@ -659,6 +673,7 @@ C
       IF (ABD(M,N) .EQ. 0.0E0) INFO = N
       RETURN
       END
+
       SUBROUTINE SGBSLL(ABD,LDA,N,ML,MU,IPVT,B,JOB)
 C
 C     SGBSL SOLVES THE REAL BAND SYSTEM
@@ -792,6 +807,7 @@ C
   100 CONTINUE
       RETURN
       END
+
       SUBROUTINE SPBFAL(ABD,LDA,N,M,INFO)
       IMPLICIT double precision (A-H,O-Z)
       INTEGER LDA,N,M,INFO
@@ -883,6 +899,7 @@ C     ......EXIT
    40 CONTINUE
       RETURN
       END
+
       SUBROUTINE SPBSLL(ABD,LDA,N,M,B)
       IMPLICIT double precision (A-H,O-Z)
       INTEGER LDA,N,M
@@ -989,6 +1006,7 @@ C
    10 CONTINUE
       RETURN
       END
+
       INTEGER FUNCTION ISAMAX(N,SX,INCX)
 C
 C     FINDS THE INDEX OF ELEMENT HAVING MAX. ABSOLUTE VALUE.
@@ -1027,6 +1045,7 @@ C
    30 CONTINUE
       RETURN
       END
+
       SUBROUTINE SAXPY(N,SA,SX,INCX,SY,INCY)
 C
 C     CONSTANT TIMES A VECTOR PLUS A VECTOR
@@ -1076,6 +1095,7 @@ C
    50 CONTINUE
       RETURN
       END
+
       REAL FUNCTION SDOT(N,SX,INCX,SY,INCY)
 C
 C     FORMS THE DOT PRODUCT OF TWO VECTORS
@@ -1125,6 +1145,7 @@ C
    60 SDOT = STEMP
       RETURN
       END
+
       SUBROUTINE SSCAL (N,SA,SX,INCX)
 C
 C     SCALES A VECTOR BY A CONSTANT
@@ -1167,6 +1188,7 @@ C
    50 CONTINUE
       RETURN
       END
+
       SUBROUTINE SSWAP (N,SX,INCX,SY,INCY)
 C
 C     INTERCHANGES TWO VECTORS.
@@ -1223,6 +1245,7 @@ C
    50 CONTINUE
       RETURN
       END
+
       INTEGER FUNCTION ISMAX(N,SX,INCX)
 C
 C     FINDS THE INDEX OF ELEMENT HAVING MAX. VALUE.
@@ -1260,6 +1283,7 @@ C
    30 CONTINUE
       RETURN
       END
+
       INTEGER FUNCTION ISMIN(N,SX,INCX)
 C
 C     FINDS THE INDEX OF ELEMENT HAVING MIN. VALUE.
@@ -1297,15 +1321,18 @@ C
    30 CONTINUE
       RETURN
       END
+
       SUBROUTINE   RS   (XXX)
       IMPLICIT double precision (A-H,O-Z)
       XXX = 999999
       RETURN
       END
+
       SUBROUTINE SECOND (III)
       III = 999999
       RETURN
       END
+
       FUNCTION   RANF()
       IMPLICIT double precision (A-H,O-Z)
       RANF= 999999

@@ -53,11 +53,6 @@ subroutine funct3d
       czmn  => lu
       crmn  => lv
 
-
-
-
-
-
       lodd = 1+nrzt
 
       ! EXTRAPOLATE M>2 MODES AT JS = 2

@@ -40,8 +40,8 @@ subroutine lamcal(phipog, guu, guv, gvv)
           tmm = real(m*m)
 
           do js = jlam(m), ns
-            faclam(js+lmn) = -c2p0*c2p0/(       (blam(js) + blam(js+1))            * tnn
-                                         + sign((dlam(js) + dlam(js+1)), blam(js)) * tmn
+            faclam(js+lmn) = -c2p0*c2p0/(       (blam(js) + blam(js+1))            * tnn   &
+                                         + sign((dlam(js) + dlam(js+1)), blam(js)) * tmn   &
                                          +      (clam(js) + clam(js+1))            * tmm )
           end do
           faclam(ns+lmn) = cp5*faclam(ns+lmn)

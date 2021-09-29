@@ -25,6 +25,10 @@ module precond
       real(kind=dp) :: bzm(nsd1,2)
       real(kind=dp) :: bzd(nsd1,2)
       real(kind=dp) :: cr (nsd1)
+
+      real(kind=dp) :: sm(  nsd1)
+      real(kind=dp) :: sp(0:nsd1)
+
 end module precond
 
 module current

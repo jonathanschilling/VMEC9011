@@ -3,7 +3,7 @@ subroutine funct3d
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5, c1p0, c1p5
       use name1, only: nvac
-      use realsp, only: r1, ru, rv, z1, zu, zv, lu, lv, &
+      use realsp, only: r1, ru, rv, z1, zu, zv, &
                         ru0, zu0, rcon, zcon, rcon0, zcon0, gcon
       use rforces, only: armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn
       use scalars, only: nrzt, nznt, mns, ns, neqs, iter1, iter2, &
@@ -75,7 +75,8 @@ subroutine funct3d
       enddo
       call totzsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
                   r1,ru,       rv,         z1,         zu,         zv,          &
-                  lu,lv,rcon,zcon, worka,worka,worka,workb)
+                  lu,lv,rcon,zcon, &
+                  worka,worka,worka, workb)
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
       do l = 1,nrzt

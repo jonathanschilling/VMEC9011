@@ -1,4 +1,5 @@
-        parameter(nsd=10, mpol=7 ,nmax=6 , ntheta=32, nzeta=22, nvac=0,
+!        parameter(nsd=10, mpol=7 ,nmax=6 , ntheta=32, nzeta=22, nvac=0, ! for hnr22_kis
+        parameter(nsd=10, mpol=7 ,nmax=0 , ntheta=32, nzeta=1, nvac=0, ! for solovev
      >  nsd1=nsd+1, ntheta1=2*(ntheta/2), ntheta2=1+ntheta1/2, nznt=
      >  nzeta*ntheta2, nrztd=nznt*nsd+1, mpol1 = mpol-1,
      >  nmax1=1+nmax, mnd=mpol*nmax1, mnd1=mnd-1, mnd2=2*mnd,

@@ -1,5 +1,11 @@
 
+.PHONY: all clean
+
 all: vmec
+clean:
+	rm *.o
+	rm vmec
+	rm fort.*
 
 vmec: crlib64.f \
       vac.f \

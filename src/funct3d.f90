@@ -1,17 +1,58 @@
 subroutine funct3d
 
-      real guu(nrztd),guv(nrztd),gvv(nrztd),lu(2*nrztd),lv(2*nrztd),
-     >  rmnc(mnmax),zmns(mnmax),lmns(mnmax),xm(mnmax),
-     >  xn(mnmax),rax(nznt),zax(nznt),worka(12*nrztd),workb(12*nrztd)
+      use stel_kinds, only: dp
+      use name0, only: czero, cp25, cp5, c1p0, c1p5
+      use name1, only: nvac
+      use realsp, only: r1, ru, rv, z1, zu, zv, lu, lv, &
+                        ru0, zu0, rcon, zcon, rcon0, zcon0, gcon
+      use rforces, only: armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn
+      use scalars, only: nrzt, nznt, mns, ns, neqs, iter1, iter2, &
+                         hs, ohs, irst,  meven, modd, iequi, dnorm, &
+                         twopi, voli, isigng
+      use xstuff, only: xc, gc
+      use mnarray, only: xrz3, xrz4
+      use scalefac, only: scalxc, sqrts, shalf, wint
+      use fsqu, only: wp, fsqr, fsqz
+      use profs, only: mass, vp, pres
+      use inputdat, only: gam, nvacskip
+      use extfld, only: ivac, ivac2
+      use magfield, only: curpol, rbtor, ctor, bsqvac, bsqsav, rbsq, dbsq
+      use time, only: timer
 
-      ! TODO: pointers !
-      equivalence (worka,armn), &
-                  (workb,r1),   &
-                  (guu,rcon(1+nrztd)), &
-                  (guv,zcon(1+nrztd)), &
-                  (gvv,z1),            &
-                  (czmn,lu),           &
-                  (crmn,lv)
+      implicit none
+
+      real(kind=dp) :: xm(mnmax) ! for handing over to vacuum()
+      real(kind=dp) :: xn(mnmax) ! for handing over to vacuum()
+      real(kind=dp) :: rmnc(mnmax)
+      real(kind=dp) :: zmns(mnmax)
+      real(kind=dp) :: lmns(mnmax)
+      real(kind=dp) :: rax(nznt)
+      real(kind=dp) :: zax(nznt)
+      real(kind=dp) :: lu(2*nrztd)
+      real(kind=dp) :: lv(2*nrztd)
+      integer       :: lodd, l, lk
+      real(kind=dp) :: bz0
+      real(kind=dp) :: timeon, timeoff
+
+      real(kind=dp), pointer :: worka(12*nrztd)
+      real(kind=dp), pointer :: workb(12*nrztd)
+      real(kind=dp), pointer :: guu(nrztd)
+      real(kind=dp), pointer :: guv(nrztd)
+      real(kind=dp), pointer :: gvv(nrztd)
+      real(kind=dp), pointer :: czmn(*)
+      real(kind=dp), pointer :: crmn(*)
+
+      worka => armn
+      workb => r1
+      guu   => rcon(1+nrztd)
+      guv   => zcon(1+nrztd)
+      gvv   => z1
+      czmn  => lu
+      crmn  => lv
+
+
+
+
 
 
       lodd = 1+nrzt
@@ -19,6 +60,7 @@ subroutine funct3d
       ! EXTRAPOLATE M>2 MODES AT JS = 2
       call extrap(xc,xc(1+mns),xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns),xrz3,xrz4,ns)
 
+      ! temporary re-use of gc for scaled xc
       do l = 1,neqs
         gc(l) = xc(l) * scalxc(l)
       enddo
@@ -31,10 +73,9 @@ subroutine funct3d
         lu(l+nrzt) = czero
         lv(l+nrzt) = czero
       enddo
-
       call totzsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
                   r1,ru,       rv,         z1,         zu,         zv,          &
-                  lu,lv,rcon,zcon,worka,worka,worka,workb)
+                  lu,lv,rcon,zcon, worka,worka,worka,workb)
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
       do l = 1,nrzt
@@ -45,6 +86,7 @@ subroutine funct3d
 
         gcon(l) = czero
         ! azmn: temporary storage for not-yet-dealiased gcon
+        ! rcon0, zcon0 are initialized to 0 in vsetup --> ok to use in first iteration
         azmn(l) = (rcon(l)-rcon0(l))*ru0(l) + (zcon(l)-zcon0(l))*zu0(l)
       enddo
 
@@ -72,7 +114,6 @@ subroutine funct3d
       ! COMPUTE PRESSURE AND VOLUME ON HALF-GRID
       call pressure(azmn(lodd),bzmn(lodd),wint,wp,dnorm,
                     mass,vp,pres,gam,nznt,ns)
-
       if (iter2.eq.1) &
         voli = (twopi**2)*hs*ssum(ns-1,vp(2),1)
 
@@ -103,7 +144,7 @@ subroutine funct3d
       if (nvac.ne.0.and.iter2.gt.1) then
         call second(timeon)
 
-        ivac2=mod(iter2-iter1,nvacskip)
+        ivac2=mod(iter2-iter1, nvacskip)
 
         if ((fsqr+fsqz).le.1.e-2) &
           ivac=ivac+1
@@ -134,14 +175,14 @@ subroutine funct3d
         enddo
 
         if(ivac.eq.1) then
+          ! copy initial plasma and vacuum field into bsqsav(:,1:2)
           call scopy(nznt,bzmn(ns+nrzt),ns,bsqsav(1,1),1)
           call scopy(nznt,bsqvac,        1,bsqsav(1,2),1)
         endif
 
         call second(timeoff)
         timer(1) = timer(1) + (timeoff-timeon)
-
-      endif
+      endif ! vacuum contribution
 
       if(iequi.eq.1)then
         ! COMPUTE REMAINING COVARIANT COMPONENT OF B (BSUBS),
@@ -167,10 +208,9 @@ subroutine funct3d
       do l = 1,neqs
         gc(l) = czero
       enddo
-
       call tomnsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
-                  armn,brmn,crmn,azmn,bzmn,czmn,&
-                  blmn,clmn,rcon,zcon,workb,workb,workb)
+                  armn,brmn,crmn, azmn,bzmn,czmn,&
+                  blmn,clmn, rcon,zcon, workb,workb,workb)
 
       do l = 1,neqs
         gc(l) = gc(l) * scalxc(l)

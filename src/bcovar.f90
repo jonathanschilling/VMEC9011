@@ -55,18 +55,18 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
           phipog(l) = cp5*sqrts(lme)*sqrts(lme)
 
-          guu(l) = guu(l) &
+          guu(l) = guu(l)                                             &
                     +       cp5*(  ru(lme)*ru(lme) + zu(lme)*zu(lme)) &
                     + phipog(l)*(  ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo)) &
                     +  shalf(l)*(  ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
 
-          guv(l) = guv(l) &
+          guv(l) = guv(l)                                             &
                     +       cp5*(  ru(lme)*rv(lme) + zu(lme)*zv(lme)) &
                     + phipog(l)*(  ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)) &
                     +  shalf(l)*(  ru(lme)*rv(lmo) + rv(lme)*ru(lmo)  &
                                  + zu(lme)*zv(lmo) + zv(lme)*zu(lmo)) * cp5
 
-          gvv(l) = gvv(l) &
+          gvv(l) = gvv(l)                                             &
                     +       cp5*(  rv(lme)*rv(lme) + zv(lme)*zv(lme)) &
                     + phipog(l)*(  rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo)) &
                     +  shalf(l)*(  rv(lme)*rv(lmo) + zv(lme)*zv(lmo)) &
@@ -80,10 +80,10 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       do l = nrzt,2,-1
         phipog(l) = phip(l)/gsqrt(l)
 
-        lu(l,0) = cp5*phipog(l)*(lu(l,0)+lu(l-1,0)
+        lu(l,0) = cp5*phipog(l)*(lu(l,0)+lu(l-1,0)   &
                 +      shalf(l)*(lu(l,1)+lu(l-1,1)))
 
-        lv(l,0) = cp5*phipog(l)*(lv(l,0)+lv(l-1,0)
+        lv(l,0) = cp5*phipog(l)*(lv(l,0)+lv(l-1,0)   &
                 +      shalf(l)*(lv(l,1)+lv(l-1,1)))
       end do
 
@@ -104,9 +104,9 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       ! ON ENTRY, BSQ IS THE KINETIC PRESSURE
       wb = -wp
       do l = 2,nrzt
-        bsq(l) = bsq(l) + cp5 * (lv(l,0)*bsubu(l,0) + lu(l,0)*bsubv(l,0))
+        bsq(l)    = bsq(l) + cp5 * (lv(l,0)*bsubu(l,0) + lu(l,0)*bsubv(l,0))
         phipog(l) = phipog(l)*wint(l)
-        wb = wb + hs*dnorm*wint(l)*abs(gsqrt(l))*bsq(l)
+        wb        = wb + hs*dnorm*wint(l)*abs(gsqrt(l))*bsq(l)
       end do
 
       if (iequi.eq.1) &
@@ -119,15 +119,6 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           bsubu(l,m) = cp5*(bsubu(l,m) + bsubu(l+1,m))
           bsubv(l,m) = cp5*(bsubv(l,m) + bsubv(l+1,m))
         end do
-
-        ! do 70 l=1,nrzt-1
-        !        bsubu(l,m) = cp5*(bsubu(l,m) + bsubu(l+1,m))
-        !        bsubv(l,m) = cp5*(bsubv(l,m) + bsubv(l+1,m))
-        ! 70     continue
-
-        ! l     = nrzt
-        ! bsubu(l,m) = cp5*(bsubu(l,m)               )
-        ! bsubv(l,m) = cp5*(bsubv(l,m)               )
 
         ! scale up edge components by 2.0
         do l = ns, nrzt, ns
@@ -142,11 +133,11 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
         call lamcal(phipog, guu, guv, gvv)
 
-        call precondn(lu, bsq, gsqrt, r12, &
+        call precondn(lu, bsq, gsqrt, r12,                  &
                       zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
                       arm, ard, brm, brd, cr)
 
-        call precondn(lu, bsq, gsqrt, r12, &
+        call precondn(lu, bsq, gsqrt, r12,                  &
                       rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
                       azm, azd, bzm, bzd, cr)
 

@@ -105,12 +105,21 @@ subroutine funct3d
         call alias(gcon, azmn, worka, worka, worka, gc, gc(1+mns))
 
       ! COMPUTE S AND THETA DERIVATIVE OF R AND Z AND JACOBIAN ON HALF-GRID
-      call jacobian(r1,ru,z1,zu,armn,azmn,brmn,bzmn,azmn(lodd),
-                    armn(lodd),brmn(lodd),wint,shalf,ohs,cp25,cp5,czero,
-                    nrzt,nznt,irst,meven,modd)
-
-      if (irst.eq.2.and.iequi.eq.0) &
+      ! armn(1     :1*nrzt) --> zu12
+      ! azmn(1     :1*nrzt) --> ru12
+      ! brmn(1     :1*nrzt) --> zs
+      ! bzmn(1     :1*nrzt) --> rs
+      ! azmn(1+nrzt*2*nrzt) --> gsqrt
+      ! armn(1+nrzt*2*nrzt) --> r12
+      ! brmn(1+nrzt*2*nrzt) --> tau
+      call jacobian(r1, ru, z1, zu,                            &
+                    armn,       azmn,       brmn,       bzmn,  &
+                    azmn(lodd), armn(lodd), brmn(lodd)        )
+      if (irst.eq.2 .and. iequi.eq.0) then
+        ! Jacobian changes sign somewhere in volume
+        ! --> flux surfaces cross, need to restart with smaller timestep
         return
+      end if
 
       ! COMPUTE PRESSURE AND VOLUME ON HALF-GRID
       call pressure(azmn(lodd),bzmn(lodd),wint,wp,dnorm,

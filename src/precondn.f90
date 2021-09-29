@@ -1,6 +1,7 @@
-        subroutine precondn(lu,bsq,gsqrt,r12,xs,xu12,xue,xuo,xodd,shalf,
-     >  wint,pres,axm,axd,bxm,bxd,cx,ohs,cp25,cp5,c1p0,
-     >  c1p5,czero,ns,iter2)
+subroutine precondn(lu, bsq, gsqrt, r12, &
+                    xs, xu12, xue, xuo, xodd, &
+                    axm, axd, bxm, bxd, cx)
+
       include 'name1'
         real bsq(ns,*),gsqrt(ns,*),r12(ns,*),lu(ns,*),xu12(ns,*),
      >  xue(ns,*),xuo(ns,*),xodd(ns,*),xs(ns,*),wint(ns,*),shalf(*),

@@ -16,14 +16,14 @@ module precond
       use stel_kinds, only: dp
       use name1,      only: nsd1
       implicit none
-      real(kind=dp) :: ard(nsd1,2)
-      real(kind=dp) :: azd(nsd1,2)
       real(kind=dp) :: arm(nsd1,2)
-      real(kind=dp) :: azm(nsd1,2)
-      real(kind=dp) :: brd(nsd1,2)
-      real(kind=dp) :: bzd(nsd1,2)
+      real(kind=dp) :: ard(nsd1,2)
       real(kind=dp) :: brm(nsd1,2)
+      real(kind=dp) :: brd(nsd1,2)
+      real(kind=dp) :: azm(nsd1,2)
+      real(kind=dp) :: azd(nsd1,2)
       real(kind=dp) :: bzm(nsd1,2)
+      real(kind=dp) :: bzd(nsd1,2)
       real(kind=dp) :: cr (nsd1)
 end module precond
 
@@ -57,7 +57,7 @@ module fsqu
       use stel_kinds, only: dp
       use name1,      only: nsd
       implicit none
-      real(kind=dp) :: fnorm
+      real(kind=dp) :: mns
       real(kind=dp) :: fsqr
       real(kind=dp) :: fsqz
       real(kind=dp) :: fsql

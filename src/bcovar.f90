@@ -2,15 +2,18 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
                   ru12, zu12, guu, guv, gvv, phipog, lu, lv)
 
       use stel_kinds, only: dp
-      use name0, only: czero, cp5, c2p0
+      use name0, only: czero, cp5, c1p0, c2p0
       use name1, only: nsd
       use scalars, only: nrzt, hs, dnorm, iequi, meven, modd, &
                          iter1, iter2, ns4
-      use scalefac, only: sqrts, shalf
-      use realsp, only: r1, ru, rv, zu, zv
-      use profs, only: phip
-      use fsqu, only: wp, wb
-      use scalefac, only: wint
+      use scalefac, only: sqrts, shalf, wint
+      use realsp, only: r1, ru, rv, zu, zv, ru0, zu0
+      use profs, only: phip, vp
+      use fsqu, only: wp, wb, fnorm, fnorm1, mns
+      use precond, only: arm, ard, brm, brd,    &
+                         azm, azd, bzm, bzd, cr
+      use xstuff, only: xc
+      use spectra, only: tcon
 
       implicit none
 
@@ -33,7 +36,8 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       real(kind=dp) :: ar(nsd)
       real(kind=dp) :: az(nsd)
 
-      integer :: is, l, lme, lmo, m
+      integer       :: is, l, lme, lmo, m
+      real(kind=dp) :: volume
 
       ! INITIALIZATION BLOCK
       do l = 1, nrzt+1 ! NOTE: incl. magic element at end !
@@ -138,47 +142,44 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
         call lamcal(phipog, guu, guv, gvv)
 
-        call precondn(lu, bsq, gsqrt, r12, zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
-                      shalf, wint, pres, &
-                      arm, ard, brm, brd, cr, &
-                      ohs, cp25, cp5, c1p0, c1p5, czero, ns, iter2)
+        call precondn(lu, bsq, gsqrt, r12, &
+                      zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
+                      arm, ard, brm, brd, cr)
 
-        call precondn(lu, bsq, gsqrt, r12, rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
-                      shalf, wint, pres, &
-                      azm, azd, bzm, bzd, cr, &
-                      ohs, cp25, cp5, c1p0, c1p5, czero, ns, iter2)
+        call precondn(lu, bsq, gsqrt, r12, &
+                      rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
+                      azm, azd, bzm, bzd, cr)
 
-        do l=2,nrzt
-          guu(l) = guu(l)*r12(l)**2
+        do l = 2, nrzt
+          guu(l) = guu(l) * r12(l)**2
         end do
 
-        volume = hs*ssum(ns-1,vp(2),1)
+        volume = hs * dsum(ns-1, vp(2), 1)
+        fnorm  = dnorm/(ddot(nrzt, guu, 1, wint, 1) * (wb/volume)**2)
 
-        fnorm = dnorm/(sdot(nrzt,guu,1,wint,1)*(wb/volume)**2)
-
-        fnorm1 = c1p0/sdot(4*mns-ns,xc(ns+1),1,xc(ns+1),1)
+        fnorm1 = c1p0/ddot(4*mns-ns, xc(ns+1), 1, xc(ns+1), 1)
 
         ! COMPUTE CONSTRAINT FORCE SCALING FACTOR (TCON)
-        do js=2,ns-1
+        do js = 2, ns-1
           ar(js) = czero
           az(js) = czero
         end do
 
-        do js=2,ns-1
-          do lk = 1,nrzt,ns
-            ar(js) = ar(js) + wint(js+lk-1)*ru0(js+lk-1)**2
-            az(js) = az(js) + wint(js+lk-1)*zu0(js+lk-1)**2
+        do js = 2, ns-1
+          do lk = 1, nrzt, ns
+            ar(js) = ar(js) + wint(js+lk-1) * ru0(js+lk-1)**2
+            az(js) = az(js) + wint(js+lk-1) * zu0(js+lk-1)**2
           end do
         end do
 
-        do js=2,ns-1
+        do js = 2, ns-1
           tcon(js) = min(abs(ard(js,1)/ar(js)),abs(azd(js,1)/az(js)))
         end do
         tcon(ns) = cp5*tcon(ns-1)
       endif
 
       ! STORE LU * LV COMBINATIONS USED IN FORCES
-      do l=2,nrzt
+      do l = 2, nrzt
          guu(l) = lv(l,0)*lv(l,0)*gsqrt(l)
          guv(l) = lv(l,0)*lu(l,0)*gsqrt(l)
          gvv(l) = lu(l,0)*lu(l,0)*gsqrt(l)

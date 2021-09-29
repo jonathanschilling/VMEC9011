@@ -122,10 +122,12 @@ subroutine funct3d
       end if
 
       ! COMPUTE PRESSURE AND VOLUME ON HALF-GRID
-      call pressure(azmn(lodd),bzmn(lodd),wint,wp,dnorm,
-                    mass,vp,pres,gam,nznt,ns)
-      if (iter2.eq.1) &
-        voli = (twopi**2)*hs*ssum(ns-1,vp(2),1)
+      ! see above for re-use of arrays; additionally:
+      ! bzmn(1+nrzt*2*nrzt) --> bsq
+      call pressure(azmn(lodd), bzmn(lodd))
+      if (iter2.eq.1) then
+        voli = (twopi**2)*hs*dsum(ns-1,vp(2),1)
+      end if
 
       ! COMPUTE COVARIANT COMPONENTS OF B, MAGNETIC PRESSURE,
       ! AND METRIC ELEMENTS ON HALF-GRID

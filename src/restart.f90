@@ -25,8 +25,7 @@ subroutine restart
         enddo
 
         ! reduce time step;
-        ! will come here with irst.eq.2 or irst.eq.3
-        !
+        ! will arrive here with irst.eq.2 or irst.eq.3
         ! irst.eq.2 --> (irst-2) = 0, (3-irst) = 1
         !           --> delt *= 0.9
         ! irst.eq.3 --> (irst-2) = 3, (3-irst) = 0

@@ -185,8 +185,8 @@ subroutine funct3d
 
         if(ivac.eq.1) then
           ! copy initial plasma and vacuum field into bsqsav(:,1:2)
-          call scopy(nznt,bzmn(ns+nrzt),ns,bsqsav(1,1),1)
-          call scopy(nznt,bsqvac,        1,bsqsav(1,2),1)
+          call dcopy(nznt, bzmn(ns+nrzt), ns, bsqsav(1,1), 1)
+          call dcopy(nznt, bsqvac,         1, bsqsav(1,2), 1)
         endif
 
         call second(timeoff)

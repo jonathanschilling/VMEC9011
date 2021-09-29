@@ -1,4 +1,4 @@
-        subroutine eqfor(bu,bv,bsq,rmag,zmag)
+subroutine eqfor(bu, bv, bsq, rmag, zmag)
       include 'name1'
       include 'name0'
       include 'name2'

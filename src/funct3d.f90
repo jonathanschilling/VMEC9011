@@ -198,8 +198,10 @@ subroutine funct3d
         ! CYLINDRICAL COMPONENTS OF B (BR, BPHI, BZ), AND
         ! AVERAGE EQUILIBRIUM PROPERTIES AT END OF RUN
 
-        call bss(armn(lodd), bzmn, brmn, azmn, armn, shalf, crmn(lodd),
-                 lu, lv, rcon, czmn(lodd), zcon, cp25, cp5, nrzt)
+        !        r12         rs    zs    ru12  zu12  bsubs
+        call bss(armn(lodd), bzmn, brmn, azmn, armn, crmn(lodd),
+                 lu, lv, rcon, czmn(lodd), zcon)
+        !                br    bphi        bz
 
         call eqfor(clmn, blmn, bzmn(lodd), xc, xc(1+2*mns))
 

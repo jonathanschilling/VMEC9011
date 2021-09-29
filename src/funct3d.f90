@@ -137,13 +137,14 @@ subroutine funct3d
       enddo
 
       if (iequi.eq.1) &
-        call scopy(nrzt,z1,1,gcon,1)
+        call dcopy(nrzt, z1, 1, gcon, 1)
 
+      ! see above for re-use of arrays; additionally:
       call bcovar(clmn,blmn,azmn(lodd),bzmn(lodd),armn(lodd),bzmn,
                   brmn,azmn,armn,guu,guv,gvv,brmn(lodd),lu,lv)
 
       if (iequi.eq.1) &
-        call scopy(nrzt,gcon,1,z1,1)
+        call dcopy(nrzt, gcon, 1, z1, 1)
 
       bz0 = sdot(nznt,blmn(ns),ns,wint(ns),ns)
 

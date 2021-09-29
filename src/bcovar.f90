@@ -2,12 +2,15 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
                   ru12, zu12, guu, guv, gvv, phipog, lu, lv)
 
       use stel_kinds, only: dp
-      use name0, only: czero, cp5
+      use name0, only: czero, cp5, c2p0
       use name1, only: nsd
-      use scalars, only: nrzt
+      use scalars, only: nrzt, hs, dnorm, iequi, meven, modd, &
+                         iter1, iter2, ns4
       use scalefac, only: sqrts, shalf
       use realsp, only: r1, ru, rv, zu, zv
       use profs, only: phip
+      use fsqu, only: wp, wb
+      use scalefac, only: wint
 
       implicit none
 
@@ -30,7 +33,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       real(kind=dp) :: ar(nsd)
       real(kind=dp) :: az(nsd)
 
-      integer :: is, l, lme, lmo
+      integer :: is, l, lme, lmo, m
 
       ! INITIALIZATION BLOCK
       do l = 1, nrzt+1 ! NOTE: incl. magic element at end !
@@ -83,9 +86,9 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       ! COMPUTE IOTA PROFILE
       call getiota(phipog, guu, guv, lu, lv)
 
-      ! PUT LAMBDA FORCES (=covariant magnetic field components)
-      ! ON RADIAL HALF-MESH
-      do l = 1,nrzt
+      ! PUT LAMBDA FORCES ON RADIAL HALF-MESH.
+      ! (The lambda forces are the covariant magnetic field components.)
+      do l = 1, nrzt
         bsubu(l,0) = guu(l)*lv(l,0) + guv(l)*lu(l,0)
         bsubv(l,0) = guv(l)*lv(l,0) + gvv(l)*lu(l,0)
         bsubu(l,1) = shalf(l)*bsubu(l,0)
@@ -97,7 +100,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       ! ON ENTRY, BSQ IS THE KINETIC PRESSURE
       wb = -wp
       do l = 2,nrzt
-        bsq(l) = bsq(l) + cp5*(lv(l,0)*bsubu(l,0) + lu(l,0)*bsubv(l,0))
+        bsq(l) = bsq(l) + cp5 * (lv(l,0)*bsubu(l,0) + lu(l,0)*bsubv(l,0))
         phipog(l) = phipog(l)*wint(l)
         wb = wb + hs*dnorm*wint(l)*abs(gsqrt(l))*bsq(l)
       end do
@@ -107,8 +110,8 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
       ! AVERAGE LAMBDA FORCES ONTO FULL MESH
       ! NOTE: EDGE FORCE IS DOWN BY .5 UNTIL 90 LOOP
-      do m = meven,modd
-        do l=1,nrzt
+      do m = meven, modd
+        do l = 1, nrzt
           bsubu(l,m) = cp5*(bsubu(l,m) + bsubu(l+1,m))
           bsubv(l,m) = cp5*(bsubv(l,m) + bsubv(l+1,m))
         end do
@@ -121,7 +124,9 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
         ! l     = nrzt
         ! bsubu(l,m) = cp5*(bsubu(l,m)               )
         ! bsubv(l,m) = cp5*(bsubv(l,m)               )
-        do l = ns,nrzt,ns
+
+        ! scale up edge components by 2.0
+        do l = ns, nrzt, ns
           bsubu(l,m) = c2p0*bsubu(l,m)
           bsubv(l,m) = c2p0*bsubv(l,m)
         end do
@@ -129,7 +134,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
       !  COMPUTE R,Z AND LAMBDA PRE-CONDITIONING MATRIX
       ! ELEMENTS AND FORCE NORMS EVERY NS4 STEPS
-      if(mod(iter2-iter1,ns4).eq.0)then
+      if (mod(iter2-iter1, ns4) .eq. 0) then
 
         call lamcal(phipog, guu, guv, gvv)
 

@@ -21,15 +21,18 @@ subroutine funct3d
 
       implicit none
 
-      real(kind=dp) :: xm(mnmax) ! for handing over to vacuum()
-      real(kind=dp) :: xn(mnmax) ! for handing over to vacuum()
       real(kind=dp) :: rmnc(mnmax)
       real(kind=dp) :: zmns(mnmax)
       real(kind=dp) :: lmns(mnmax)
+      real(kind=dp) :: xm(mnmax) ! for handing over to vacuum()
+      real(kind=dp) :: xn(mnmax) ! for handing over to vacuum()
+
       real(kind=dp) :: rax(nznt)
       real(kind=dp) :: zax(nznt)
+
       real(kind=dp) :: lu(2*nrztd)
       real(kind=dp) :: lv(2*nrztd)
+
       integer       :: lodd, l, lk
       real(kind=dp) :: bz0
       real(kind=dp) :: timeon, timeoff
@@ -143,7 +146,7 @@ subroutine funct3d
       if (iequi.eq.1) &
         call dcopy(nrzt, gcon, 1, z1, 1)
 
-      bz0 = sdot(nznt,blmn(ns),ns,wint(ns),ns)
+      bz0 = ddot(nznt,blmn(ns),ns,wint(ns),ns)
 
       ! COMPUTE VACUUM MAGNETIC PRESSURE AT PLASMA EDGE
       ! NOTE: FOR FREE BOUNDARY RUNS, THE PLASMA VOLUME CAN

@@ -11,20 +11,20 @@ subroutine precondn(lu, bsq, gsqrt, r12,      &
 
       implicit none
 
-      real(kind=dp) :: bsq(ns,*)
-      real(kind=dp) :: gsqrt(ns,*)
-      real(kind=dp) :: r12(ns,*)
-      real(kind=dp) :: lu(ns,*)
-      real(kind=dp) :: xu12(ns,*)
-      real(kind=dp) :: xue(ns,*)
-      real(kind=dp) :: xuo(ns,*)
-      real(kind=dp) :: xodd(ns,*)
-      real(kind=dp) :: xs(ns,*)
-      real(kind=dp) :: axm(nsd1,2)
-      real(kind=dp) :: axd(nsd1,2)
-      real(kind=dp) :: bxm(nsd1,2)
-      real(kind=dp) :: bxd(nsd1,2)
-      real(kind=dp) :: cx(*)
+      real(kind=dp), intent(in)  :: bsq  (ns,nznt)
+      real(kind=dp), intent(in)  :: gsqrt(ns,nznt)
+      real(kind=dp), intent(in)  :: r12  (ns,nznt)
+      real(kind=dp), intent(in)  :: lu   (ns,nznt)
+      real(kind=dp), intent(in)  :: xu12 (ns,nznt)
+      real(kind=dp), intent(in)  :: xue  (ns,nznt)
+      real(kind=dp), intent(in)  :: xuo  (ns,nznt)
+      real(kind=dp), intent(in)  :: xodd (ns,nznt)
+      real(kind=dp), intent(in)  :: xs   (ns,nznt)
+      real(kind=dp), intent(out) :: axm  (nsd1,2)
+      real(kind=dp), intent(out) :: axd  (nsd1,2)
+      real(kind=dp), intent(out) :: bxm  (nsd1,2)
+      real(kind=dp), intent(out) :: bxd  (nsd1,2)
+      real(kind=dp), intent(out) :: cx   (nsd1)
 
       real(kind=dp) :: ax(nsd1,4)
       real(kind=dp) :: bx(nsd1,4)
@@ -86,13 +86,13 @@ subroutine precondn(lu, bsq, gsqrt, r12,      &
 
       do js = 1, ns
         axm(js,1) =-ax(js,1)
-        axd(js,1) = ax(js,1) + ax(js+1,1)
         axm(js,2) = ax(js,2) * sm(js) * sp(js-1)
+        axd(js,1) = ax(js,1) + ax(js+1,1)
         axd(js,2) = ax(js,3) * sm(js)**2 + ax(js+1,4) * sp(js)**2
 
         bxm(js,1) = bx(js,1)
-        bxd(js,1) = bx(js,2) + bx(js+1,3)
         bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)
+        bxd(js,1) = bx(js,2) + bx(js+1,3)
         bxd(js,2) = bx(js,2) * sm(js)**2 + bx(js+1,3) * sp(js)**2
 
         cx (js)   = cx(js) + cx(js+1)

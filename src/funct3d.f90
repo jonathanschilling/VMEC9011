@@ -37,7 +37,6 @@ subroutine funct3d
                   lu,lv,rcon,zcon,worka,worka,worka,workb)
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
-      ! azmn: temporary storage for not-yet-dealiased gcon
       do l = 1,nrzt
         ru0(l)  = ru(l) + ru(l+nrzt)*sqrts(l)
         zu0(l)  = zu(l) + zu(l+nrzt)*sqrts(l)
@@ -45,6 +44,7 @@ subroutine funct3d
         zcon(l) = zcon(l) + zcon(l+nrzt)*sqrts(l)
 
         gcon(l) = czero
+        ! azmn: temporary storage for not-yet-dealiased gcon
         azmn(l) = (rcon(l)-rcon0(l))*ru0(l) + (zcon(l)-zcon0(l))*zu0(l)
       enddo
 
@@ -117,9 +117,9 @@ subroutine funct3d
           rbtor = twopi*dnorm*bz0
 
         if (ivac.ge.1) then
-          ctor = isigng*twopi*dnorm*( &
-                   c1p5*sdot(nznt,clmn(ns),ns,wint(ns),ns) &
-                 - cp5*sdot(nznt,clmn(ns-1),ns,wint(ns),ns) )
+          ctor = isigng*twopi*dnorm*(                          &
+                   c1p5*sdot(nznt,clmn(ns  ),ns,wint(ns),ns)   &
+                 - cp5 *sdot(nznt,clmn(ns-1),ns,wint(ns),ns) )
 
           call convert(rmnc,zmns,lmns,xm,xn,ns,xc,xc(1+mns), &
                        xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns))
@@ -129,7 +129,7 @@ subroutine funct3d
 
         do lk=1,nznt
           bsqsav(lk,3) = c1p5*bzmn(ns*lk+nrzt) - cp5*bzmn(ns*lk-1+nrzt)
-          rbsq(lk)     = bsqvac(lk)*ohs*(r1(ns*lk) + r1(ns*lk+nrzt))
+          rbsq(lk)     = bsqvac(lk) * ohs*(r1(ns*lk) + r1(ns*lk+nrzt))
           dbsq(lk)     = abs(bsqvac(lk)-bsqsav(lk,3))
         enddo
 
@@ -143,10 +143,10 @@ subroutine funct3d
 
       endif
 
-      ! COMPUTE REMAINING COVARIANT COMPONENT OF B (BSUBS),
-      ! CYLINDRICAL COMPONENTS OF B (BR, BPHI, BZ), AND
-      ! AVERAGE EQUILIBRIUM PROPERTIES AT END OF RUN
       if(iequi.eq.1)then
+        ! COMPUTE REMAINING COVARIANT COMPONENT OF B (BSUBS),
+        ! CYLINDRICAL COMPONENTS OF B (BR, BPHI, BZ), AND
+        ! AVERAGE EQUILIBRIUM PROPERTIES AT END OF RUN
 
         call bss(armn(lodd),bzmn,brmn,azmn,armn,shalf,crmn(lodd),
                  lu,lv,rcon,czmn(lodd),zcon,cp25,cp5,nrzt)
@@ -155,6 +155,7 @@ subroutine funct3d
 
         call wrout(bzmn(lodd),azmn(lodd),clmn,blmn, &
                    crmn(lodd),rcon,czmn(lodd),zcon,lu,lv)
+
         return
       endif
 
@@ -167,9 +168,9 @@ subroutine funct3d
         gc(l) = czero
       enddo
 
-      call tomnsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),
-                  gc(1+5*mns),armn,brmn,crmn,azmn,bzmn,czmn,blmn,clmn,
-                  rcon,zcon,workb,workb,workb)
+      call tomnsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
+                  armn,brmn,crmn,azmn,bzmn,czmn,&
+                  blmn,clmn,rcon,zcon,workb,workb,workb)
 
       do l = 1,neqs
         gc(l) = gc(l) * scalxc(l)

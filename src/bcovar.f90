@@ -81,7 +81,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! COMPUTE IOTA PROFILE
-      call getiota(phipog, guu, guv, lu, lv, wint, iotas, jv, czero, ns, ncurr) ! TODO: pass by globals...
+      call getiota(phipog, guu, guv, lu, lv)
 
       ! PUT LAMBDA FORCES (=covariant magnetic field components)
       ! ON RADIAL HALF-MESH

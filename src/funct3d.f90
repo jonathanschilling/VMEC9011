@@ -105,16 +105,11 @@ subroutine funct3d
         call alias(gcon, azmn, worka, worka, worka, gc, gc(1+mns))
 
       ! COMPUTE S AND THETA DERIVATIVE OF R AND Z AND JACOBIAN ON HALF-GRID
-      ! armn(1     :1*nrzt) --> zu12
-      ! azmn(1     :1*nrzt) --> ru12
-      ! brmn(1     :1*nrzt) --> zs
-      ! bzmn(1     :1*nrzt) --> rs
-      ! azmn(1+nrzt*2*nrzt) --> gsqrt
-      ! armn(1+nrzt*2*nrzt) --> r12
-      ! brmn(1+nrzt*2*nrzt) --> tau
       call jacobian(r1, ru, z1, zu,                            &
+      !             zu12        ru12        zs          rs
                     armn,       azmn,       brmn,       bzmn,  &
                     azmn(lodd), armn(lodd), brmn(lodd)        )
+      !             gsqrt       r12         tau
       if (irst.eq.2 .and. iequi.eq.0) then
         ! Jacobian changes sign somewhere in volume
         ! --> flux surfaces cross, need to restart with smaller timestep
@@ -123,7 +118,7 @@ subroutine funct3d
 
       ! COMPUTE PRESSURE AND VOLUME ON HALF-GRID
       ! see above for re-use of arrays; additionally:
-      ! bzmn(1+nrzt*2*nrzt) --> bsq
+      !             gsqrt       bsq
       call pressure(azmn(lodd), bzmn(lodd))
       if (iter2.eq.1) then
         voli = (twopi**2)*hs*dsum(ns-1,vp(2),1)
@@ -140,8 +135,10 @@ subroutine funct3d
         call dcopy(nrzt, z1, 1, gcon, 1)
 
       ! see above for re-use of arrays; additionally:
-      call bcovar(clmn,blmn,azmn(lodd),bzmn(lodd),armn(lodd),bzmn,
-                  brmn,azmn,armn,guu,guv,gvv,brmn(lodd),lu,lv)
+      !           bsubu  bsubv  gsqrt       bsq         r12         rs    zs
+      call bcovar(clmn,  blmn,  azmn(lodd), bzmn(lodd), armn(lodd), bzmn, brmn, &
+                  azmn,  armn,  guu,        guv,        gvv,        brmn(lodd), lu, lv)
+      !           ru12   zu12                                       phipog
 
       if (iequi.eq.1) &
         call dcopy(nrzt, gcon, 1, z1, 1)

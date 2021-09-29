@@ -203,7 +203,9 @@ subroutine funct3d
                  lu, lv, rcon, czmn(lodd), zcon)
         !                br    bphi        bz
 
-        call eqfor(clmn, blmn, bzmn(lodd), xc, xc(1+2*mns))
+        ! [bcovar] bsubu bsubv bsq
+        ! [eqfor]  bu    bv    bsq         rmag  zmag
+        call eqfor(clmn, blmn, bzmn(lodd), xc,   xc(1+2*mns))
 
         call wrout(bzmn(lodd), azmn(lodd), clmn, blmn, &
                    crmn(lodd), rcon, czmn(lodd), zcon, lu, lv)

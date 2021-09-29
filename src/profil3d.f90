@@ -1,6 +1,47 @@
 subroutine profil3d(rmn, zmn, intflag)
 
       use stel_kinds, only: dp
+      use name0,      only: czero,   &
+                            c1p0,    &
+                            c1p5
+      use name1,      only: nmax,    &
+                            mpol1,   &
+                            ntheta2, &
+                            nzeta,   &
+                            nznt
+      use scalars,    only: ns,      &
+                            isigng,  &
+                            dnorm,   &
+                            twopi,   &
+                            hs,      &
+                            neqs,    &
+                            mns
+      use inputdat,   only: gam,     &
+                            am,      &
+                            ai,      &
+                            ac,      &
+                            rb,      &
+                            zb,      &
+                            raxis,   &
+                            zaxis
+      use magfield,   only: phiedge, &
+                            curpol,  &
+                            curtor
+      use profs,      only: phips,   &
+                            phip,    &
+                            iotas,   &
+                            mass
+      use current,    only: jv
+      use scalefac,   only: shalf,   &
+                            sqrts,   &
+                            wint,    &
+                            scalxc
+      use trignew,    only: cosmui
+      use mnarray,    only: mscale,  &
+                            nscale
+      use xstuff,     only: gc,      &
+                            xc,      &
+                            xcdot
 
       implicit none
 
@@ -8,9 +49,12 @@ subroutine profil3d(rmn, zmn, intflag)
       real(kind=dp), intent(out) :: zmn(ns,0:nmax,0:mpol1,2)
       integer,       intent(in)  :: intflag
 
-      pmass(x) = am(0)+x*(am(1)+x*(am(2)+x*(am(3)+x*(am(4)+x*am(5)))))
-      piota(x) = ai(0)+x*(ai(1)+x*(ai(2)+x*(ai(3)+x*(ai(4)+x*ai(5)))))
-      pcurr(x) =       x*(ac(1)+x*(ac(2)+x*(ac(3)+x*(ac(4)+x*ac(5)))))
+      integer       :: js, lk, lt, l, m, n
+      integer       :: loff
+      integer       :: ntype
+      real(kind=dp) :: torcur
+      real(kind=dp) :: phij
+      real(kind=dp) :: t1, sm0, facj
 
       !          INDEX OF LOCAL VARIABLES
       !

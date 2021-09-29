@@ -2,33 +2,38 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
                   ru12, zu12, guu, guv, gvv, phipog, lu, lv)
 
       use stel_kinds, only: dp
+      use name0, only: czero, cp5
+      use name1, only: nsd
+      use scalars, only: nrzt
+      use scalefac, only: sqrts, shalf
+      use realsp, only: r1, ru, rv, zu, zv
+      use profs, only: phip
 
       implicit none
 
-      common/precond/ard(nsd1,2),arm(nsd1,2),brd(nsd1,2),brm(nsd1,2),cr(nsd1),
-                     azd(nsd1,2),azm(nsd1,2),bzd(nsd1,2),bzm(nsd1,2)
-
-      real(kind=dp), intent(out) :: bsubu(nrzt,0:1)
-      real(kind=dp), intent(out) :: bsubv(nrzt,0:1)
-      real(kind=dp)              :: gsqrt(*)
-      real(kind=dp)              :: bsq(*)
-      real(kind=dp)              :: r12(*)
-      real(kind=dp)              :: rs(*)
-      real(kind=dp)              :: zs(*)
-      real(kind=dp)              :: ru12(*)
-      real(kind=dp)              :: zu12(*)
-      real(kind=dp), intent(out) :: guu(*)
-      real(kind=dp), intent(out) :: guv(*)
-      real(kind=dp), intent(out) :: gvv(*)
-      real(kind=dp)              :: phipog(*)
-      real(kind=dp)              :: lu(nrzt,0:1)
-      real(kind=dp)              :: lv(nrzt,0:1)
+      real(kind=dp), intent(out)   :: bsubu (nrzt,0:1)
+      real(kind=dp), intent(out)   :: bsubv (nrzt,0:1)
+      real(kind=dp)                :: gsqrt (nrzt)
+      real(kind=dp)                :: bsq   (nrzt)
+      real(kind=dp)                :: r12   (nrzt)
+      real(kind=dp)                :: rs    (nrzt)
+      real(kind=dp)                :: zs    (nrzt)
+      real(kind=dp)                :: ru12  (nrzt)
+      real(kind=dp)                :: zu12  (nrzt)
+      real(kind=dp), intent(out)   :: guu   (nrzt)
+      real(kind=dp), intent(out)   :: guv   (nrzt)
+      real(kind=dp), intent(out)   :: gvv   (nrzt)
+      real(kind=dp)                :: phipog(nrzt)
+      real(kind=dp), intent(inout) :: lu    (nrzt,0:1)
+      real(kind=dp), intent(inout) :: lv    (nrzt,0:1)
 
       real(kind=dp) :: ar(nsd)
       real(kind=dp) :: az(nsd)
 
+      integer :: is, l, lme, lmo
+
       ! INITIALIZATION BLOCK
-      do l = 1, nrzt+1
+      do l = 1, nrzt+1 ! NOTE: incl. magic element at end !
          guu(l) = czero
          guv(l) = czero
          gvv(l) = czero
@@ -36,30 +41,30 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
       ! COMPUTE METRIC ELEMENTS GIJ ON HALF MESH
       ! loop over is leads to radial averaging over l-1 and l
-      do is = -1,0
-        do l=2,nrzt
-          lme = l + is
-          lmo = lme + nrzt
+      do is = -1, 0
+        do l = 2, nrzt
+          lme = l + is     ! index for l-th even-m
+          lmo = lme + nrzt ! index for l-th  odd-m
 
           phipog(l) = cp5*sqrts(lme)*sqrts(lme)
 
-          guu(l) = guu(l)
-                    +       cp5*(  ru(lme)*ru(lme) + zu(lme)*zu(lme))
-                    + phipog(l)*(  ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo))
+          guu(l) = guu(l) &
+                    +       cp5*(  ru(lme)*ru(lme) + zu(lme)*zu(lme)) &
+                    + phipog(l)*(  ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo)) &
                     +  shalf(l)*(  ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
 
-          guv(l) = guv(l)
-                    +       cp5*(  ru(lme)*rv(lme) + zu(lme)*zv(lme))
-                    + phipog(l)*(  ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo))
-                    +  shalf(l)*(  ru(lme)*rv(lmo) + rv(lme)*ru(lmo)
+          guv(l) = guv(l) &
+                    +       cp5*(  ru(lme)*rv(lme) + zu(lme)*zv(lme)) &
+                    + phipog(l)*(  ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)) &
+                    +  shalf(l)*(  ru(lme)*rv(lmo) + rv(lme)*ru(lmo)  &
                                  + zu(lme)*zv(lmo) + zv(lme)*zu(lmo)) * cp5
 
-          gvv(l) = gvv(l)
-                    +       cp5*(  rv(lme)*rv(lme) + zv(lme)*zv(lme))
-                    + phipog(l)*(  rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo))
-                    +  shalf(l)*(  rv(lme)*rv(lmo) + zv(lme)*zv(lmo))
-                    +       cp5*   r1(lme)*r1(lme)
-                    + phipog(l)*   r1(lmo)*r1(lmo)
+          gvv(l) = gvv(l) &
+                    +       cp5*(  rv(lme)*rv(lme) + zv(lme)*zv(lme)) &
+                    + phipog(l)*(  rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo)) &
+                    +  shalf(l)*(  rv(lme)*rv(lmo) + zv(lme)*zv(lmo)) &
+                    +       cp5*   r1(lme)*r1(lme) &
+                    + phipog(l)*   r1(lmo)*r1(lmo) &
                     +  shalf(l)*   r1(lme)*r1(lmo)
         end do
       end do
@@ -76,7 +81,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! COMPUTE IOTA PROFILE
-      call getiota(phipog, guu, guv, lu, lv, wint, iotas, jv, czero, ns, ncurr)
+      call getiota(phipog, guu, guv, lu, lv, wint, iotas, jv, czero, ns, ncurr) ! TODO: pass by globals...
 
       ! PUT LAMBDA FORCES (=covariant magnetic field components)
       ! ON RADIAL HALF-MESH

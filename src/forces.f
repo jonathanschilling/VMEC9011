@@ -5,7 +5,8 @@
       include 'name4'
         real rbsq(*),guu(*),guv(*),gvv(*),guus(nrztd),guvs(nrztd),
      >  shalf(*),sqrts(*),bsqr(nrztd),gvvs(nrztd)
-        equivalence (czmn(1+nrztd),guvs),(crmn(1+nrztd),guus)
+        equivalence (czmn(1+nrztd),guvs),
+                    (crmn(1+nrztd),guus)
 *************
 *                 ON ENTRY, ARMN=ZU,BRMN=ZS,AZMN=RU,BZMN=RS,CZMN=R*BSQ
 *                 IT IS ESSENTIAL THAT CRMN,CZMN AT j=1 ARE ZERO INITIAL

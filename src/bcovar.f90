@@ -8,32 +8,34 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       common/precond/ard(nsd1,2),arm(nsd1,2),brd(nsd1,2),brm(nsd1,2),cr(nsd1),
                      azd(nsd1,2),azm(nsd1,2),bzd(nsd1,2),bzm(nsd1,2)
 
-      real(kind=dp) :: bsubu(nrzt,0:1)
-      real(kind=dp) :: bsubv(nrzt,0:1)
+      real(kind=dp), intent(out) :: bsubu(nrzt,0:1)
+      real(kind=dp), intent(out) :: bsubv(nrzt,0:1)
+      real(kind=dp)              :: gsqrt(*)
+      real(kind=dp)              :: bsq(*)
+      real(kind=dp)              :: r12(*)
+      real(kind=dp)              :: rs(*)
+      real(kind=dp)              :: zs(*)
+      real(kind=dp)              :: ru12(*)
+      real(kind=dp)              :: zu12(*)
+      real(kind=dp), intent(out) :: guu(*)
+      real(kind=dp), intent(out) :: guv(*)
+      real(kind=dp), intent(out) :: gvv(*)
+      real(kind=dp)              :: phipog(*)
+      real(kind=dp)              :: lu(nrzt,0:1)
+      real(kind=dp)              :: lv(nrzt,0:1)
+
       real(kind=dp) :: ar(nsd)
       real(kind=dp) :: az(nsd)
-      real(kind=dp) :: gsqrt(*)
-      real(kind=dp) :: phipog(*)
-      real(kind=dp) :: bsq(*)
-      real(kind=dp) :: r12(*)
-      real(kind=dp) :: ru12(*)
-      real(kind=dp) :: zu12(*)
-      real(kind=dp) :: rs(*)
-      real(kind=dp) :: zs(*)
-      real(kind=dp) :: guu(*)
-      real(kind=dp) :: guv(*)
-      real(kind=dp) :: gvv(*)
-      real(kind=dp) :: lu(nrzt,0:1)
-      real(kind=dp) :: lv(nrzt,0:1)
 
       ! INITIALIZATION BLOCK
-      do l = 1,nrzt+1
+      do l = 1, nrzt+1
          guu(l) = czero
          guv(l) = czero
          gvv(l) = czero
       end do
 
       ! COMPUTE METRIC ELEMENTS GIJ ON HALF MESH
+      ! loop over is leads to radial averaging over l-1 and l
       do is = -1,0
         do l=2,nrzt
           lme = l + is
@@ -41,20 +43,24 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
           phipog(l) = cp5*sqrts(lme)*sqrts(lme)
 
-          guu(l) = guu(l) + cp5*(ru(lme)*ru(lme) + zu(lme)*zu(lme))
-                    + phipog(l)*(ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo))
-                    +  shalf(l)*(ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
+          guu(l) = guu(l)
+                    +       cp5*(  ru(lme)*ru(lme) + zu(lme)*zu(lme))
+                    + phipog(l)*(  ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo))
+                    +  shalf(l)*(  ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
 
-          guv(l) = guv(l) + cp5*(ru(lme)*rv(lme) + zu(lme)*zv(lme))
-                    + phipog(l)*(ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo))
-                 + cp5*shalf(l)*(ru(lme)*rv(lmo) + rv(lme)*ru(lmo)
-                 +               zu(lme)*zv(lmo) + zv(lme)*zu(lmo))
+          guv(l) = guv(l)
+                    +       cp5*(  ru(lme)*rv(lme) + zu(lme)*zv(lme))
+                    + phipog(l)*(  ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo))
+                    +  shalf(l)*(  ru(lme)*rv(lmo) + rv(lme)*ru(lmo)
+                                 + zu(lme)*zv(lmo) + zv(lme)*zu(lmo)) * cp5
 
-          gvv(l) = gvv(l) + cp5*(rv(lme)*rv(lme) + zv(lme)*zv(lme))
-                    + phipog(l)*(rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo))
-                    +  shalf(l)*(rv(lme)*rv(lmo) + zv(lme)*zv(lmo))
-                    +       cp5* r1(lme)*r1(lme) + r1(lmo)*r1(lmo)
-                           * phipog(l)  + shalf(l)*r1(lme)*r1(lmo)
+          gvv(l) = gvv(l)
+                    +       cp5*(  rv(lme)*rv(lme) + zv(lme)*zv(lme))
+                    + phipog(l)*(  rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo))
+                    +  shalf(l)*(  rv(lme)*rv(lmo) + zv(lme)*zv(lmo))
+                    +       cp5*   r1(lme)*r1(lme)
+                    + phipog(l)*   r1(lmo)*r1(lmo)
+                    +  shalf(l)*   r1(lme)*r1(lmo)
         end do
       end do
 
@@ -70,9 +76,10 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! COMPUTE IOTA PROFILE
-      call getiota(phipog,guu,guv,lu,lv,wint,iotas,jv,czero,ns,ncurr)
+      call getiota(phipog, guu, guv, lu, lv, wint, iotas, jv, czero, ns, ncurr)
 
-      ! PUT LAMBDA FORCES ON RADIAL HALF-MESH
+      ! PUT LAMBDA FORCES (=covariant magnetic field components)
+      ! ON RADIAL HALF-MESH
       do l = 1,nrzt
         bsubu(l,0) = guu(l)*lv(l,0) + guv(l)*lu(l,0)
         bsubv(l,0) = guv(l)*lv(l,0) + gvv(l)*lu(l,0)
@@ -119,15 +126,17 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       ! ELEMENTS AND FORCE NORMS EVERY NS4 STEPS
       if(mod(iter2-iter1,ns4).eq.0)then
 
-        call lamcal(phipog,guu,guv,gvv)
+        call lamcal(phipog, guu, guv, gvv)
 
-        call precondn(lu,bsq,gsqrt,r12,zs,zu12,zu,zu(1+nrzt),
-                      z1(1+nrzt),shalf,wint,pres,arm,ard,brm,brd,cr,ohs,
-                      cp25,cp5,c1p0,c1p5,czero,ns,iter2)
+        call precondn(lu, bsq, gsqrt, r12, zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
+                      shalf, wint, pres, &
+                      arm, ard, brm, brd, cr, &
+                      ohs, cp25, cp5, c1p0, c1p5, czero, ns, iter2)
 
-        call precondn(lu,bsq,gsqrt,r12,rs,ru12,ru,ru(1+nrzt),
-                      r1(1+nrzt),shalf,wint,pres,azm,azd,bzm,bzd,cr,ohs,
-                      cp25,cp5,c1p0,c1p5,czero,ns,iter2)
+        call precondn(lu, bsq, gsqrt, r12, rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
+                      shalf, wint, pres, &
+                      azm, azd, bzm, bzd, cr, &
+                      ohs, cp25, cp5, c1p0, c1p5, czero, ns, iter2)
 
         do l=2,nrzt
           guu(l) = guu(l)*r12(l)**2

@@ -172,10 +172,11 @@ subroutine funct3d
                    c1p5*sdot(nznt,clmn(ns  ),ns,wint(ns),ns)   &
                  - cp5 *sdot(nznt,clmn(ns-1),ns,wint(ns),ns) )
 
-          call convert(rmnc,zmns,lmns,xm,xn,ns,xc,xc(1+mns), &
-                       xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns))
+          call convert(rmnc, zmns, lmns, xm, xn, ns,          &
+                       xc,          xc(1+  mns), xc(1+2*mns), &
+                       xc(1+3*mns), xc(1+4*mns), xc(1+5*mns) )
 
-          call vacuum(rmnc,zmns,xm,xn,ctor,rbtor,bsqvac,rax,zax)
+          call vacuum(rmnc, zmns, xm, xn, ctor, rbtor, bsqvac, rax, zax)
         endif
 
         do lk=1,nznt
@@ -199,13 +200,13 @@ subroutine funct3d
         ! CYLINDRICAL COMPONENTS OF B (BR, BPHI, BZ), AND
         ! AVERAGE EQUILIBRIUM PROPERTIES AT END OF RUN
 
-        call bss(armn(lodd),bzmn,brmn,azmn,armn,shalf,crmn(lodd),
-                 lu,lv,rcon,czmn(lodd),zcon,cp25,cp5,nrzt)
+        call bss(armn(lodd), bzmn, brmn, azmn, armn, shalf, crmn(lodd),
+                 lu, lv, rcon, czmn(lodd), zcon, cp25, cp5, nrzt)
 
-        call eqfor(clmn,blmn,bzmn(lodd),xc,xc(1+2*mns))
+        call eqfor(clmn, blmn, bzmn(lodd), xc, xc(1+2*mns))
 
-        call wrout(bzmn(lodd),azmn(lodd),clmn,blmn, &
-                   crmn(lodd),rcon,czmn(lodd),zcon,lu,lv)
+        call wrout(bzmn(lodd), azmn(lodd), clmn, blmn, &
+                   crmn(lodd), rcon, czmn(lodd), zcon, lu, lv)
 
         return
       endif

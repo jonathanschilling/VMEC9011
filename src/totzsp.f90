@@ -3,7 +3,13 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
                   rcon,zcon, work1,work2,work3, realsp)
 
       use stel_kinds, only: dp
-      use realsp, only: clear_realsp
+      use name0,      only: czero, c2p0
+      use name1,      only: nmax, mpol1, nzeta, ntheta2
+      use scalars,    only: ns
+      use realsp,     only: clear_realsp
+      use mnarray,    only: jmin1, xmpq
+      use trignew,    only: cosnv, sinnv, cosnvn, sinnvn, &
+                            cosmu, sinmu, cosmum, sinmum
 
       implicit none
 
@@ -30,6 +36,10 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
       real(kind=dp) :: work2(ns*nzeta,12)
       real(kind=dp) :: work3(ns,nzeta,12)
 
+      integer       :: js, k, l, m, n
+      integer       :: mparity
+      real(kind=dp) :: cosmux, sinmux
+
       ! THIS ROUTINE ASSUMES THE FOLLOWING STACKING OF R, Z, LAMBDA ARRAYS:
       ! rmncc(ns,0:nmax,0:mpol1),rmnss,zmncs,zmncc,lmncs,lmnsc
 
@@ -51,13 +61,13 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
       do 70 m = 0,mpol1
         mparity = mod(m,2)
 
-        do l = 1,12*ns*nzeta
+        do l = 1, 12*ns*nzeta
           work1(l) = czero
         enddo
 
-        do n = 0,nmax
-          do k = 1,nzeta
-            do js= jmin1(m),ns
+        do n = 0, nmax
+          do k = 1, nzeta
+            do js= jmin1(m), ns
               work3(js,k,1) = work3(js,k,1) + rmncc(js,n,m)*cosnv (k,n)
               work3(js,k,2) = work3(js,k,2) + rmnss(js,n,m)*sinnv (k,n)
               work3(js,k,3) = work3(js,k,3) + rmncc(js,n,m)*sinnvn(k,n)
@@ -75,7 +85,7 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
         enddo
 
         ! INVERSE TRANSFORM IN M-THETA
-        do i = 1,ntheta2
+        do i = 1, ntheta2
           cosmux = xmpq(m,1)*cosmu(i,m)
           sinmux = xmpq(m,1)*sinmu(i,m)
 

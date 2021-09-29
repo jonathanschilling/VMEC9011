@@ -1,27 +1,56 @@
-        subroutine lamcal(phipog,guu,guv,gvv)
-      include 'name1'
-      include 'name0'
-      include 'name2'
-        real phipog(*),guu(*),guv(*),gvv(*),
-     >  blam(nsd1),clam(nsd1),dlam(nsd1)
-        data blam,clam,dlam/nsd1*0.,nsd1*0.,nsd1*0./
+subroutine lamcal(phipog, guu, guv, gvv)
 
-        do 10 js = 2,ns
-        blam(js) = sdot(nznt,guu(js),ns,phipog(js),ns)
-        dlam(js) = sdot(nznt,guv(js),ns,phipog(js),ns)*c2p0*real(nfp)
- 10     clam(js) = sdot(nznt,gvv(js),ns,phipog(js),ns)
-        do 20 m = 0,mpol1
-        do 20 n = 0,nmax
-        lmn = ns*(n + nmax1*m)
-        tnn = real( (n*nfp)**2 )
-        if( m.eq.0 .and. n.eq.0 )tnn = -c1p0
-        do 30 js = jlam(m),ns
- 30     faclam(js+lmn) = -c2p0*c2p0/( (blam(js)+blam(js+1))*tnn
-     >  + sign((dlam(js)+dlam(js+1)),blam(js))*real(m*n)
-     >  + (clam(js) + clam(js+1))*real(m*m))
- 20     faclam(ns+lmn) = cp5*faclam(ns+lmn)
-CDIR$ IVDEP
-        do 40 l = 1,mns
- 40     faclam(l+mns) = faclam(l)
-        return
-        end
+      use stel_kinds, only: dp
+      use name0, only: cp5, c1p0, c2p0
+      use name1, only: nsd1, nznt, mpol1, nmax, nmax1
+      use scalars, only: nrzt, ns
+      use inputdat, only: nfp
+      use mnarray, only: jlam
+      use scalefac, only: faclam
+      use fsqu, only: mns
+
+      implicit none
+
+      real(kind=dp), intent(in) :: phipog(nrzt)
+      real(kind=dp), intent(in) :: guu(nrzt)
+      real(kind=dp), intent(in) :: guv(nrzt)
+      real(kind=dp), intent(in) :: gvv(nrzt)
+
+      real(kind=dp) :: blam(nsd1) = (/ nsd1*0.0_dp /)
+      real(kind=dp) :: clam(nsd1) = (/ nsd1*0.0_dp /)
+      real(kind=dp) :: dlam(nsd1) = (/ nsd1*0.0_dp /)
+
+      integer       :: js, m, n, lmn
+      real(kind=dp) :: tnn, tmn, tmm
+
+      do js = 2, ns
+        blam(js) = ddot(nznt, guu(js), ns, phipog(js), ns)
+        dlam(js) = ddot(nznt, guv(js), ns, phipog(js), ns)*c2p0*real(nfp)
+        clam(js) = ddot(nznt, gvv(js), ns, phipog(js), ns)
+      end do
+
+      do m = 0, mpol1
+        do n = 0, nmax
+          lmn = ns*(n + nmax1*m)
+
+          tnn = real( (n*nfp)**2 )
+          if (m.eq.0 .and. n.eq.0) &
+            tnn = -c1p0
+          tmn = real(m*n)
+          tmm = real(m*m)
+
+          do js = jlam(m), ns
+            faclam(js+lmn) = -c2p0*c2p0/(       (blam(js) + blam(js+1))            * tnn
+                                         + sign((dlam(js) + dlam(js+1)), blam(js)) * tmn
+                                         +      (clam(js) + clam(js+1))            * tmm )
+          end do
+          faclam(ns+lmn) = cp5*faclam(ns+lmn)
+        end do
+      end do
+
+      do l = 1, mns
+        faclam(l+mns) = faclam(l)
+      end do
+
+      return
+end

@@ -144,6 +144,7 @@ c       call timedate(timeloc,date,mach)
       include 'name1'
       include 'name0'
       include 'name2'
+        real(4) :: t4
         data w1,r01,res1/0.,0.,1./
 ************************************************************************
 *                 INDEX OF LOCAL VARIABLES
@@ -256,7 +257,8 @@ c          print 110, miter,c1p0/bscale
         call printout(iter2,w1,r00)
  30     continue
  40     call printout(iter2,w0,r00)
-        call second(timer(0))
+        call second(t4)
+        timer(0) = real(t4)
         if(ijacob.ge.100)ierflag = 2
         if(ns.lt.nsd)write(3,100)timer(0),ijacob
         write(3,60)wdota,r0dot
@@ -303,6 +305,7 @@ c          print 110, miter,c1p0/bscale
         bscale = c1p0
         delbsq = c1p0
         ivac   = 0
+        print *, "vsetup done"
         return
         end
 
@@ -389,20 +392,21 @@ c          print 110, miter,c1p0/bscale
         if(m.eq.0) read(5,*)m,n,rc(m,n),zs(m,n),rmag(n),zmag(n)
  50     continue
  51     WRITE(3,55)
-*A_NORMIERUNG SGG                                                               
-        IF((RC(1,0)+ZS(1,0)).EQ.0)STOP'KANN FOURKOEF. NICHT NORMIEREN'          
-        FOURNORM=2./(abs(RC(1,0))+abs(ZS(1,0)))  
+*A_NORMIERUNG SGG
+        IF((RC(1,0)+ZS(1,0)).EQ.0)STOP'KANN FOURKOEF. NICHT NORMIEREN'
+        FOURNORM=2./(abs(RC(1,0))+abs(ZS(1,0)))
+        print *, "fournorm = ", fournorm
 *       FOURNORM=1.
-         DO 47 I=0,MPOL1                                                         
-            DO 47 J=-NMAX,NMAX                                                   
-               RC(I,J)=RC(I,J)*FOURNORM                                          
-               ZS(I,J)=ZS(I,J)*FOURNORM                                          
-  47     CONTINUE                                                                
-         DO 48 J=-NMAX,NMAX                                                      
-           RMAG(J)=RMAG(J)*FOURNORM                                              
-           ZMAG(J)=ZMAG(J)*FOURNORM                                              
-  48     CONTINUE                                                                
-*E_NORMIERUNG SGG                                                               
+         DO 47 I=0,MPOL1
+            DO 47 J=-NMAX,NMAX
+               RC(I,J)=RC(I,J)*FOURNORM
+               ZS(I,J)=ZS(I,J)*FOURNORM
+  47     CONTINUE
+         DO 48 J=-NMAX,NMAX
+           RMAG(J)=RMAG(J)*FOURNORM
+           ZMAG(J)=ZMAG(J)*FOURNORM
+  48     CONTINUE
+*E_NORMIERUNG SGG
  55     format
      >  (/,'   mb  nb     rbc         zbs        raxis       zaxis',/)
         do 60 m=0,mpol1
@@ -427,6 +431,9 @@ c          print 110, miter,c1p0/bscale
         WRITE(3,70)
  70     format(/,' LEGEND: FSQR, FSQZ = Normalized Physical Force ',
      >  'Residuals;    fsqr, fsqz = Preconditioned Force Residuals'/)
+
+        print *, "readin done"
+
         return
         end
 
@@ -484,7 +491,14 @@ c          print 110, miter,c1p0/bscale
 *************
         rtest = ssum(nmax1,rb(0,1,1),1)
         ztest = ssum(nmax1,zb(0,1,2),1)
-        if( (rtest*ztest*real(isigng)) .ge. czero)ierflag = 5
+        print *, "rtest = ", rtest
+        print *, "ztest = ", ztest
+        if( (rtest*ztest*real(isigng)) .ge. czero) then
+          ierflag = 5
+        end if
+
+        print *, "fixaray done"
+
         return
         end
 
@@ -594,6 +608,8 @@ c          print 110, miter,c1p0/bscale
       include 'name1'
       include 'name0'
       include 'name2'
+
+        data ndamp1/10/
 *************
 *                 COMPUTE MHD FORCES
 *************
@@ -606,7 +622,7 @@ c          print 110, miter,c1p0/bscale
 *                 R, Z, AND LAMBDA ARRAYS IN FOURIER SPACE
 *************
  10     if(iter2.ne.iter1)goto 15
-        ndamp1 = min0(ndamp,15)
+        ndamp1 = min(ndamp,15)
         do 35 i = 1,ndamp1
  35     otau(i) = cp15/delt
  15     fsq1 = fsqr1 + fsqz1 + fsql1
@@ -650,6 +666,7 @@ c          print 110, miter,c1p0/bscale
         real guu(nrztd),guv(nrztd),gvv(nrztd),lu(2*nrztd),lv(2*nrztd),
      >  rmnc(mnmax),zmns(mnmax),lmns(mnmax),xm(mnmax),
      >  xn(mnmax),rax(nznt),zax(nznt),worka(12*nrztd),workb(12*nrztd)
+        real(4) :: t4
         equivalence(worka,armn),(workb,r1),(guu,rcon(1+nrztd)),
      >  (guv,zcon(1+nrztd)),(gvv,z1),(czmn,lu),(crmn,lv)
         lodd = 1+nrzt
@@ -725,7 +742,8 @@ CDIR$ IVDEP
 *                 CURPOL FROM DATA STATEMENT
 *************
         if(nvac.eq.0.or.iter2.le.1)goto 55
-        call second(timeon)
+        call second(t4)
+        timeon = real(t4)
         ivac2=mod(iter2-iter1,nvacskip)
         if( (fsqr+fsqz).le.1.e-2 )ivac=ivac+1
         if( ivac.eq.1 )ivac2 = 0
@@ -745,7 +763,8 @@ CDIR$ IVDEP
  40     dbsq(lk)=abs(bsqvac(lk)-bsqsav(lk,3))
         if(ivac.eq.1)call scopy(nznt,bzmn(ns+nrzt),ns,bsqsav(1,1),1)
         if(ivac.eq.1)call scopy(nznt,bsqvac,1,bsqsav(1,2),1)
-        call second(timeoff)
+        call second(t4)
+        timeoff = real(t4)
         timer(1) = timer(1) + (timeoff-timeon)
 *************
 *                 COMPUTE REMAINING COVARIANT COMPONENT OF B (BSUBS),
@@ -855,7 +874,7 @@ CDIR$ IVDEP
      >  zu(ns*nzeta,ntheta2,0:1),zv(ns*nzeta,ntheta2,0:1),
      >  lu(ns*nzeta,ntheta2,0:1),lv(ns*nzeta,ntheta2,0:1),
      >  rcon(ns*nzeta,ntheta2,0:1),zcon(ns*nzeta,ntheta2,0:1)
-        real realsp(16*nrztd),work3(ns,nzeta,12),work1(ns*nzeta*12)
+        real realsp(12*nrztd),work3(ns,nzeta,12),work1(ns*nzeta*12)
         real work2(ns*nzeta,12)
 *************
 *                 THIS ROUTINE ASSUMES THE FOLLOWING STACKING OF R, Z,
@@ -933,9 +952,9 @@ CDIR$ IVDEP
 
         subroutine jacobian(r1,ru,z1,zu,zu12,ru12,zs,rs,gsqrt,r12,
      >  tau,wint,shalf,ohs,cp25,cp5,czero,nrzt,nznt,irst,meven,modd)
+        implicit real*8 (a-h,o-z)
         real r1(nrzt,0:1),ru(nrzt,0:1),z1(nrzt,0:1),zu(nrzt,0:1),rs(*),
      >  zs(*),r12(*),gsqrt(*),ru12(*),zu12(*),shalf(*),tau(*),wint(*)
-        implicit real*8 (a-h,o-z)
 *************
 *                 (RS, ZS)=(R, Z) SUB S, (RU12, ZU12)=(R, Z) SUB THETA(=
 *                 AND GSQRT=SQRT(G) ARE DIFFERENCED ON HALF MESH
@@ -964,8 +983,8 @@ CDIR$ IVDEP
         taumax = czero
         taumin = czero
         do 20 l=2,nrzt
-        taumax = amax0(tau(l),taumax)
- 20     taumin = amin0(tau(l),taumin)
+        taumax = max(tau(l),taumax)
+ 20     taumin = min(tau(l),taumin)
         if(taumax*taumin.lt.czero)irst=2
         return
         end

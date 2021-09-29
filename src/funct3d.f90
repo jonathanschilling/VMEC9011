@@ -97,12 +97,12 @@ subroutine funct3d
 
       ! first iteration: save rcon into rcon0, zcon into zcon0
       if (iter2.eq.1 .and. nvac.eq.0) then
-        call scopy(nrzt,rcon,1,rcon0,1)
-        call scopy(nrzt,zcon,1,zcon0,1)
+        call dcopy(nrzt,rcon,1,rcon0,1)
+        call dcopy(nrzt,zcon,1,zcon0,1)
       endif
 
       if (iter2.gt.1) &
-        call alias(gcon,azmn,worka,worka,worka,gc,gc(1+mns))
+        call alias(gcon, azmn, worka, worka, worka, gc, gc(1+mns))
 
       ! COMPUTE S AND THETA DERIVATIVE OF R AND Z AND JACOBIAN ON HALF-GRID
       call jacobian(r1,ru,z1,zu,armn,azmn,brmn,bzmn,azmn(lodd),

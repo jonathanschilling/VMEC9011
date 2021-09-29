@@ -3,6 +3,7 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
                   rcon,zcon, work1,work2,work3, realsp)
 
       use stel_kinds, only: dp
+      use realsp, only: clear_realsp
 
       implicit none
 
@@ -28,17 +29,12 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
       real(kind=dp) :: work1(ns*nzeta*12)
       real(kind=dp) :: work2(ns*nzeta,12)
       real(kind=dp) :: work3(ns,nzeta,12)
-      real(kind=dp) :: realsp(16*nrztd)
 
       ! THIS ROUTINE ASSUMES THE FOLLOWING STACKING OF R, Z, LAMBDA ARRAYS:
       ! rmncc(ns,0:nmax,0:mpol1),rmnss,zmncs,zmncc,lmncs,lmnsc
 
       ! INITIALIZATION BLOCK
-      do l = 1,16*nrztd
-        ! TODO: does realsp assume to be a pointer to a linear array
-        !       spanning over all realspace variables ???
-        realsp(l) = czero
-      enddo
+      call clear_realsp ! in module realsp
 
       ! EXTRAPOLATION AT JS=1 FOR M=1 MODES
       do n = 0,nmax

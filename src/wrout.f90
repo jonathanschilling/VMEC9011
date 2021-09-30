@@ -1,13 +1,22 @@
 subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
 
       use stel_kinds, only: dp
-      use name0, only: c2p0
-      use name1, only: nznt, mpol, nmax, mnmax
-      use scalars, only: ns, itfsq, mns
+      use name0, only: czero, cp5, c2p0
+      use name1, only: mpol, mpol1, nmax, ntheta2, nzeta, &
+                       nznt, mnmax, nvac, ntheta1
+      use scalars, only: ns, hs, itfsq, mns, dnorm, twopi
       use inputdat, only: gam, nfp, niter
       use xstuff, only: xc
-      use extfld, only: bscale
-      use profs, only: pres
+      use extfld, only: bscale, brv, phiv, bzv, &
+                        mpmax, xmpot, xnpot, potvac
+      use profs, only: pres, phips, iotas, mass, vp,
+      use mnarray, only: mscale, nscale
+      use trignew, only: cosmui, sinmu, cosnv, sinnv
+      use current, only: buco, bvco, ju, jv
+      use spectra, only: specw
+      use fsqu, only: fsqt, wdot
+      use magfield, only: rbtor, ctor, bsqsav, bsqvac
+      use realsp, only: r1, z1
 
       implicit none
 
@@ -34,7 +43,12 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
       real(kind=dp) :: bmodmn (mnmax) ! |B| at ns/2
       real(kind=dp) :: bmodmn1(mnmax) ! |B| at ns (LCFS)
 
-      integer       :: js, mn, lk, m, n, nmin0
+      integer       :: js, mn, j, k, l, lk, m, n, nl, nmin0
+      integer       :: ntskip, nzskip
+      real(kind=dp) :: dmult, tcosi, tsini, fac, zeta
+      real(kind=dp) :: gmn, bmn,                  &
+                       bsubumn, bsubvmn, bsubsmn, &
+                       bsupumn, bsupvmn
 
       ! set lwouttxt to false to get a binary ("unformatted") wout file
       logical, parameter :: lwouttxt = .true.
@@ -70,9 +84,9 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
           do n = nmin0, nmax
             mn = mn+1
 
-            dmult = c2p0*dnorm/(mscale(m)*nscale(iabs(n)))
+            dmult = c2p0*dnorm/(mscale(m)*nscale(abs(n)))
             if (m.eq.0 .and. n.eq.0) &
-              dmult=cp5*dmult
+              dmult = cp5*dmult
 
             gmn     = czero
             bmn     = czero
@@ -93,8 +107,8 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
 
             else ! js.gt.1
 
-              do j = 1,ntheta2
-                do k = 1,nzeta
+              do j = 1, ntheta2
+                do k = 1, nzeta
                   lk = k + nzeta*(j-1)
 
                   if (n.ge.0) then
@@ -105,13 +119,13 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
                     tsini = dmult*(sinmu (j,m)*cosnv(k,-n) + cosmui(j,m)*sinnv(k,-n))
                   endif
 
-                  bmn     = bmn     + tcosi*bmod    (lk)
-                  gmn     = gmn     + tcosi*gsqrt(js,lk)
-                  bsubumn = bsubumn + tcosi*bsubu(js,lk)
-                  bsubvmn = bsubvmn + tcosi*bsubv(js,lk)
-                  bsubsmn = bsubsmn + tsini*bsubs(js,lk)
-                  bsupumn = bsupumn + tcosi*lv   (js,lk)
-                  bsupvmn = bsupvmn + tcosi*lu   (js,lk)
+                  bmn     = bmn     + tcosi * bmod    (lk)
+                  gmn     = gmn     + tcosi * gsqrt(js,lk)
+                  bsubumn = bsubumn + tcosi * bsubu(js,lk)
+                  bsubvmn = bsubvmn + tcosi * bsubv(js,lk)
+                  bsubsmn = bsubsmn + tsini * bsubs(js,lk)
+                  bsupumn = bsupumn + tcosi * lv   (js,lk)
+                  bsupvmn = bsupvmn + tcosi * lu   (js,lk)
                 end do
               end do
 
@@ -143,6 +157,7 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
         phi(js) = twopi*hs * dsum(js-1, phips(2), 1)
       end do
 
+      fac = abs(bscale)**(gam-c2p0)
       do js = 2, ns
         if (lwouttxt) then
           WRITE(8,703) IOTAS(JS), MASS(JS)*FAC, PRES(JS), PHIPS(JS), BUCO(JS), &
@@ -199,9 +214,9 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
                   'BRv',7x,'BPHIv',5x,'BZv',/)
       do l = 1, nzeta, nzskip
         zeta = real(360*(l-1))/real(nzeta) ! in degrees
-        do k=1,ntheta2,ntskip
-          lk=l+nzeta*(k-1)
-          nl = ns*lk
+        do k = 1, ntheta2, ntskip
+          lk = l + nzeta*(k-1)
+          nl = ns * lk
 
           ! B from the plasma is extrapolated from the last half-grid point
           ! (just inside the LCFS) onto the LCFS
@@ -219,7 +234,7 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
       write(3,100)
  100  format(//,3x,      'mb',2x,        'nb',9x,       'rbc',9x,   'zbs',3x,  '|B|(s=.5)',3x,'|B|(s=1.)',6x, &
                          'mb',2x,        'nb',9x,       'rbc',9x,   'zbs',3x,  '|B|(s=.5)',3x,'|B|(s=1.)'/)
-      do mn=1,mnmax,2
+      do mn = 1, mnmax, 2
         write(3,115) nint(xm(mn  )), nint(xn(mn  )/nfp), rmnc(mn  ), zmns(mn  ), bmodmn(mn  ), bmodmn1(mn  ), &
                      nint(xm(mn+1)), nint(xn(mn+1)/nfp), rmnc(mn+1), zmns(mn+1), bmodmn(mn+1), bmodmn1(mn+1)
       end do

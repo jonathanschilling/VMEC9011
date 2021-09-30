@@ -207,15 +207,16 @@ subroutine funct3d
         ! [eqfor]  bu    bv    bsq         rmag  zmag
         call eqfor(clmn, blmn, bzmn(lodd), xc,   xc(1+2*mns))
 
+        !          bsq         gsqrt       bsubu bsubv
         call wrout(bzmn(lodd), azmn(lodd), clmn, blmn, &
                    crmn(lodd), rcon, czmn(lodd), zcon, lu, lv)
+        !          bsubs       br    bphi        bz
 
         return
       endif
 
       ! COMPUTE MHD FORCES ON INTEGER-MESH
-      call forces(rbsq,guu,guv,gvv,sqrts,shalf,ohs,cp25,cp5,
-                  czero,nrzt,ns,ivac)
+      call forces(rbsq, guu, guv, gvv, sqrts,shalf,ohs,cp25,cp5,czero,nrzt,ns,ivac)
 
       ! FOURIER-TRANSFORM MHD FORCES TO (M,N)-SPACE
       do l = 1,neqs

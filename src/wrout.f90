@@ -1,4 +1,5 @@
-subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
+subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
+                 bsubs, br,    bphi,  bz,    lu, lv)
 
       use stel_kinds, only: dp
       use name0, only: czero, cp5, c2p0

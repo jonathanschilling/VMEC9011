@@ -7,6 +7,7 @@ module name0
 
       real(kind=dp), parameter :: czero  = zerod
       real(kind=dp), parameter :: c1pm13 = 1.0e-13_dp
+      real(kind=dp), parameter :: c1pm10 = 1.0e-10_dp
       real(kind=dp), parameter :: c2pm8  = 2.0e-08_dp
       real(kind=dp), parameter :: cp15   = 1.5e-01_dp
       real(kind=dp), parameter :: cp25   = 2.5e-01_dp

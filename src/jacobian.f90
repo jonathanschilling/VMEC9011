@@ -4,7 +4,7 @@ subroutine jacobian(r1, ru, z1, zu, &
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5
       use scalars, only: nrzt, meven, modd, ohs, irst
-      use scalfac, only: shalf, wint
+      use scalefac, only: shalf, wint
 
       implicit none
 

@@ -93,13 +93,15 @@ subroutine eqsolve(ns, intflag, ierflag)
       DELT=0.6
 
       ijacob = -1
-      write(3,*)'NS = ',ns,' NO. FOURIER MODES = ',mnmax
+      print   *, 'NS = ',ns,' NO. FOURIER MODES = ',mnmax
+      write(3,*) 'NS = ',ns,' NO. FOURIER MODES = ',mnmax
 
       ! COMPUTE INITIAL R, Z AND MAGNETIC FLUX PROFILES
       ! AND STORE XC, XCDOT FOR POSSIBLE RESTART
 
       call profil3d(xc, xc(1+2*mns), intflag)
 
+      ! TODO: remove need for GOTO 10 below
  10   call restart
 
       ijacob = ijacob+1
@@ -118,7 +120,6 @@ subroutine eqsolve(ns, intflag, ierflag)
           return
         end if
 
-        !
         r00 = xc(1)*mscale(0)*nscale(0)
         w0  = wb + wp/(gam-c1p0) ! total energy
         r0dot = abs(r00 - r01)/r00
@@ -141,20 +142,13 @@ subroutine eqsolve(ns, intflag, ierflag)
 
         endif
 
-        ! additional stopping criterion: runtime exceeded (queried by itime())
-        ! SGG-RESTZEIT-a
-        ! iendsgg = itime(0)
-        ! IF (IENDSGG.LT.20) &
-        !   BREAK
-        ! SGG-RESTZEIT-e
-
         if (ivac.eq.1) then
-          print   110, miter,c1p0/bscale
-          write(3,110) miter,c1p0/bscale
+          print   110, miter, c1p0/bscale
+          write(3,110) miter, c1p0/bscale
  110  format(/,'  VACUUM PRESSURE TURNED ON AT ',i4, ' ITERATIONS',/, &
                '  MAGNETIC FIELD IN PLASMA IS SCALED AT END BY ',1pe10.2,' (VAC. UNITS)',/)
 
-          ivac = ivac+1
+          ivac = ivac + 1
         endif
 
         ! when using fine grid, update fsqt and wdot every 100 iterations
@@ -207,11 +201,14 @@ subroutine eqsolve(ns, intflag, ierflag)
         ierflag = 2
       endif
 
-      if (ns.lt.nsd) &
+      if (ns.lt.nsd) then
+        print   100, timer(0), ijacob
         write(3,100) timer(0), ijacob
- 100  format(/,' COMPUTATIONAL TIME FOR INITIAL INTERPOLATION = ', &
-               1pe10.2,' SECONDS ',' JACOBIAN RESETS = ',i4)
+      end if
+ 100  format(/,' COMPUTATIONAL TIME FOR INITIAL INTERPOLATION = ',1pe10.2,' SECONDS ', &
+               ' JACOBIAN RESETS = ',i4,/)
 
+      print   60, wdota, r0dot
       write(3,60) wdota, r0dot
  60   format(/,' d(ln W)/dt = ',1pe10.3,' d(ln R0)/dt = ',1pe10.3,/)
 

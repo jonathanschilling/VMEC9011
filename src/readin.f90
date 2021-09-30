@@ -1,7 +1,8 @@
 subroutine readin(nsin, ierflag)
 
       use stel_kinds, only: dp
-      use name0,      only: czero
+      use name0,      only: czero,    &
+                            c2p0
       use name1,      only: mpol,     &
                             mpol1,    &
                             nmax,     &
@@ -79,6 +80,8 @@ subroutine readin(nsin, ierflag)
       read(5,*)
       read(5,*) gam, phiedge, curpol, curtor
 
+      print   15, nsd, ntheta1, nzeta, mpol, nmax, &
+                  nfp, gam, phiedge, curpol, curtor
       write(3,15) nsd, ntheta1, nzeta, mpol, nmax, &
                   nfp, gam, phiedge, curpol, curtor
  15   format(/,' COMPUTATION PARAMETERS: (u = theta, v = zeta)'//,       &
@@ -90,6 +93,7 @@ subroutine readin(nsin, ierflag)
 
       nvacskip = nfp
 
+      print   20, ncurr, niter, nsin, nstep, nvacskip, ftol
       write(3,20) ncurr, niter, nsin, nstep, nvacskip, ftol
  20   format(/' CONTROL PARAMETERS:'//,                              &
               '  ncurr  niter   nsin  nstep  nvacskip      ftol',//, &
@@ -137,12 +141,11 @@ subroutine readin(nsin, ierflag)
  55   format(/,'   mb  nb     rbc         zbs        raxis       zaxis',/)
 
       ! A_NORMIERUNG SGG
-      IF ((RC(1,0)+ZS(1,0)).EQ.0) &
-        STOP'KANN FOURKOEF. NICHT NORMIEREN'
+      IF ((RC(1,0) + ZS(1,0)).EQ.0) &
+        STOP 'KANN FOURKOEF. NICHT NORMIEREN'
 
       ! TODO: computation of norm relies on sum of _abs_ values not being 0 ???
-      FOURNORM=2./(abs(RC(1,0))+abs(ZS(1,0)))
-      ! FOURNORM=1.
+      FOURNORM = c2p0/(abs(RC(1,0)) + abs(ZS(1,0)))
 
       DO I = 0, MPOL1
         DO J = -NMAX, NMAX
@@ -202,6 +205,7 @@ subroutine readin(nsin, ierflag)
 
  65   format(i5,i4,1p4e12.4)
 
+      print   70
       WRITE(3,70)
  70   format(/,' LEGEND: FSQR, FSQZ = Normalized Physical Force Residuals',/, &
                '         fsqr, fsqz =      Preconditioned Force Residuals'/)

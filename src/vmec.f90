@@ -40,6 +40,7 @@ program vmec
       !   8  | wout
 
       use name1, only: nsd
+
       implicit none
 
       character*80 :: werror(0:6)
@@ -70,6 +71,7 @@ program vmec
       OPEN(UNIT=3, FILE='THREED1', STATUS='NEW',     ERR=902)
       OPEN(UNIT=8, FILE='WOUT',    STATUS='UNKNOWN', ERR=903)
       goto 904
+
  901  print *,' INDATA FILE IS MISSING'
       stop
  902  print *,' THREED1 FILE ALREADY EXISTS: RENAME OR DELETE IT'
@@ -78,7 +80,7 @@ program vmec
       stop
  904  continue
 
-      print *,   'THIS IS THE PRECONDITIONED VMEC.FULL CODE: VMEC9011'
+      print   *, 'THIS IS THE PRECONDITIONED VMEC.FULL CODE: VMEC9011'
       WRITE(3,*) 'THIS IS THE PRECONDITIONED VMEC.FULL CODE: VMEC9011'
 
       ! INITIALIZE ALL VARIABLES SO VMEC CAN BE CALLED AS A SUBROUTINE.
@@ -87,7 +89,7 @@ program vmec
       call vsetup
 
       ! READ INPUT FILE INDATA AND STORE IN INPUTDAT COMMON BLOC
-      call readin(nsin,ierflag)
+      call readin(nsin, ierflag)
       if (ierflag.ne.0) then
         goto 10
       endif
@@ -116,13 +118,13 @@ program vmec
         call output
       endif
 
- 10   werror(0)=' EXECUTION TERMINATED NORMALLY'
-      werror(1)=' INITIAL JACOBIAN CHANGED SIGN (NEED A BETTER GUESS)'
-      werror(2)=' MORE THAN 100 JACOBIAN ITERATIONS (DECREASE DELT)'
-      werror(3)=' m IN BOUNDARY ARRAY EXCEEDS mpol-1 (INCREASE MPOL)'
-      werror(4)=' n IN BOUNDARY ARRAYS OUTSIDE nmax,(-nmax) RANGE'
-      werror(5)=' ASSUMED SIGN OF JACOBIAN (ISIGNG) IS WRONG'
-      print *,   werror(ierflag)
+ 10   werror(0) = ' EXECUTION TERMINATED NORMALLY'
+      werror(1) = ' INITIAL JACOBIAN CHANGED SIGN (NEED A BETTER GUESS)'
+      werror(2) = ' MORE THAN 100 JACOBIAN ITERATIONS (DECREASE DELT)'
+      werror(3) = ' m IN BOUNDARY ARRAY EXCEEDS mpol-1 (INCREASE MPOL)'
+      werror(4) = ' n IN BOUNDARY ARRAYS OUTSIDE nmax,(-nmax) RANGE'
+      werror(5) = ' ASSUMED SIGN OF JACOBIAN (ISIGNG) IS WRONG'
+      print   *, werror(ierflag)
       write(3,*) werror(ierflag)
 
       call exit

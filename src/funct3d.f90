@@ -230,7 +230,7 @@ subroutine funct3d
       call tomnsp(gc, gc(1+mns), gc(1+2*mns), gc(1+3*mns), gc(1+4*mns), gc(1+5*mns), &
                   armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn, rcon, zcon, workb,workb,workb)
 
-      do l = 1,neqs
+      do l = 1, neqs
         gc(l) = gc(l) * scalxc(l)
       enddo
 

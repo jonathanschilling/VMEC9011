@@ -8,14 +8,15 @@ subroutine fixaray(ierflag)
                             c3p0,    &
                             c8p0
       use name1,      only: nzeta,   &
+                            ntheta1, &
                             ntheta2, &
                             mpol1,   &
-                            nmax
+                            nmax,    &
                             nmax1
       use scalars,    only: twopi,   &
                             dnorm,   &
                             isigng
-      use inputdat,   only: nfp
+      use inputdat,   only: nfp, rb, zb
       use mnarray,    only: mscale,  &
                             nscale,  &
                             xmpq,    &
@@ -34,6 +35,9 @@ subroutine fixaray(ierflag)
                             sinnvn
 
       implicit none
+
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum
 
       integer, intent(out) :: ierflag
 

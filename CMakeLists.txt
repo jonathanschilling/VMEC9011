@@ -12,7 +12,7 @@ set (LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/lib)
 
 # Fortran specific settings. The first setting tells the compiler to use the C preprocessor.
 # The second places a common directory to place all of the module files.
-set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -cpp")
+set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -cpp -ffree-line-length-none")
 set (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
 find_package (BLAS REQUIRED)

@@ -22,10 +22,13 @@ subroutine evolve(ierflag)
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum
+
       integer, intent(out) :: ierflag
 
-      integer       :: i, l
-      real(kind=dp) :: ndamp1, fsq1, dtau
+      integer       :: i, l, ndamp1
+      real(kind=dp) :: fsq1, dtau
       real(kind=dp) :: b1, fac
 
       ! COMPUTE MHD FORCES
@@ -40,7 +43,7 @@ subroutine evolve(ierflag)
       ! COMPUTE DAMPING PARAMETER (DTAU) AND EVOLVE
       ! R, Z, AND LAMBDA ARRAYS IN FOURIER SPACE
       if (iter2.eq.iter1) then
-        ndamp1 = min0(ndamp,15)
+        ndamp1 = min(ndamp, 15)
         do i = 1, ndamp1
           otau(i) = cp15/delt
         enddo
@@ -66,7 +69,7 @@ subroutine evolve(ierflag)
         otau(ndamp1) = dtau/delt
 
       ! average over last ndamp values in otau
-      otav = ssum(ndamp1,otau,1)/ndamp1
+      otav = dsum(ndamp1, otau, 1)/real(ndamp1)
 
       dtau = delt*otav
 

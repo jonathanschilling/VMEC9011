@@ -19,8 +19,8 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp), intent(inout) :: guv(nrztd)
       real(kind=dp), intent(inout) :: gvv(nrztd)
 
-      real(kind=dp), pointer       :: guus(nrztd)
-      real(kind=dp), pointer       :: guvs(nrztd)
+      real(kind=dp), pointer       :: guus(:)
+      real(kind=dp), pointer       :: guvs(:)
       real(kind=dp)                :: gvvs(nrztd) ! gvvs is stored here ?
 
       real(kind=dp)                :: bsqr(nrztd)
@@ -31,8 +31,8 @@ subroutine forces(guu, guv, gvv)
 
       ! ON ENTRY, ARMN=ZU, BRMN=ZS, AZMN=RU, BZMN=RS, CZMN=R*BSQ.
 
-      guus => crmn(1+nrztd)
-      guvs => czmn(1+nrztd
+      guus => crmn(1+1*nrztd:2*nrztd)
+      guvs => czmn(1+1*nrztd:2*nrztd)
 
       ! IT IS ESSENTIAL THAT CRMN, CZMN AT j=1 ARE ZERO INITIAL.
       ! crmn, czmn contain lv, lu on entry --> need to clear these

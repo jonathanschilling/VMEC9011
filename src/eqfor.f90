@@ -14,6 +14,9 @@ subroutine eqfor(bu, bv, bsq, rmag, zmag)
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum, ddot
+
       real(kind=dp), intent(in) :: bu  (ns,1)
       real(kind=dp), intent(in) :: bv  (ns,1)
       real(kind=dp), intent(in) :: bsq (ns,1)
@@ -21,7 +24,7 @@ subroutine eqfor(bu, bv, bsq, rmag, zmag)
       real(kind=dp), intent(in) :: zmag(ns,0:nmax)
 
       integer       :: i, js, n
-      real(kind=dp) :: betaxis, es, aiotaf, , volf
+      real(kind=dp) :: betaxis, es, aiotaf, volf
       real(kind=dp) :: t0, t1, t2, t3
       real(kind=dp) :: phi1, chi1
 

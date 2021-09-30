@@ -1,9 +1,10 @@
 subroutine eqsolve(ns, intflag, ierflag)
 
-      use stel_kinds, only: dp
+      use stel_kinds, only: dp, p4
       use name0,      only: c1pm13, &
                             c2pm8,  &
                             c1p0,   &
+                            c1p4,   &
                             c100p
       use name1,      only: mnd,    &
                             nznt,   &
@@ -18,10 +19,10 @@ subroutine eqsolve(ns, intflag, ierflag)
                             iter2,  &
                             irst,   &
                             ijacob, &
-                            itfsq
+                            itfsq, ns4
       use inputdat,   only: niter,  &
                             gam,    &
-                            ftol
+                            ftol, nstep
       use time,       only: delt,   &
                             timer
       use xstuff,     only: xc
@@ -51,6 +52,7 @@ subroutine eqsolve(ns, intflag, ierflag)
       real(kind=dp) :: r00, w0
       real(kind=dp) :: r0dot, wdota
       real(kind=dp) :: res0
+      real(kind=p4) :: t4
 
       !         INDEX OF LOCAL VARIABLES
       !
@@ -138,7 +140,7 @@ subroutine eqsolve(ns, intflag, ierflag)
             .or. miter.eq.niter ) then               ! niter iterations exceeded
 
           ! leave force iterations loop
-          break
+          exit
 
         endif
 
@@ -194,7 +196,8 @@ subroutine eqsolve(ns, intflag, ierflag)
       call printout(iter2, w0, r00)
 
       ! note runtime
-      call second(timer(0))
+      call second(t4)
+      timer(0) = real(t4)
 
       if (ijacob.ge.100) then
         ! error: more than 100 Jacobian resets

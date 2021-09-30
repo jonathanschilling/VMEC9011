@@ -5,6 +5,7 @@ module realsp
 
       implicit none
 
+      ! --> workb (16*nrztd)
       ! 2*... --> split into contributions
       ! from even-m and odd-m poloidal modes
       real(kind=dp), target ::   r1(2*nrztd)

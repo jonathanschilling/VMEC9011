@@ -30,28 +30,30 @@ subroutine funct3d
       real(kind=dp) :: rax(nznt)
       real(kind=dp) :: zax(nznt)
 
-      real(kind=dp) :: lu(2*nrztd)
-      real(kind=dp) :: lv(2*nrztd)
 
       integer       :: lodd, l, lk
       real(kind=dp) :: bz0
       real(kind=dp) :: timeon, timeoff
 
       real(kind=dp), pointer :: worka(12*nrztd)
-      real(kind=dp), pointer :: workb(12*nrztd)
+      real(kind=dp), pointer :: workb(16*nrztd)
+
       real(kind=dp), pointer :: guu(nrztd)
       real(kind=dp), pointer :: guv(nrztd)
       real(kind=dp), pointer :: gvv(nrztd)
-      real(kind=dp), pointer :: czmn(*)
-      real(kind=dp), pointer :: crmn(*)
 
+      real(kind=dp), pointer :: lu(2*nrztd)
+      real(kind=dp), pointer :: lv(2*nrztd)
+
+      ! TODO: assumes that armn, ... are linearly aligned (common block) !!!
       worka => armn
-      workb => r1
+
+      lu => czmn
+      lv => crmn
+
       guu   => rcon(1+nrztd)
       guv   => zcon(1+nrztd)
       gvv   => z1
-      czmn  => lu
-      crmn  => lv
 
       lodd = 1+nrzt
 
@@ -74,7 +76,7 @@ subroutine funct3d
       call totzsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
                   r1,ru,       rv,         z1,         zu,         zv,          &
                   lu,lv,rcon,zcon, &
-                  worka,worka,worka, workb)
+                  worka,worka,worka)
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
       do l = 1,nrzt
@@ -177,7 +179,7 @@ subroutine funct3d
           call vacuum(rmnc, zmns, xm, xn, ctor, rbtor, bsqvac, rax, zax)
         endif
 
-        do lk=1,nznt
+        do lk = 1, nznt
           bsqsav(lk,3) = c1p5*bzmn(ns*lk+nrzt) - cp5*bzmn(ns*lk-1+nrzt)
           rbsq(lk)     = bsqvac(lk) * ohs*(r1(ns*lk) + r1(ns*lk+nrzt))
           dbsq(lk)     = abs(bsqvac(lk)-bsqsav(lk,3))
@@ -208,7 +210,7 @@ subroutine funct3d
         call eqfor(clmn, blmn, bzmn(lodd), xc,   xc(1+2*mns))
 
         !          bsq         gsqrt       bsubu bsubv
-        call wrout(bzmn(lodd), azmn(lodd), clmn, blmn, &
+        call wrout(bzmn(lodd), azmn(lodd), clmn, blmn,        &
                    crmn(lodd), rcon, czmn(lodd), zcon, lu, lv)
         !          bsubs       br    bphi        bz
 
@@ -216,13 +218,17 @@ subroutine funct3d
       endif
 
       ! COMPUTE MHD FORCES ON INTEGER-MESH
-      call forces(rbsq, guu, guv, gvv, sqrts,shalf,ohs,cp25,cp5,czero,nrzt,ns,ivac)
+      call forces(guu, guv, gvv)
 
       ! FOURIER-TRANSFORM MHD FORCES TO (M,N)-SPACE
       do l = 1,neqs
         gc(l) = czero
       enddo
-      call tomnsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
+
+      ! TODO: workb was the linear storage (16*nrztd)
+      ! from the common block holding r1, ..., zcon
+      call tomnsp(gc,         gc(1+  mns), gc(1+2*mns), &
+                  gc(1+3*mns),gc(1+4*mns), gc(1+5*mns), &
                   armn,brmn,crmn, azmn,bzmn,czmn,&
                   blmn,clmn, rcon,zcon, workb,workb,workb)
 
@@ -231,7 +237,7 @@ subroutine funct3d
       enddo
 
       ! COMPUTE FORCE RESIDUALS
-      call residue(gc,gc(1+2*mns),gc(1+4*mns),bz0,workb)
+      call residue(gc, gc(1+2*mns), gc(1+4*mns), bz0, workb)
 
       return
 

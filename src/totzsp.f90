@@ -1,6 +1,6 @@
 subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
                   r1,ru,rv,   z1,zu,zv,   lu,lv,       &
-                  rcon,zcon, work1,work2,work3, realsp)
+                  rcon,zcon, work1,work2,work3)
 
       use stel_kinds, only: dp
       use name0,      only: czero, c2p0

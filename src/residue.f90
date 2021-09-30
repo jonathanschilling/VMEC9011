@@ -17,7 +17,7 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       real(kind=dp) :: gcz(ns,0:nmax,0:mpol1,2)
       real(kind=dp) :: gcl(ns,0:nmax,0:mpol1,2)
 
-      real(kind=dp) :: work(mns,6)
+      real(kind=dp) :: work(mns,6) ! TODO: why 6 --> only 5 used.. ???
       real(kind=kp) :: bz0
 
       integer       :: js, n, l

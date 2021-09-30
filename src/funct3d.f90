@@ -3,9 +3,12 @@ subroutine funct3d
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5, c1p0, c1p5
       use name1, only: nvac
-      use realsp, only: r1, ru, rv, z1, zu, zv, &
-                        ru0, zu0, rcon, zcon, rcon0, zcon0, gcon
-      use rforces, only: armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn
+      use realsp, only: workb, &
+                        r1, ru, rv, z1, zu, zv, rcon, zcon, &
+                        ru0, zu0, rcon0, zcon0, gcon
+      use rforces, only: worka, &
+                         armn, brmn, crmn, azmn, bzmn, czmn, &
+                         blmn, clmn
       use scalars, only: nrzt, nznt, mns, ns, neqs, iter1, iter2, &
                          hs, ohs, irst,  meven, modd, iequi, dnorm, &
                          twopi, voli, isigng
@@ -30,35 +33,25 @@ subroutine funct3d
       real(kind=dp) :: rax(nznt)
       real(kind=dp) :: zax(nznt)
 
-
       integer       :: lodd, l, lk
       real(kind=dp) :: bz0
       real(kind=dp) :: timeon, timeoff
 
-      real(kind=dp), pointer :: worka(12*nrztd)
-      real(kind=dp), pointer :: workb(16*nrztd)
+      ! let the madness begin ...
+      real(kind=dp), pointer :: guu(nrztd) => rcon(1+nrztd)
+      real(kind=dp), pointer :: guv(nrztd) => zcon(1+nrztd)
+      real(kind=dp), pointer :: gvv(nrztd) => z1
 
-      real(kind=dp), pointer :: guu(nrztd)
-      real(kind=dp), pointer :: guv(nrztd)
-      real(kind=dp), pointer :: gvv(nrztd)
+      real(kind=dp), pointer :: lu(2*nrztd) => czmn
+      real(kind=dp), pointer :: lv(2*nrztd) => crmn
 
-      real(kind=dp), pointer :: lu(2*nrztd)
-      real(kind=dp), pointer :: lv(2*nrztd)
-
-      ! TODO: assumes that armn, ... are linearly aligned (common block) !!!
-      worka => armn
-
-      lu => czmn
-      lv => crmn
-
-      guu   => rcon(1+nrztd)
-      guv   => zcon(1+nrztd)
-      gvv   => z1
 
       lodd = 1+nrzt
 
       ! EXTRAPOLATE M>2 MODES AT JS = 2
-      call extrap(xc,xc(1+mns),xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns),xrz3,xrz4,ns)
+      call extrap(xc,          xc(1+  mns), xc(1+2*mns), &
+                  xc(1+3*mns), xc(1+4*mns), xc(1+5*mns), &
+                  xrz3, xrz4, ns)
 
       ! temporary re-use of gc for scaled xc
       do l = 1,neqs
@@ -73,9 +66,9 @@ subroutine funct3d
         lu(l+nrzt) = czero
         lv(l+nrzt) = czero
       enddo
-      call totzsp(gc,gc(1+mns),gc(1+2*mns),gc(1+3*mns),gc(1+4*mns),gc(1+5*mns), &
-                  r1,ru,       rv,         z1,         zu,         zv,          &
-                  lu,lv,rcon,zcon, &
+      call totzsp(gc, gc(1+mns), gc(1+2*mns), gc(1+3*mns), gc(1+4*mns), gc(1+5*mns), &
+                  r1, ru,        rv,          z1,          zu,          zv,          &
+                  lu, lv,        rcon,        zcon, &
                   worka,worka,worka)
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
@@ -102,7 +95,7 @@ subroutine funct3d
       endif
 
       if (iter2.gt.1) &
-        call alias(gcon, azmn, worka, worka, worka, gc, gc(1+mns))
+        call alias(gcon, azmn, worka,worka,worka, gc, gc(1+mns))
 
       ! COMPUTE S AND THETA DERIVATIVE OF R AND Z AND JACOBIAN ON HALF-GRID
       call jacobian(r1, ru, z1, zu,                            &
@@ -224,12 +217,8 @@ subroutine funct3d
       do l = 1, neqs
         gc(l) = czero
       enddo
-
-      ! TODO: workb was the linear storage (16*nrztd)
-      ! from the common block holding r1, ..., zcon
       call tomnsp(gc, gc(1+mns), gc(1+2*mns), gc(1+3*mns), gc(1+4*mns), gc(1+5*mns), &
                   armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn, rcon, zcon, workb,workb,workb)
-
       do l = 1, neqs
         gc(l) = gc(l) * scalxc(l)
       enddo

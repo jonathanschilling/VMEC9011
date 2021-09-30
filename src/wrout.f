@@ -42,68 +42,80 @@ subroutine wrout(bsq, gsqrt, bsubu, bsubv, bsubs, br, bphi, bz, lu, lv)
   701 FORMAT(F10.3,7I6)
 
       do 20 js=1,ns
-      call convert(rmnc,zmns,lmns,xm,xn,js,xc,xc(1+mns),
-     >xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns))
-      mn = 0
-      do 25 lk=1,nznt
- 25   bmod(lk)=sqrt(c2p0*abs(bsq(js,lk)/bscale**2-pres(js)))
-      do 20 m = 0,mpol1
-      nmin0 = -nmax
-      if(m.eq.0)nmin0 = 0
-      do 20 n = nmin0,nmax
-      mn = mn+1
-      dmult = c2p0*dnorm/(mscale(m)*nscale(iabs(n)))
-      if(m.eq.0.and.n.eq.0)dmult=cp5*dmult
-      gmn = czero
-      bmn = czero
-      bsubumn = czero
-      bsubvmn = czero
-      bsubsmn = czero
-      bsupumn = czero
-      bsupvmn = czero
-      if(js.eq.1)goto 22
-      do 200 j = 1,ntheta2
-      do 200 k = 1,nzeta
-      lk = k + nzeta*(j-1)
-      if(n.ge.0)then
-      tcosi = dmult*(cosmui(j,m)*cosnv(k,n)+sinmu(j,m) *sinnv(k,n))
-      tsini = dmult*(sinmu (j,m)*cosnv(k,n)-cosmui(j,m)*sinnv(k,n))
-      else
-      tcosi = dmult*(cosmui(j,m)*cosnv(k,-n)-sinmu(j,m) *sinnv(k,-n))
-      tsini = dmult*(sinmu (j,m)*cosnv(k,-n)+cosmui(j,m)*sinnv(k,-n))
-      endif
-      bmn = bmn + tcosi*bmod(lk)
-      gmn = gmn + tcosi*gsqrt(js,lk)
-      bsubumn = bsubumn + tcosi*bsubu(js,lk)
-      bsubvmn = bsubvmn + tcosi*bsubv(js,lk)
-      bsubsmn = bsubsmn + tsini*bsubs(js,lk)
-      bsupumn = bsupumn + tcosi*lv(js,lk)
-      bsupvmn = bsupvmn + tcosi*lu(js,lk)
- 200  continue
-      if(js.eq.ns/2)bmodmn(mn) = bmn
-      if(js.eq.ns)bmodmn1(mn) = bmn
-      goto 20
 
- 22   if (lwouttxt) then
-        WRITE(8,702)NINT(XM(MN)),NINT(XN(MN))
-      else
-        WRITE(8    )NINT(XM(MN)),NINT(XN(MN))
-      end if
+        call convert(rmnc,zmns,lmns,xm,xn,js,xc,xc(1+mns),
+                  >  xc(1+2*mns),xc(1+3*mns),xc(1+4*mns),xc(1+5*mns))
 
- 20   if (lwouttxt) then
-        WRITE(8,703)RMNC(MN),ZMNS(MN),LMNS(MN),
-     >  bmn,gmn,bsubumn/bscale,bsubvmn/bscale,bsubsmn/bscale,
-     >  bsupumn/bscale,bsupvmn/bscale
-      else
-        WRITE(8    )RMNC(MN),ZMNS(MN),LMNS(MN),
-     >  bmn,gmn,bsubumn/bscale,bsubvmn/bscale,bsubsmn/bscale,
-     >  bsupumn/bscale,bsupvmn/bscale
-      end if
+        mn = 0
+        do 25 lk=1,nznt
+ 25     bmod(lk)=sqrt(c2p0*abs(bsq(js,lk)/bscale**2-pres(js)))
+
+        do 20 m = 0,mpol1
+          nmin0 = -nmax
+          if(m.eq.0)nmin0 = 0
+            do 20 n = nmin0,nmax
+              mn = mn+1
+              dmult = c2p0*dnorm/(mscale(m)*nscale(iabs(n)))
+              if(m.eq.0.and.n.eq.0)dmult=cp5*dmult
+              gmn = czero
+              bmn = czero
+              bsubumn = czero
+              bsubvmn = czero
+              bsubsmn = czero
+              bsupumn = czero
+              bsupvmn = czero
+
+              if (js.eq.1) &
+                goto 22
+
+              do 200 j = 1,ntheta2
+                do 200 k = 1,nzeta
+                  lk = k + nzeta*(j-1)
+                  if(n.ge.0)then
+                  tcosi = dmult*(cosmui(j,m)*cosnv(k,n)+sinmu(j,m) *sinnv(k,n))
+                  tsini = dmult*(sinmu (j,m)*cosnv(k,n)-cosmui(j,m)*sinnv(k,n))
+                  else
+                  tcosi = dmult*(cosmui(j,m)*cosnv(k,-n)-sinmu(j,m) *sinnv(k,-n))
+                  tsini = dmult*(sinmu (j,m)*cosnv(k,-n)+cosmui(j,m)*sinnv(k,-n))
+                  endif
+                  bmn = bmn + tcosi*bmod(lk)
+                  gmn = gmn + tcosi*gsqrt(js,lk)
+                  bsubumn = bsubumn + tcosi*bsubu(js,lk)
+                  bsubvmn = bsubvmn + tcosi*bsubv(js,lk)
+                  bsubsmn = bsubsmn + tsini*bsubs(js,lk)
+                  bsupumn = bsupumn + tcosi*lv(js,lk)
+                  bsupvmn = bsupvmn + tcosi*lu(js,lk)
+ 200              continue
+
+              if(js.eq.ns/2)bmodmn (mn) = bmn
+              if(js.eq.ns)  bmodmn1(mn) = bmn
+
+              goto 20
+
+ 22           if (lwouttxt) then
+                WRITE(8,702)NINT(XM(MN)),NINT(XN(MN))
+              else
+                WRITE(8    )NINT(XM(MN)),NINT(XN(MN))
+              end if
+
+ 20           if (lwouttxt) then
+                WRITE(8,703)RMNC(MN),ZMNS(MN),LMNS(MN),
+     >          bmn,gmn,bsubumn/bscale,bsubvmn/bscale,bsubsmn/bscale,
+     >          bsupumn/bscale,bsupvmn/bscale
+              else
+                WRITE(8    )RMNC(MN),ZMNS(MN),LMNS(MN),
+     >          bmn,gmn,bsubumn/bscale,bsubvmn/bscale,bsubsmn/bscale,
+     >          bsupumn/bscale,bsupvmn/bscale
+              end if
+      end do
  702  format(2i10)
  703  format(5e20.13)
+
       phi(1) = czero
       do 30 js = 2,ns
- 30   phi(js) = twopi*hs*ssum(js-1,phips(2),1)
+ 30     phi(js) = twopi*hs*ssum(js-1,phips(2),1)
+      end do
+
       fac = abs(bscale)**(gam-c2p0)
 
       if (lwouttxt) then

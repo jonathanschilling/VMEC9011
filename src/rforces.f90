@@ -14,7 +14,7 @@ module rforces
       real(kind=dp), pointer :: bzmn(:) => worka(1+ 8*nrztd:10*nrztd)
       real(kind=dp), pointer :: czmn(:) => worka(1+10*nrztd:12*nrztd)
 
-      real(kind=dp)          :: blmn(2*nrztd)
-      real(kind=dp)          :: clmn(2*nrztd)
+      real(kind=dp) :: blmn(2*nrztd)
+      real(kind=dp) :: clmn(2*nrztd)
 
 end module rforces

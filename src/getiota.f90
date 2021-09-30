@@ -1,4 +1,4 @@
-subroutine getiota(phipog, guu, guv, lu, lv)
+subroutine getiota(phipog, guu, guv, wint, lu, lv)
 
       use stel_kinds, only: dp
       use name0, only: czero
@@ -6,7 +6,6 @@ subroutine getiota(phipog, guu, guv, lu, lv)
       use scalars, only: ns
       use inputdat, only: ncurr
       use current, only: jv
-      use scalefac, only: wint
       use profs, only: iotas
 
       implicit none
@@ -14,6 +13,7 @@ subroutine getiota(phipog, guu, guv, lu, lv)
       real(kind=dp), intent(in)    :: phipog(ns, nznt)
       real(kind=dp), intent(in)    :: guu   (ns, nznt)
       real(kind=dp), intent(in)    :: guv   (ns, nznt)
+      real(kind=dp), intent(in)    :: wint  (ns, nznt)
       real(kind=dp), intent(in)    :: lu    (ns, nznt)
       real(kind=dp), intent(inout) :: lv    (ns, nznt)
 

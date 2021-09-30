@@ -7,9 +7,8 @@ subroutine forces(guu, guv, gvv)
       use magfield, only: rbsq
       use realsp, only: r1, ru, rv, z1, zu, zv, ru0, zu0, &
                         rcon, zcon, rcon0, zcon0, gcon
-      use rforces, only: armn, brmn, crmn, &
-                         azmn, bzmn, czmn, &
-                         blmn, clmn
+      use rforces, only: worka, &
+                         armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn
       use scalars, only: ns, ohs, nrzt
       use scalefac, only: sqrts, shalf
 
@@ -19,11 +18,12 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp), intent(inout) :: guv(nrztd)
       real(kind=dp), intent(inout) :: gvv(nrztd)
 
-      real(kind=dp), pointer       :: guus(:)
-      real(kind=dp), pointer       :: guvs(:)
-      real(kind=dp)                :: gvvs(nrztd) ! gvvs is stored here ?
-
-      real(kind=dp)                :: bsqr(nrztd)
+      real(kind=dp), pointer :: guus(:) => worka(1+ 5*nrztd: 6*nrztd)
+      real(kind=dp), pointer :: guvs(:) => worka(1+11*nrztd:12*nrztd)
+!       equivalence (guus, worka(1+ 4*nrztd)), & ! crmn(1+1*nrztd)
+!                   (guvs, worka(1+11*nrztd))    ! czmn(1+1*nrztd)
+      real(kind=dp) :: gvvs(nrztd) ! gvvs is stored here ?
+      real(kind=dp) :: bsqr(nrztd)
 
       ! IN LOOPS, L (L1) INDEX REPRESENTS EVEN (ODD) COMPONENT.
       integer       :: l, l1, lk, m
@@ -31,9 +31,6 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp) :: s2, guus2, guvs2, gvvs2
 
       ! ON ENTRY, ARMN=ZU, BRMN=ZS, AZMN=RU, BZMN=RS, CZMN=R*BSQ.
-
-      guus => crmn(1+1*nrztd:2*nrztd)
-      guvs => czmn(1+1*nrztd:2*nrztd)
 
       ! IT IS ESSENTIAL THAT CRMN, CZMN AT j=1 ARE ZERO INITIAL.
       ! crmn, czmn contain lv, lu on entry --> need to clear these

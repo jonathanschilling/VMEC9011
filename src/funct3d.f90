@@ -42,16 +42,11 @@ subroutine funct3d
       real(kind=dp) :: timeon, timeoff
 
       ! let the madness begin ...
-      real(kind=dp) :: guu  (nrztd)
-      real(kind=dp) :: guv  (nrztd)
-      real(kind=dp) :: gvv  (nrztd)
-      real(kind=dp) :: lu (2*nrztd)
-      real(kind=dp) :: lv (2*nrztd)
-      equivalence (guu, rcon(1+0*nrztd)), &
-                  (guv, zcon(1+0*nrztd)), &
-                  (gvv,   z1(1+0*nrztd)), &
-                  (lu,  czmn(1+0*nrztd)), &
-                  (lv,  crmn(1+0*nrztd))
+      real(kind=dp), pointer :: guu(:) => workb(1+12*nrztd:13*nrztd) ! rcon
+      real(kind=dp), pointer :: guv(:) => workb(1+14*nrztd:15*nrztd) ! zcon
+      real(kind=dp), pointer :: gvv(:) => workb(1+ 6*nrztd: 7*nrztd) ! z1
+      real(kind=dp), pointer :: lu(:)  => worka(1+10*nrztd:12*nrztd) ! czmn
+      real(kind=dp), pointer :: lv(:)  => worka(1+ 4*nrztd: 6*nrztd) ! crmn
 
       lodd = 1+nrzt
 

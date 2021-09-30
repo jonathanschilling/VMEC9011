@@ -62,6 +62,7 @@ module fsqu
       use name1,      only: nsd
       implicit none
       real(kind=dp) :: mns
+      real(kind=dp) :: fnorm
       real(kind=dp) :: fsqr
       real(kind=dp) :: fsqz
       real(kind=dp) :: fsql

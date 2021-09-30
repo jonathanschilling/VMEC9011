@@ -4,10 +4,10 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       use stel_kinds, only: dp
       use name0, only: czero, cp5, c1p0, c2p0
       use name1, only: nsd
-      use scalars, only: nrzt, hs, dnorm, iequi, meven, modd, &
+      use scalars, only: nrzt, ns, hs, dnorm, iequi, meven, modd, &
                          iter1, iter2, ns4
       use scalefac, only: sqrts, shalf, wint
-      use realsp, only: r1, ru, rv, zu, zv, ru0, zu0
+      use realsp, only: r1, ru, rv, z1, zu, zv, ru0, zu0
       use profs, only: phip, vp
       use fsqu, only: wp, wb, fnorm, fnorm1, mns
       use precond, only: arm, ard, brm, brd,    &
@@ -16,6 +16,9 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       use spectra, only: tcon
 
       implicit none
+
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum, ddot
 
       real(kind=dp), intent(out)   :: bsubu (nrzt,0:1)
       real(kind=dp), intent(out)   :: bsubv (nrzt,0:1)
@@ -36,7 +39,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       real(kind=dp) :: ar(nsd)
       real(kind=dp) :: az(nsd)
 
-      integer       :: is, l, lme, lmo, m
+      integer       :: is, js, l, lk, lme, lmo, m
       real(kind=dp) :: volume
 
       ! INITIALIZATION BLOCK

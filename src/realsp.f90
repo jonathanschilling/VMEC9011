@@ -5,16 +5,17 @@ module realsp
 
       implicit none
 
-      real(kind=dp), target  :: workb(16*nrzd)
+      real(kind=dp), target  :: workb(16*nrztd)
 
-      real(kind=dp), pointer ::   r1(2*nrztd) => workb(1+ 0*nzrd)
-      real(kind=dp), pointer ::   ru(2*nrztd) => workb(1+ 2*nzrd)
-      real(kind=dp), pointer ::   rv(2*nrztd) => workb(1+ 4*nzrd)
-      real(kind=dp), pointer ::   z1(2*nrztd) => workb(1+ 6*nzrd)
-      real(kind=dp), pointer ::   zu(2*nrztd) => workb(1+ 8*nzrd)
-      real(kind=dp), pointer ::   zv(2*nrztd) => workb(1+10*nzrd)
-      real(kind=dp), pointer :: rcon(2*nrztd) => workb(1+12*nzrd)
-      real(kind=dp), pointer :: zcon(2*nrztd) => workb(1+14*nzrd)
+      ! 2*nrztd per array
+      real(kind=dp), pointer ::   r1(:) => workb(1+ 0*nrztd: 2*nrztd)
+      real(kind=dp), pointer ::   ru(:) => workb(1+ 2*nrztd: 4*nrztd)
+      real(kind=dp), pointer ::   rv(:) => workb(1+ 4*nrztd: 6*nrztd)
+      real(kind=dp), pointer ::   z1(:) => workb(1+ 6*nrztd: 8*nrztd)
+      real(kind=dp), pointer ::   zu(:) => workb(1+ 8*nrztd:10*nrztd)
+      real(kind=dp), pointer ::   zv(:) => workb(1+10*nrztd:12*nrztd)
+      real(kind=dp), pointer :: rcon(:) => workb(1+12*nrztd:14*nrztd)
+      real(kind=dp), pointer :: zcon(:) => workb(1+14*nrztd:16*nrztd)
 
       real(kind=dp)         :: ru0(nrztd)
       real(kind=dp)         :: zu0(nrztd)
@@ -41,11 +42,11 @@ subroutine clear_realsp
         rv(l)   = czero
         z1(l)   = czero
         zu(l)   = czero
-        zv(l)   = czero ! 12*nrzd up to here
+        zv(l)   = czero ! 12*nrztd up to here
         rcon(l) = czero
-        zcon(l) = czero ! 16*nrzd up to here
+        zcon(l) = czero ! 16*nrztd up to here
       end do
 
-end subroutine
+end subroutine ! clear_realsp
 
-end module realsp
+end module ! realsp

@@ -112,11 +112,16 @@ module mnarray
       real(kind=dp) :: xrz3(0:nmax,0:mpol1)
       real(kind=dp) :: xrz4(0:nmax,0:mpol1)
       real(kind=dp) :: xmpq(0:mpol1,3)
-      integer       :: mscale(0:mpol1)      = (/cp707d,mpol1*oned/)
-      integer       :: nscale(0:nmax1)      = (/cp707d,nmax1*oned/)
-      integer       :: jmin1(0:mpol)        = (/1, 1, mpol1*2/)
-      integer       :: jmin2(0:mpol)        = (/1, 2, mpol1*3/)
-      integer       :: jlam(0:mpol)         = (/2, 3, mpol1*3/)
+      integer       :: mscale(0:mpol1)
+      integer       :: nscale(0:nmax1)
+      integer       :: jmin1(0:mpol)
+      integer       :: jmin2(0:mpol)
+      integer       :: jlam(0:mpol)
+      data mscale/cp707d,mpol1*oned/, &
+           nscale/cp707d,nmax1*oned/, &
+           jmin1/1, 1, mpol1*2/,      &
+           jmin2/1, 2, mpol1*3/,      &
+           jlam/2, 3, mpol1*3/
 end module mnarray
 
 module profs
@@ -128,10 +133,11 @@ module profs
       implicit none
       real(kind=dp) :: iotas(nsd)
       real(kind=dp) :: mass(nsd)
-      real(kind=dp) :: phips(nsd1) = (/zerod/)
+      real(kind=dp) :: phips(nsd1)
       real(kind=dp) :: pres(nsd)
       real(kind=dp) :: vp(nsd)
       real(kind=dp) :: phip(nrztd)
+      data phips/nsd1*zerod/
 end module profs
 
 module scalars

@@ -17,7 +17,7 @@ subroutine alias(gcon, zcon, work1, work2, work3, gcs, gsc)
       real(kind=dp), intent(inout) :: gcs(ns,0:nmax,0:mpol1) ! temp
       real(kind=dp), intent(inout) :: gsc(ns,0:nmax,0:mpol1) ! temp
 
-      integer       :: js, jk, k, l, m, n
+      integer       :: i, js, jk, k, l, m, n
       real(kind=dp) :: fm
 
       ! BEGIN DE-ALIASING (TRUNCATION OF GCON IN FOURIER-SPACE

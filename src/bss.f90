@@ -21,7 +21,7 @@ subroutine bss(r12, rs, zs, ru12, zu12, bsubs, &
       real(kind=dp), intent(out) :: bphi (nrzt)
       real(kind=dp), intent(out) :: bz   (nrzt)
 
-      integer       :: lodd
+      integer       :: l, lodd
       real(kind=dp) :: rv12, zv12
       real(kind=dp) :: gsu, gsv
 

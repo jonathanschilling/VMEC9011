@@ -2,7 +2,7 @@ subroutine convert(rmnc, zmns, lmns, xm, xn, js, &
                    rmncc,rmnss, zmncs,zmnsc, lmncs,lmnsc)
 
       use stel_kinds, only: dp
-      use name0, only: czero
+      use name0, only: czero, cp5
       use name1, only: mnmax, nmax, mpol1
       use scalars, only: ns
       use mnarray, only: mscale, nscale

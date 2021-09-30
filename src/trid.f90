@@ -1,6 +1,8 @@
-subroutine trid(a, d, b, c, gam, alf, jmin, nn, ns)
+subroutine trid(a, d, b, c, gam, alf, jmin, nn)
 
       use stel_kinds, only: dp
+      use bounds, only: mlower, mupper
+      use scalars, only: ns
 
       implicit none
 
@@ -8,9 +10,12 @@ subroutine trid(a, d, b, c, gam, alf, jmin, nn, ns)
       real(kind=dp), intent(in)    :: b  (ns,0:mnd1)
       real(kind=dp), intent(inout) :: c  (ns,0:mnd1)
       real(kind=dp), intent(in)    :: d  (ns,0:mnd1)
-      real(kind=dp), intent(out)   :: alf(0:mnd1,ns) ! only internal temporary storage
       real(kind=dp), intent(out)   :: gam(0:mnd1,ns) ! only internal temporary storage
+      real(kind=dp), intent(out)   :: alf(0:mnd1,ns) ! only internal temporary storage
       integer,       intent(in)    :: jmin(0:3)
+      integer,       intent(in)    :: nn
+
+      integer :: imodes, in, in1, mn, i, i1, n2
 
       ! SOLVES B(I)*X(I-1)+D(I)*X(I)+A(I)*X(I+1)=C(I), I=IN,NN
       ! AND RETURNS ANSWER IN C(I)

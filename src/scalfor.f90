@@ -50,7 +50,7 @@ subroutine scalfor(gcx, &
       end do
 
       do ntype = 1, 2
-        call trid(ax, dx, bx, gcx(1,0,0,ntype), gm, alf, jmin2, jmax, ns)
+        call trid(ax, dx, bx, gcx(1,0,0,ntype), gm, alf, jmin2, jmax)
       end do
 
       return

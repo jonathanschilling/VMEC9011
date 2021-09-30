@@ -2,7 +2,7 @@ subroutine forces(guu, guv, gvv)
 
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5
-      use name1, only: nrztd
+      use name1, only: nznt, nrztd
       use extfld, only: ivac
       use magfield, only: rbsq
       use realsp, only: r1, ru, rv, z1, zu, zv, ru0, zu0, &
@@ -26,8 +26,9 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp)                :: bsqr(nrztd)
 
       ! IN LOOPS, L (L1) INDEX REPRESENTS EVEN (ODD) COMPONENT.
-      integer       :: l, l1
+      integer       :: l, l1, lk, m
       real(kind=dp) :: rcon1, zcon1
+      real(kind=dp) :: s2, guus2, guvs2, gvvs2
 
       ! ON ENTRY, ARMN=ZU, BRMN=ZS, AZMN=RU, BZMN=RS, CZMN=R*BSQ.
 

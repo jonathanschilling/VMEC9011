@@ -1,15 +1,15 @@
 subroutine funct3d
 
-      use stel_kinds, only: dp
+      use stel_kinds, only: dp, p4
       use name0, only: czero, cp25, cp5, c1p0, c1p5
-      use name1, only: nvac
+      use name1, only: nvac, nznt, nrztd, mnmax
       use realsp, only: workb, &
                         r1, ru, rv, z1, zu, zv, rcon, zcon, &
                         ru0, zu0, rcon0, zcon0, gcon
       use rforces, only: worka, &
                          armn, brmn, crmn, azmn, bzmn, czmn, &
                          blmn, clmn
-      use scalars, only: nrzt, nznt, mns, ns, neqs, iter1, iter2, &
+      use scalars, only: nrzt, mns, ns, neqs, iter1, iter2, &
                          hs, ohs, irst,  meven, modd, iequi, dnorm, &
                          twopi, voli, isigng
       use xstuff, only: xc, gc
@@ -24,6 +24,9 @@ subroutine funct3d
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum, ddot
+
       real(kind=dp) :: rmnc(mnmax)
       real(kind=dp) :: zmns(mnmax)
       real(kind=dp) :: lmns(mnmax)
@@ -35,16 +38,20 @@ subroutine funct3d
 
       integer       :: lodd, l, lk
       real(kind=dp) :: bz0
+      real(kind=p4) :: t4
       real(kind=dp) :: timeon, timeoff
 
       ! let the madness begin ...
-      real(kind=dp), pointer :: guu(nrztd) => rcon(1+nrztd)
-      real(kind=dp), pointer :: guv(nrztd) => zcon(1+nrztd)
-      real(kind=dp), pointer :: gvv(nrztd) => z1
-
-      real(kind=dp), pointer :: lu(2*nrztd) => czmn
-      real(kind=dp), pointer :: lv(2*nrztd) => crmn
-
+      real(kind=dp) :: guu  (nrztd)
+      real(kind=dp) :: guv  (nrztd)
+      real(kind=dp) :: gvv  (nrztd)
+      real(kind=dp) :: lu (2*nrztd)
+      real(kind=dp) :: lv (2*nrztd)
+      equivalence (guu, rcon(1+0*nrztd)), &
+                  (guv, zcon(1+0*nrztd)), &
+                  (gvv,   z1(1+0*nrztd)), &
+                  (lu,  czmn(1+0*nrztd)), &
+                  (lv,  crmn(1+0*nrztd))
 
       lodd = 1+nrzt
 
@@ -145,7 +152,8 @@ subroutine funct3d
       ! INITIAL GUESS, WHICH CAN BE CHANGED BY READING IN
       ! CURPOL FROM DATA STATEMENT
       if (nvac.ne.0.and.iter2.gt.1) then
-        call second(timeon)
+        call second(t4)
+        timeon = real(t4)
 
         ivac2=mod(iter2-iter1, nvacskip)
 
@@ -162,8 +170,8 @@ subroutine funct3d
 
         if (ivac.ge.1) then
           ctor = isigng*twopi*dnorm*(                          &
-                   c1p5*sdot(nznt,clmn(ns  ),ns,wint(ns),ns)   &
-                 - cp5 *sdot(nznt,clmn(ns-1),ns,wint(ns),ns) )
+                   c1p5*ddot(nznt,clmn(ns  ),ns,wint(ns),ns)   &
+                 - cp5 *ddot(nznt,clmn(ns-1),ns,wint(ns),ns) )
 
           call convert(rmnc, zmns, lmns, xm, xn, ns,          &
                        xc,          xc(1+  mns), xc(1+2*mns), &
@@ -184,7 +192,8 @@ subroutine funct3d
           call dcopy(nznt, bsqvac,         1, bsqsav(1,2), 1)
         endif
 
-        call second(timeoff)
+        call second(t4)
+        timeoff = real(t4)
         timer(1) = timer(1) + (timeoff-timeon)
       endif ! vacuum contribution
 
@@ -194,7 +203,7 @@ subroutine funct3d
         ! AVERAGE EQUILIBRIUM PROPERTIES AT END OF RUN
 
         !        r12         rs    zs    ru12  zu12  bsubs
-        call bss(armn(lodd), bzmn, brmn, azmn, armn, crmn(lodd),
+        call bss(armn(lodd), bzmn, brmn, azmn, armn, crmn(lodd), &
                  lu, lv, rcon, czmn(lodd), zcon)
         !                br    bphi        bz
 

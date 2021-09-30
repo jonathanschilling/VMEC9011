@@ -11,16 +11,22 @@ subroutine lamcal(phipog, guu, guv, gvv)
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum, ddot
+
       real(kind=dp), intent(in) :: phipog(nrzt)
       real(kind=dp), intent(in) :: guu(nrzt)
       real(kind=dp), intent(in) :: guv(nrzt)
       real(kind=dp), intent(in) :: gvv(nrzt)
 
-      real(kind=dp) :: blam(nsd1) = (/ nsd1*0.0_dp /)
-      real(kind=dp) :: clam(nsd1) = (/ nsd1*0.0_dp /)
-      real(kind=dp) :: dlam(nsd1) = (/ nsd1*0.0_dp /)
+      real(kind=dp) :: blam(nsd1)
+      real(kind=dp) :: clam(nsd1)
+      real(kind=dp) :: dlam(nsd1)
+      data blam/nsd1*0.0_dp/, &
+           clam/nsd1*0.0_dp/, &
+           dlam/nsd1*0.0_dp/
 
-      integer       :: js, m, n, lmn
+      integer       :: js, l, m, n, lmn
       real(kind=dp) :: tnn, tmn, tmm
 
       do js = 2, ns

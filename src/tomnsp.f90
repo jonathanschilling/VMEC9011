@@ -1,33 +1,46 @@
 subroutine tomnsp(frcc, frss, fzcs, fzsc, flcs, flsc, &
-                  armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn, &
-                  arcon, azcon, work1, work2, work3)
+                  armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn, arcon, azcon, &
+                  work1, work2, work3)
 
       use stel_kinds, only: dp
+      use name0, only: czero
+      use name1, only: mpol1, nmax, nzeta, ntheta2
+      use scalars, only: ns
+      use extfld, only: ivac
+      use mnarray, only: xmpq, jmin2, jlam
+      use trignew, only: cosmui, sinmu, cosmumi, sinmum, &
+                         cosnv,  sinnv, cosnvn,  sinnvn
 
       implicit none
 
-      real(kind=dp) :: frcc(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: frss(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: fzcs(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: fzsc(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: flcs(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: flsc(ns,0:nmax,0:mpol1)
+      ! inout needed since the force vector gc is initialized to 0 outside (funct3d)
+      real(kind=dp), intent(inout) :: frcc(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: frss(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: fzcs(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: fzsc(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: flcs(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: flsc(ns,0:nmax,0:mpol1)
 
-      real(kind=dp) :: armn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: brmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: crmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: azmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: bzmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: czmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: blmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: clmn (ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: arcon(ns*nzeta,ntheta2,0:1)
-      real(kind=dp) :: azcon(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: armn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: brmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: crmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: azmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: bzmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: czmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: blmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: clmn (ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: arcon(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(in)    :: azcon(ns*nzeta,ntheta2,0:1)
 
-      real(kind=dp) :: work1(ns*nzeta*12)
-      real(kind=dp) :: work2(ns*nzeta,12)
-      real(kind=dp) :: work3(ns,nzeta,12)
+      ! all these refer to the global "workb" array
+      real(kind=dp), intent(inout) :: work1(ns*nzeta*12)
+      real(kind=dp), intent(inout) :: work2(ns*nzeta,12)
+      real(kind=dp), intent(inout) :: work3(ns,nzeta,12)
 
+      integer       :: jmax, i, jk, l, m, n, js, mparity
+      real(kind=dp) :: temp1, temp3
+
+      ! include contribution from LCFS only in free-boundary mode
       jmax = ns
       if (ivac.lt.1) &
         jmax = ns-1

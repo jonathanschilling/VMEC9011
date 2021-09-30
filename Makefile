@@ -3,9 +3,9 @@
 
 all: vmec
 clean:
-	rm *.o
-	rm vmec
-	rm fort.*
+	rm -f *.o
+	rm -f vmec
+	rm -f fort.*
 
 vmec: crlib64.f \
       vac.f \

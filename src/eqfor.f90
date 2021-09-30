@@ -4,15 +4,21 @@ subroutine eqfor(bu, bv, bsq, rmag, zmag)
 
       implicit none
 
-      real(kind=dp), intent(in) :: bu(ns,1)
-      real(kind=dp), intent(in) :: bv(ns,1)
-      real(kind=dp), intent(in) :: bsq(ns,1)
+      real(kind=dp), intent(in) :: bu  (ns,1)
+      real(kind=dp), intent(in) :: bv  (ns,1)
+      real(kind=dp), intent(in) :: bsq (ns,1)
       real(kind=dp), intent(in) :: rmag(ns,0:nmax)
       real(kind=dp), intent(in) :: zmag(ns,0:nmax)
+
+      integer       :: i, js, n
+      real(kind=dp) :: betaxis, es, aiotaf, , volf
+      real(kind=dp) :: t0, t1, t2, t3
+      real(kind=dp) :: phi1, chi1
 
       write(3,5)
   5   format(/,'     S       EQUIF      PHI       CHI     <JTHETA>     IOTA     <JZETA>   <BSUBV>    P''/V''    V''/PHIP   <M>',/)
 
+      ! compute beta at axis before pressure re-normalization
       betaxis =  c1p5*pres(2)/(dnorm * ddot(nznt, bsq(2,1), ns, wint(2), ns) - pres(2)) &
                -  cp5*pres(3)/(dnorm * ddot(nznt, bsq(3,1), ns, wint(2), ns) - pres(3))
 

@@ -87,15 +87,15 @@ subroutine precondn(lu, bsq, gsqrt, r12,      &
       do js = 1, ns
         axm(js,1) =-ax(js,1)
         axm(js,2) = ax(js,2) * sm(js) * sp(js-1)
-        axd(js,1) = ax(js,1) + ax(js+1,1)
-        axd(js,2) = ax(js,3) * sm(js)**2 + ax(js+1,4) * sp(js)**2
+        axd(js,1) = ax(js,1)                     + ax(js+1,1)
+        axd(js,2) = ax(js,3) * sm(js)**2         + ax(js+1,4) * sp(js)**2
 
         bxm(js,1) = bx(js,1)
         bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)
-        bxd(js,1) = bx(js,2) + bx(js+1,3)
-        bxd(js,2) = bx(js,2) * sm(js)**2 + bx(js+1,3) * sp(js)**2
+        bxd(js,1) = bx(js,2)                     + bx(js+1,3)
+        bxd(js,2) = bx(js,2) * sm(js)**2         + bx(js+1,3) * sp(js)**2
 
-        cx (js)   = cx(js) + cx(js+1)
+        cx (js)   = cx(js)                       + cx(js+1)
       end do
 
       return

@@ -1,6 +1,16 @@
 subroutine eqfor(bu, bv, bsq, rmag, zmag)
 
       use stel_kinds, only: dp
+      use name0, only: cp5, c1p5, czero
+      use name1, only: nmax, nznt
+      use scalars, only: ns, dnorm, isigng, ohs, twopi, voli
+      use profs, only: pres, phips, vp, iotas
+      use scalefac, only: wint
+      use extfld, only: bscale
+      use current, only: buco, bvco, jv, ju
+      use fsqu, only: equif
+      use spectra, only: specw
+      use mnarray, only: mscale, nscale
 
       implicit none
 

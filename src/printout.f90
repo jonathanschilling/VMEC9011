@@ -3,8 +3,8 @@ subroutine printout(i, w0, r00)
       use stel_kinds, only: dp
       use name0, only: czero, cp5, c1p0
       use name1, only: nznt, nvac
-      use fsqu, only: wp, wb, mns
-      use scalars, only: twopi, ns
+      use fsqu, only: wp, wb,  fsqr, fsqz, fsql, fsqr1, fsqz1, fedge
+      use scalars, only: twopi, ns, mns
       use inputdat, only: nfp
       use spectra, only: specw
       use xstuff, only: xc
@@ -12,7 +12,6 @@ subroutine printout(i, w0, r00)
       use extfld, only: ivac
       use scalefac, only: wint
       use magfield, only: dbsq, bsqsav
-      use fsqu, only: fsqr, fsqz, fsql, fsqr1, fsqz1, fedge
       use time, only: delt
 
       implicit none

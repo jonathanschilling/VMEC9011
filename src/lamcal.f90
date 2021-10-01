@@ -3,11 +3,10 @@ subroutine lamcal(phipog, guu, guv, gvv)
       use stel_kinds, only: dp
       use name0, only: cp5, c1p0, c2p0
       use name1, only: nsd1, nznt, mpol1, nmax, nmax1
-      use scalars, only: nrzt, ns
+      use scalars, only: nrzt, ns, mns
       use inputdat, only: nfp
       use mnarray, only: jlam
       use scalefac, only: faclam
-      use fsqu, only: mns
 
       implicit none
 

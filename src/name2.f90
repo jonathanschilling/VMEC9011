@@ -61,7 +61,6 @@ module fsqu
       use stel_kinds, only: dp
       use name1,      only: nsd
       implicit none
-      integer       :: mns
       real(kind=dp) :: fnorm
       real(kind=dp) :: fsqr
       real(kind=dp) :: fsqz
@@ -112,16 +111,15 @@ module mnarray
       real(kind=dp) :: xrz3(0:nmax,0:mpol1)
       real(kind=dp) :: xrz4(0:nmax,0:mpol1)
       real(kind=dp) :: xmpq(0:mpol1,3)
-      integer       :: mscale(0:mpol1)
-      integer       :: nscale(0:nmax1)
-      integer       :: jmin1(0:mpol)
-      integer       :: jmin2(0:mpol)
-      integer       :: jlam(0:mpol)
-      data mscale/cp707d,mpol1*oned/, &
-           nscale/cp707d,nmax1*oned/, &
-           jmin1/1, 1, mpol1*2/,      &
-           jmin2/1, 2, mpol1*3/,      &
-           jlam/2, 3, mpol1*3/
+
+      integer, private :: i
+
+      real(kind=dp), parameter :: mscale(0:mpol1) = (/cp707d,(oned,i=1,mpol1)/)
+      real(kind=dp), parameter :: nscale(0:nmax1) = (/cp707d,(oned,i=1,nmax1)/)
+      integer,       parameter :: jmin1(0:mpol)   = (/1, 1, (2, i=1,mpol1)/)
+      integer,       parameter :: jmin2(0:mpol)   = (/1, 2, (3, i=1,mpol1)/)
+      integer,       parameter :: jlam(0:mpol)    = (/2, 3, (3, i=1,mpol1)/)
+
 end module mnarray
 
 module profs

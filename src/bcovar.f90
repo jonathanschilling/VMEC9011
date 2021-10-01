@@ -5,11 +5,11 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       use name0, only: czero, cp5, c1p0, c2p0
       use name1, only: nsd
       use scalars, only: nrzt, ns, hs, dnorm, iequi, meven, modd, &
-                         iter1, iter2, ns4
+                         iter1, iter2, ns4, mns
       use scalefac, only: sqrts, shalf, wint
       use realsp, only: r1, ru, rv, z1, zu, zv, ru0, zu0
       use profs, only: phip, vp
-      use fsqu, only: wp, wb, fnorm, fnorm1, mns
+      use fsqu, only: wp, wb, fnorm, fnorm1
       use precond, only: arm, ard, brm, brd,    &
                          azm, azd, bzm, bzd, cr
       use xstuff, only: xc

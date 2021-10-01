@@ -1,5 +1,5 @@
    nfp   mnb ncurr  nsin niter nstep      ftol
-     5    72     1     4  300   100  1.00e-11
+     5    72     1     4  1000   50  1.00e-11
       gamma    phiedge     curpol     curtor
       2.000      3.141592654  0.         0.
 c  mass profile expansion coefficients am(i)
@@ -9,10 +9,10 @@ c  iota profile expansion coefficients ai(i)
    curr profile expansion coefficients ac(i)
    -0.0000e-03  0.00000e-01  2.500000e-01 -3.8750e-01  1.60000e-01 0.
 c  mb  nb      rb          zb        raxis       zaxis
-    0   5  6.7485E-04 -1.1719E-03  0.0         0.0
-    0   4 -4.4119E-03  2.7242E-03  0.0         0.0
-    0   3 -3.2827E-03  7.7583E-03  0.0         0.0
-    0   2  7.5955E-04  1.3113E-02  0.0         0.01
+    0   5  6.7485E-04 -1.1719E-03  0.0 0.0
+    0   4 -4.4119E-03  2.7242E-03  0.0 0.0
+    0   3 -3.2827E-03  7.7583E-03 0.0 0.0
+    0   2  7.5955E-04  1.3113E-02  0.0 0.01
     0   1  4.6462E-01 -4.0185E-01  5.5000E-01 -6.0041E-01
     0   0  8.9535E+00  0.0000E+00  9.0000E+00  0.0000E+00
     1   5  5.2057E-04 -3.3151E-04

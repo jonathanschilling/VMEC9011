@@ -4,11 +4,11 @@ module name1
 
       implicit none
 
-      integer, parameter :: nsd     = 33 ! 41       ! number of flux surfaces
-      integer, parameter :: mpol    =  8 ! 9        ! number of poloidal modes incl. 0
-      integer, parameter :: nmax    =  7 ! 13       ! number of toroidal modes 2*nmax+1 (?)
+      integer, parameter :: nsd     = 10 ! 41       ! number of flux surfaces
+      integer, parameter :: mpol    =  7 ! 9        ! number of poloidal modes incl. 0
+      integer, parameter :: nmax    =  6 ! 13       ! number of toroidal modes 2*nmax+1 (?)
       integer, parameter :: ntheta  = 32 ! 36       ! number of poloidal grid points
-      integer, parameter :: nzeta   = 28 ! 44       ! number of toroidal grid points
+      integer, parameter :: nzeta   = 22 ! 44       ! number of toroidal grid points
       integer, parameter :: nvac    =  0            ! fixed-boundary (0) or free-boundary (1)
 
       integer, parameter :: nsd1    = nsd+1         ! number of flux surfaces + 1

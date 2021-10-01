@@ -4,13 +4,13 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
       use stel_kinds, only: dp
       use name0, only: czero, cp5, c2p0
       use name1, only: mpol, mpol1, nmax, ntheta2, nzeta, &
-                       nznt, mnmax, nvac, ntheta1
-      use scalars, only: ns, hs, itfsq, mns, dnorm, twopi
+                       nznt, mnmax, nvac, ntheta1, nsd
+      use scalars, only: ns, hs, itfsq, mns, dnorm, twopi, nrzt
       use inputdat, only: gam, nfp, niter
       use xstuff, only: xc
-      use extfld, only: bscale, brv, phiv, bzv, &
+      use extfld, only: bscale, brv, bphiv, bzv,    &
                         mpmax, xmpot, xnpot, potvac
-      use profs, only: pres, phips, iotas, mass, vp,
+      use profs, only: pres, phips, iotas, mass, vp
       use mnarray, only: mscale, nscale
       use trignew, only: cosmui, sinmu, cosnv, sinnv
       use current, only: buco, bvco, ju, jv
@@ -20,6 +20,9 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
       use realsp, only: r1, z1
 
       implicit none
+
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: dsum
 
       real(kind=dp), intent(in) :: bsq  (ns,nznt)
       real(kind=dp), intent(in) :: gsqrt(ns,nznt)
@@ -44,7 +47,7 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
       real(kind=dp) :: bmodmn (mnmax) ! |B| at ns/2
       real(kind=dp) :: bmodmn1(mnmax) ! |B| at ns (LCFS)
 
-      integer       :: js, mn, j, k, l, lk, m, n, nl, nmin0
+      integer       :: i, js, mn, j, k, l, lk, m, n, nl, nmin0
       integer       :: ntskip, nzskip
       real(kind=dp) :: dmult, tcosi, tsini, fac, zeta
       real(kind=dp) :: gmn, bmn,                  &
@@ -226,8 +229,6 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
                      (1.5*bphi(nl) - 0.5*bphi(nl-1))/bscale,        & ! B^phi of plasma
                      (1.5*bz  (nl) - 0.5*bz  (nl-1))/bscale,        & ! B^z   of plasma
                      brv(lk)/bscale, bphiv(lk)/bscale, bzv(lk)/bscale ! B of vacuum
-
-          end do
         end do
       end do
  95   format(1pe10.2,1p2e12.4,1p6e10.2)

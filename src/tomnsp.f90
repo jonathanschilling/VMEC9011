@@ -37,7 +37,7 @@ subroutine tomnsp(frcc, frss, fzcs, fzsc, flcs, flsc, &
       real(kind=dp), intent(inout) :: work2(ns*nzeta,12)
       real(kind=dp), intent(inout) :: work3(ns,nzeta,12)
 
-      integer       :: jmax, i, jk, l, m, n, js, mparity
+      integer       :: jmax, i, jk, k, l, m, n, js, mparity
       real(kind=dp) :: temp1, temp3
 
       ! include contribution from LCFS only in free-boundary mode

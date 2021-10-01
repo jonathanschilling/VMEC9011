@@ -6,19 +6,22 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       use scalars, only: ns, mns, iter1, hs, meven, modd
       use fsqu, only: fsqr, fsqz, fsql, fsqr1, fsqz1, fsql1, &
                       fnorm, fnorm1, fedge
-      use precondn, only: arm, brm, ard, brd, cr, &
+      use precond, only: arm, brm, ard, brd, cr, &
                           azm, bzm, azd, bzd
       use xstuff, only: gc
       use scalefac, only: faclam
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: ddot
+
       real(kind=dp) :: gcr(ns,0:nmax,0:mpol1,2)
       real(kind=dp) :: gcz(ns,0:nmax,0:mpol1,2)
       real(kind=dp) :: gcl(ns,0:nmax,0:mpol1,2)
 
       real(kind=dp) :: work(mns,6) ! TODO: why 6 --> only 5 used.. ???
-      real(kind=kp) :: bz0
+      real(kind=dp) :: bz0
 
       integer       :: js, n, l
       real(kind=dp) :: fac

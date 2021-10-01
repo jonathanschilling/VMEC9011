@@ -1,6 +1,7 @@
 subroutine trid(a, d, b, c, gam, alf, jmin, nn)
 
       use stel_kinds, only: dp
+      use name1, only: mnd1
       use bounds, only: mlower, mupper
       use scalars, only: ns
 

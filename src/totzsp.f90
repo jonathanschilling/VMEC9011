@@ -13,30 +13,31 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
 
       implicit none
 
-      real(kind=dp), intent(in)  :: rmncc(ns,0:nmax,0:mpol1)
-      real(kind=dp), intent(in)  :: rmnss(ns,0:nmax,0:mpol1)
-      real(kind=dp), intent(in)  :: zmncs(ns,0:nmax,0:mpol1)
-      real(kind=dp), intent(in)  :: zmnsc(ns,0:nmax,0:mpol1)
-      real(kind=dp), intent(in)  :: lmncs(ns,0:nmax,0:mpol1)
-      real(kind=dp), intent(in)  :: lmnsc(ns,0:nmax,0:mpol1)
+      ! need inout to do extrapolation towards axis
+      real(kind=dp), intent(inout) :: rmncc(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: rmnss(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: zmncs(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: zmnsc(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: lmncs(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(inout) :: lmnsc(ns,0:nmax,0:mpol1)
 
-      real(kind=dp), intent(out) ::   r1(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   ru(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   rv(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   z1(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   zu(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   zv(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   lu(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) ::   lv(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) :: rcon(ns*nzeta,ntheta2,0:1)
-      real(kind=dp), intent(out) :: zcon(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   r1(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   ru(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   rv(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   z1(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   zu(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   zv(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   lu(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   ::   lv(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   :: rcon(ns*nzeta,ntheta2,0:1)
+      real(kind=dp), intent(out)   :: zcon(ns*nzeta,ntheta2,0:1)
 
       ! NOTE: work1-work3 all refer to the same array, but with different indices !!!
       real(kind=dp) :: work1(ns*nzeta*12)
       real(kind=dp) :: work2(ns*nzeta,12)
       real(kind=dp) :: work3(ns,nzeta,12)
 
-      integer       :: js, k, l, m, n
+      integer       :: i, js, jk, k, l, m, n
       integer       :: mparity
       real(kind=dp) :: cosmux, sinmux
 
@@ -54,11 +55,11 @@ subroutine totzsp(rmncc,rmnss,zmncs,zmnsc,lmncs,lmnsc, &
         zmnsc(1,n,1) = c2p0*zmnsc(2,n,1) - zmnsc(3,n,1)
         lmncs(1,n,1) = c2p0*lmncs(2,n,1) - lmncs(3,n,1)
         lmnsc(1,n,1) = c2p0*lmnsc(2,n,1) - lmnsc(3,n,1)
-      enddo
+      end do
 
       ! COMPUTE R, Z, AND LAMBDA IN REAL SPACE
       ! BEGIN INVERSE TRANSFORM IN N-ZETA
-      do 70 m = 0,mpol1
+      do m = 0,mpol1
         mparity = mod(m,2)
 
         do l = 1, 12*ns*nzeta

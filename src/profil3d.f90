@@ -8,7 +8,7 @@ subroutine profil3d(rmn, zmn, intflag)
                             mpol1,   &
                             ntheta2, &
                             nzeta,   &
-                            nznt
+                            nznt, nmax1
       use scalars,    only: ns,      &
                             isigng,  &
                             dnorm,   &
@@ -45,11 +45,14 @@ subroutine profil3d(rmn, zmn, intflag)
 
       implicit none
 
+      ! profile_functions
+      real(kind=dp) :: piota, pcurr, pmass
+
       real(kind=dp), intent(out) :: rmn(ns,0:nmax,0:mpol1,2)
       real(kind=dp), intent(out) :: zmn(ns,0:nmax,0:mpol1,2)
       integer,       intent(in)  :: intflag
 
-      integer       :: js, lk, lt, l, m, n
+      integer       :: js, lk, lt, lz, l, m, n
       integer       :: loff
       integer       :: ntype
       real(kind=dp) :: torcur

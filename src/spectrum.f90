@@ -2,7 +2,7 @@ subroutine spectrum(rcc, rss, zcs, zsc)
 
       use stel_kinds, only: dp
       use name0, only: czero
-      use name1, only: mpol1, nmax
+      use name1, only: mpol1, nmax, nsd
       use scalars, only: ns
       use mnarray, only: mscale, nscale, xmpq
       use spectra, only: specw

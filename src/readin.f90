@@ -18,7 +18,7 @@ subroutine readin(nsin, ierflag)
                             nvacskip, &
                             am,       &
                             ai,       &
-                            ac
+                            ac, rb, zb, raxis, zaxis
       use magfield,   only: phiedge,  &
                             curpol,   &
                             curtor
@@ -189,7 +189,7 @@ subroutine readin(nsin, ierflag)
           ! TODO: maybe problematic if specific intermedia mode numbers need to be both zero... ?
           if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) then
             done = .true.
-            break
+            exit
           end if
 
           if (m.eq.0) then
@@ -200,7 +200,7 @@ subroutine readin(nsin, ierflag)
         enddo
 
         if (done) &
-          break
+          exit
       enddo
 
  65   format(i5,i4,1p4e12.4)

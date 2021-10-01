@@ -4,7 +4,9 @@ subroutine vsetup
                           c1p0
       use name1,    only: nrztd
       use realsp,   only: rcon0, &
-                          zcon0
+                          zcon0, &
+                         setup_realsp
+      use rforces, only: setup_rforces
       use time,     only: timer
       use scalars,  only: iequi, &
                           itfsq
@@ -12,10 +14,14 @@ subroutine vsetup
                           ivac
       use magfield, only: delbsq
 
+
       implicit none
 
       integer :: i
       integer :: l
+
+      call setup_realsp
+      call setup_rforces
 
       do l = 1, nrztd
         rcon0(l) = czero

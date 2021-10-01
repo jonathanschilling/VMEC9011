@@ -1,4 +1,4 @@
-subroutine eqsolve(ns, intflag, ierflag)
+subroutine eqsolve(nsval, intflag, ierflag)
 
       use stel_kinds, only: dp, p4
       use name0,      only: c1pm13, &
@@ -10,7 +10,7 @@ subroutine eqsolve(ns, intflag, ierflag)
                             nznt,   &
                             mnmax,  &
                             nsd
-      use scalars,    only: hs,     &
+      use scalars,    only: ns, hs,     &
                             ohs,    &
                             mns,    &
                             neqs,   &
@@ -41,7 +41,7 @@ subroutine eqsolve(ns, intflag, ierflag)
 
       implicit none
 
-      integer, intent(in)  :: ns
+      integer, intent(in)  :: nsval
       integer, intent(in)  :: intflag
       integer, intent(out) :: ierflag
 
@@ -81,6 +81,7 @@ subroutine eqsolve(ns, intflag, ierflag)
       !   1+5*mns,neqs => lmnsc Fourier coefficients
 
       ! INITIALIZE MESH-DEPENDENT SCALARS
+      ns    = nsval
       hs    = c1p0/real(ns-1)
       ohs   = c1p0/hs
       mns   = ns*mnd

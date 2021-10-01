@@ -18,17 +18,18 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp), intent(inout) :: guv(nrztd)
       real(kind=dp), intent(inout) :: gvv(nrztd)
 
-      real(kind=dp), pointer :: guus(:) => worka(1+ 5*nrztd: 6*nrztd)
-      real(kind=dp), pointer :: guvs(:) => worka(1+11*nrztd:12*nrztd)
-!       equivalence (guus, worka(1+ 4*nrztd)), & ! crmn(1+1*nrztd)
-!                   (guvs, worka(1+11*nrztd))    ! czmn(1+1*nrztd)
-      real(kind=dp) :: gvvs(nrztd) ! gvvs is stored here ?
-      real(kind=dp) :: bsqr(nrztd)
+      real(kind=dp), pointer :: guus(:)
+      real(kind=dp), pointer :: guvs(:)
+      real(kind=dp)          :: gvvs(nrztd) ! gvvs is stored here ?
+      real(kind=dp)          :: bsqr(nrztd)
 
       ! IN LOOPS, L (L1) INDEX REPRESENTS EVEN (ODD) COMPONENT.
       integer       :: l, l1, lk, m
       real(kind=dp) :: rcon1, zcon1
       real(kind=dp) :: s2, guus2, guvs2, gvvs2
+
+      guus => worka(1+ 5*nrztd: 6*nrztd)
+      guvs => worka(1+11*nrztd:12*nrztd)
 
       ! ON ENTRY, ARMN=ZU, BRMN=ZS, AZMN=RU, BZMN=RS, CZMN=R*BSQ.
 

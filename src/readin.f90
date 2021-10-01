@@ -190,14 +190,8 @@ subroutine readin(nsin, ierflag)
           if (m.eq.0) &
             zb(n1,m,2) = czero
 
-!           ! TODO: maybe problematic if specific intermedia mode numbers need to be both zero... ?
-!           if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) then
-!             done = .true.
-!             print *, "done at m=", m, " n=", n
-!             exit
-!           end if
-
           if (rc(m,n).ne.czero .or. zs(m,n).ne.czero) then
+            ! only write non-zero coefficients to screen
             if (m.eq.0) then
               write(3,65) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
             else

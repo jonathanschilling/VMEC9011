@@ -34,3 +34,5 @@
 
 # vmec-specific
 build
+fort.*
+

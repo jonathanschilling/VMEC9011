@@ -39,6 +39,8 @@ subroutine readin(nsin, ierflag)
       real(kind=dp) :: rmag(-nmax:nmax)
       real(kind=dp) :: zmag(-nmax:nmax)
 
+      logical :: print_input_geometry = .false.
+
       !         INPUT DATA AND RECOMMENDED VALUES
       !
       ! ftol    value of fsq = fr**2 + fz**2 at which iteration ends
@@ -122,7 +124,9 @@ subroutine readin(nsin, ierflag)
       ! DO I=1, MNBOUND
       DO I=1, MPOL1*(2*NMAX+1)
         READ(5,*,END=51) M, N, RC(M,N), ZS(M,N)
-        write(*,*)       M, N, RC(M,N), ZS(M,N)
+
+        if (print_input_geometry) &
+          write(*,*)     M, N, RC(M,N), ZS(M,N)
 
         if (m.gt.mpol1 .or. m.lt.0) &
           ierflag = 3
@@ -186,23 +190,25 @@ subroutine readin(nsin, ierflag)
           if (m.eq.0) &
             zb(n1,m,2) = czero
 
-          ! TODO: maybe problematic if specific intermedia mode numbers need to be both zero... ?
-          if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) then
-            done = .true.
-            exit
-          end if
+!           ! TODO: maybe problematic if specific intermedia mode numbers need to be both zero... ?
+!           if (rc(m,n).eq.czero .and. zs(m,n).eq.czero) then
+!             done = .true.
+!             print *, "done at m=", m, " n=", n
+!             exit
+!           end if
 
-          if (m.eq.0) then
-            write(3,65) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
-          else
-            write(3,65) m, n, rc(m,n), zs(m,n)
-          endif
+          if (rc(m,n).ne.czero .or. zs(m,n).ne.czero) then
+            if (m.eq.0) then
+              write(3,65) m, n, rc(m,n), zs(m,n), rmag(n), zmag(n)
+            else
+              write(3,65) m, n, rc(m,n), zs(m,n)
+            endif
+          end if
         enddo
 
         if (done) &
           exit
       enddo
-
  65   format(i5,i4,1p4e12.4)
 
       print   70

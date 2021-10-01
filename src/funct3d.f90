@@ -62,7 +62,7 @@ subroutine funct3d
 
       ! INVERSE FOURIER TRANSFORM TO S,THETA,ZETA SPACE
       ! R, Z, AND LAMBDA ARRAYS IN FOURIER SPACE
-      do l = 1,nrzt
+      do l = 1, nrzt
         lu(l) = c1p0
         lv(l) = czero
         lu(l+nrzt) = czero

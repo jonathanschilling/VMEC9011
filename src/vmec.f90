@@ -67,18 +67,18 @@ program vmec
       ! intflag = 0,    compute xc array from boundary data
       !         = nsin, compute xc array by interpolation
 
-      OPEN(UNIT=7, FILE='INDATA',  STATUS='OLD',     ERR=901)
-      OPEN(UNIT=3, FILE='THREED1', STATUS='NEW',     ERR=902)
-      OPEN(UNIT=8, FILE='WOUT',    STATUS='UNKNOWN', ERR=903)
-      goto 904
-
- 901  print *,' INDATA FILE IS MISSING'
-      stop
- 902  print *,' THREED1 FILE ALREADY EXISTS: RENAME OR DELETE IT'
-      stop
- 903  print *,' WOUT FILE ALREADY EXIST: RENAME OR DELETE IT'
-      stop
- 904  continue
+!       OPEN(UNIT=7, FILE='INDATA',  STATUS='OLD',     ERR=901)
+!       OPEN(UNIT=3, FILE='THREED1', STATUS='NEW',     ERR=902)
+!       OPEN(UNIT=8, FILE='WOUT',    STATUS='UNKNOWN', ERR=903)
+!       goto 904
+!
+!  901  print *,' INDATA FILE IS MISSING'
+!       stop
+!  902  print *,' THREED1 FILE ALREADY EXISTS: RENAME OR DELETE IT'
+!       stop
+!  903  print *,' WOUT FILE ALREADY EXIST: RENAME OR DELETE IT'
+!       stop
+!  904  continue
 
       print   *, 'THIS IS THE PRECONDITIONED VMEC.FULL CODE: VMEC9011'
       WRITE(3,*) 'THIS IS THE PRECONDITIONED VMEC.FULL CODE: VMEC9011'

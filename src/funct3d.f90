@@ -26,6 +26,7 @@ subroutine funct3d
 
       ! TODO: more elegant definition of these BLAS functions
       real(kind=dp) :: ddot
+      external dcopy
 
       real(kind=dp) :: rmnc(mnmax)
       real(kind=dp) :: zmns(mnmax)
@@ -92,8 +93,8 @@ subroutine funct3d
 
       ! first iteration: save rcon into rcon0, zcon into zcon0
       if (iter2.eq.1 .and. nvac.eq.0) then
-        call dcopy(nrzt,rcon,1,rcon0,1)
-        call dcopy(nrzt,zcon,1,zcon0,1)
+        call dcopy(nrzt, rcon, 1, rcon0, 1)
+        call dcopy(nrzt, zcon, 1, zcon0, 1)
       endif
 
       if (iter2.gt.1) &
@@ -183,8 +184,8 @@ subroutine funct3d
 
         if(ivac.eq.1) then
           ! copy initial plasma and vacuum field into bsqsav(:,1:2)
-          call dcopy(nznt, bzmn(ns+nrzt), ns, bsqsav(1,1), 1)
-          call dcopy(nznt, bsqvac,         1, bsqsav(1,2), 1)
+          call dcopy(nznt, bzmn(ns+nrzt:ns+2*nrzt), ns, bsqsav(1,1), 1)
+          call dcopy(nznt, bsqvac,                   1, bsqsav(1,2), 1)
         endif
 
         call second(t4)

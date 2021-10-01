@@ -17,7 +17,7 @@ module name1
       integer, parameter :: nznt    = nzeta*ntheta2 ! number of surface grid points
       integer, parameter :: nrztd   = nznt*nsd+1    ! number of grid points in volume (+1 ?)
       integer, parameter :: mpol1   = mpol-1        ! highest occuring poloidal mode number
-      integer, parameter :: nmax1   = 1+nmax        ! number of toroidal coefficients per set of basis functions
+      integer, parameter :: nmax1   = nmax+1        ! number of toroidal coefficients per set of basis functions
       integer, parameter :: mnd     = mpol*nmax1    ! total number of Fourier coefficients per set of basis functions
       integer, parameter :: mnd1    = mnd-1         ! total number of Fourier coefficients per set of basis functions - 1
       integer, parameter :: mnd2    = 2*mnd         ! 2 x total number of Fourier coefficients per set of basis functions

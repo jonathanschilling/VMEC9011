@@ -107,8 +107,8 @@ subroutine fixaray(ierflag)
       enddo
 
       ! CHECK SIGN OF JACOBIAN (SHOULD BE SAME AS ISIGNG)
-      rtest = dsum(nmax1, rb(0,1,1), 1)
-      ztest = dsum(nmax1, zb(0,1,2), 1)
+      rtest = sum(rb(0:nmax,1,1))
+      ztest = sum(zb(0:nmax,1,2))
       if ((rtest*ztest*real(isigng)) .ge. czero) &
         ierflag = 5
 

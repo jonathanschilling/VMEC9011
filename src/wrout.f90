@@ -234,24 +234,18 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
  95   format(1pe10.2,1p2e12.4,1p6e10.2)
 
       write(3,100)
- 100  format(//,3x,      'mb',2x,        'nb',9x,       'rbc',9x,   'zbs',3x,  '|B|(s=.5)',3x,'|B|(s=1.)',6x, &
-                         'mb',2x,        'nb',9x,       'rbc',9x,   'zbs',3x,  '|B|(s=.5)',3x,'|B|(s=1.)'/)
-      do mn = 1, mnmax, 2
-        write(3,115) nint(xm(mn  )), nint(xn(mn  )/nfp), rmnc(mn  ), zmns(mn  ), bmodmn(mn  ), bmodmn1(mn  ), &
-                     nint(xm(mn+1)), nint(xn(mn+1)/nfp), rmnc(mn+1), zmns(mn+1), bmodmn(mn+1), bmodmn1(mn+1)
+ 100  format(//,3x,      'mb',2x,        'nb',9x,       'rbc',9x,   'zbs',3x,  '|B|(s=.5)',3x,'|B|(s=1.)'/)
+      do mn = 1, mnmax
+        write(3,115) nint(xm(mn)), nint(xn(mn)/nfp), rmnc(mn), zmns(mn), bmodmn(mn), bmodmn1(mn)
       end do
- 115  format(i5,i4,1p4e12.4,3x,i5,i4,1p4e12.4)
+ 115  format(i5,i4,1p4e12.4)
 
       write(3,120)
- 120  format(/,3x,'mf',2x,'nf',5x,'potvacs',6x, &
-                  'mf',2x,'nf',5x,'potvacs',6x, &
-                  'mf',2x,'nf',5x,'potvacs'/)
-      do mn = 1, mpmax, 3
-        write(3,135) nint(xmpot(mn  )), nint(xnpot(mn  )/nfp), potvac(mn  )/bscale, &
-                     nint(xmpot(mn+1)), nint(xnpot(mn+1)/nfp), potvac(mn+1)/bscale, &
-                     nint(xmpot(mn+2)), nint(xnpot(mn+2)/nfp), potvac(mn+2)/bscale
+ 120  format(/,3x,'mf',2x,'nf',5x,'potvacs'/)
+      do mn = 1, mpmax
+        write(3,135) nint(xmpot(mn)), nint(xnpot(mn)/nfp), potvac(mn)/bscale
       end do
- 135  format(i5,i4,1pe12.4,3x,i5,i4,1pe12.4,3x,i5,i4,1pe12.4)
+ 135  format(i5,i4,1pe12.4)
 
       return
 end

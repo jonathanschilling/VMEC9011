@@ -69,7 +69,7 @@ subroutine evolve(ierflag)
         otau(ndamp1) = dtau/delt
 
       ! average over last ndamp values in otau
-      otav = dsum(ndamp1, otau, 1)/real(ndamp1)
+      otav = sum(otau(1:ndamp1))/real(ndamp1)
 
       dtau = delt*otav
 

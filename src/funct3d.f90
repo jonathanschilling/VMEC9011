@@ -25,7 +25,7 @@ subroutine funct3d
       implicit none
 
       ! TODO: more elegant definition of these BLAS functions
-      real(kind=dp) :: dsum, ddot
+      real(kind=dp) :: ddot
 
       real(kind=dp) :: rmnc(mnmax)
       real(kind=dp) :: zmns(mnmax)
@@ -116,7 +116,7 @@ subroutine funct3d
       !             gsqrt       bsq
       call pressure(azmn(lodd), bzmn(lodd), wint)
       if (iter2.eq.1) then
-        voli = (twopi**2)*hs*dsum(ns-1,vp(2),1)
+        voli = (twopi**2)*hs*sum(vp(2:ns))
       end if
 
       ! COMPUTE COVARIANT COMPONENTS OF B, MAGNETIC PRESSURE,

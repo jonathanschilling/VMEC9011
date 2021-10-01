@@ -18,7 +18,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       implicit none
 
       ! TODO: more elegant definition of these BLAS functions
-      real(kind=dp) :: dsum, ddot
+      real(kind=dp) :: ddot
 
       real(kind=dp), intent(out)   :: bsubu (nrzt,0:1)
       real(kind=dp), intent(out)   :: bsubv (nrzt,0:1)
@@ -148,7 +148,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           guu(l) = guu(l) * r12(l)**2
         end do
 
-        volume = hs * dsum(ns-1, vp(2), 1)
+        volume = hs * sum(vp(2:ns))
         fnorm  = dnorm/(ddot(nrzt, guu, 1, wint, 1) * (wb/volume)**2)
 
         fnorm1 = c1p0/ddot(4*mns-ns, xc(ns+1), 1, xc(ns+1), 1)

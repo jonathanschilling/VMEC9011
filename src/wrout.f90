@@ -21,9 +21,6 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
 
       implicit none
 
-      ! TODO: more elegant definition of these BLAS functions
-      real(kind=dp) :: dsum
-
       real(kind=dp), intent(in) :: bsq  (ns,nznt)
       real(kind=dp), intent(in) :: gsqrt(ns,nznt)
       real(kind=dp), intent(in) :: bsubu(ns,nznt)
@@ -158,7 +155,7 @@ subroutine wrout(bsq,   gsqrt, bsubu, bsubv, &
 
       phi(1) = czero
       do js = 2, ns
-        phi(js) = twopi*hs * dsum(js-1, phips(2), 1)
+        phi(js) = twopi*hs * sum(phips(2:js))
       end do
 
       fac = abs(bscale)**(gam-c2p0)

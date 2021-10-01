@@ -15,7 +15,7 @@ subroutine eqfor(bu, bv, bsq, rmag, zmag)
       implicit none
 
       ! TODO: more elegant definition of these BLAS functions
-      real(kind=dp) :: dsum, ddot
+      real(kind=dp) :: ddot
 
       real(kind=dp), intent(in) :: bu  (ns,1)
       real(kind=dp), intent(in) :: bv  (ns,1)
@@ -70,7 +70,7 @@ subroutine eqfor(bu, bv, bsq, rmag, zmag)
       end do
  30   FORMAT(1P5E10.2,1p1E11.3,1P3E10.2,1P1E11.3,0PF7.3)
 
-      volf = (twopi**2)*dsum(ns, vp, 1)/real(ns-1)
+      volf = (twopi**2)*sum(vp(1:ns))/real(ns-1)
       write(3,40) voli, volf, betaxis
  40   format(/,'  INITIAL VOLUME  =  ',1pe20.10,'  FINAL VOLUME  =  ',1pe20.10,/, &
                '  BETA ON AXIS    =  ',2x,1pe12.4,/)

@@ -2,6 +2,7 @@ subroutine output
 
       use stel_kinds, only: dp
       use scalars, only: iequi, ijacob
+      use time, only: timer
 
       implicit none
 

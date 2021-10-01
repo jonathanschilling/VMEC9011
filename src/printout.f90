@@ -17,9 +17,13 @@ subroutine printout(i, w0, r00)
 
       implicit none
 
-      integer,       intent(in) :: i, j
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: ddot
+
+      integer,       intent(in) :: i
       real(kind=dp), intent(in) :: w0, r00
 
+      integer       :: j
       real(kind=dp) :: betav, w, delbsq
       real(kind=dp) :: avm, den
 

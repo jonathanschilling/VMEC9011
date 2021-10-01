@@ -114,7 +114,7 @@ subroutine funct3d
       ! COMPUTE PRESSURE AND VOLUME ON HALF-GRID
       ! see above for re-use of arrays; additionally:
       !             gsqrt       bsq
-      call pressure(azmn(lodd), bzmn(lodd))
+      call pressure(azmn(lodd), bzmn(lodd), wint)
       if (iter2.eq.1) then
         voli = (twopi**2)*hs*dsum(ns-1,vp(2),1)
       end if

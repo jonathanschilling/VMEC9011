@@ -1,17 +1,20 @@
-subroutine pressure(gsqrt, bsq)
+subroutine pressure(gsqrt, bsq, wint)
 
       use stel_kinds, only: dp
       use name1, only: nznt
       use scalars, only: ns, dnorm
       use profs, only: vp, mass, pres
-      use scalfac, only: wint
       use inputdat, only: gam
       use fsqu, only: wp
 
       implicit none
 
+      ! TODO: more elegant definition of these BLAS functions
+      real(kind=dp) :: ddot
+
       real(kind=dp), intent(in)  :: gsqrt(ns,nznt)
       real(kind=dp), intent(out) :: bsq  (ns,nznt)
+      real(kind=dp), intent(in)  :: wint (ns,nznt)
 
       integer :: js, lk
 

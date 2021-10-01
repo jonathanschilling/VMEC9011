@@ -1,25 +1,27 @@
-subroutine precondn(lu, bsq, gsqrt, r12,      &
-                    xs, xu12, xue, xuo, xodd, &
+subroutine precondn(lu, bsq, gsqrt, r12,            &
+                    xs, xu12, xue, xuo, xodd, wint, &
                     axm, axd, bxm, bxd, cx)
 
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5, c1p0, c1p5
+      use name1, only: nznt, nsd1
       use scalars, only: iter2, ns, ohs
       use profs, only: pres
-      use precondn, only: sm, sp
-      use scalefac, only: wint, shalf
+      use precond, only: sm, sp
+      use scalefac, only: shalf
 
       implicit none
 
+      real(kind=dp), intent(in)  :: lu   (ns,nznt)
       real(kind=dp), intent(in)  :: bsq  (ns,nznt)
       real(kind=dp), intent(in)  :: gsqrt(ns,nznt)
       real(kind=dp), intent(in)  :: r12  (ns,nznt)
-      real(kind=dp), intent(in)  :: lu   (ns,nznt)
+      real(kind=dp), intent(in)  :: xs   (ns,nznt)
       real(kind=dp), intent(in)  :: xu12 (ns,nznt)
       real(kind=dp), intent(in)  :: xue  (ns,nznt)
       real(kind=dp), intent(in)  :: xuo  (ns,nznt)
       real(kind=dp), intent(in)  :: xodd (ns,nznt)
-      real(kind=dp), intent(in)  :: xs   (ns,nznt)
+      real(kind=dp), intent(in)  :: wint (ns,nznt)
       real(kind=dp), intent(out) :: axm  (nsd1,2)
       real(kind=dp), intent(out) :: axd  (nsd1,2)
       real(kind=dp), intent(out) :: bxm  (nsd1,2)

@@ -136,12 +136,12 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
         call lamcal(phipog, guu, guv, gvv)
 
-        call precondn(lu, bsq, gsqrt, r12,                  &
-                      zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
+        call precondn(lu, bsq, gsqrt, r12,                        &
+                      zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), wint, &
                       arm, ard, brm, brd, cr)
 
-        call precondn(lu, bsq, gsqrt, r12,                  &
-                      rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
+        call precondn(lu, bsq, gsqrt, r12,                        &
+                      rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), wint, &
                       azm, azd, bzm, bzd, cr)
 
         do l = 2, nrzt

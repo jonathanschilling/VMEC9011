@@ -27,9 +27,10 @@ subroutine evolve(ierflag)
 
       integer, intent(out) :: ierflag
 
-      integer       :: i, l, ndamp1
+      integer       :: i, l
       real(kind=dp) :: fsq1, dtau
       real(kind=dp) :: b1, fac
+      integer       :: ndamp1 = 10 ! initial value needed here!
 
       ! COMPUTE MHD FORCES
       call funct3d

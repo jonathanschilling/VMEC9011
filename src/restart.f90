@@ -16,7 +16,7 @@ subroutine restart
 
       if (irst.eq.1) then
         ! copy current state vector into backup
-        call scopy(neqs, xc, 1, xstore, 1)
+        call dcopy(neqs, xc, 1, xstore, 1)
       else
         ! zero velocity, restore state from backup
         do l = 1, neqs
@@ -38,5 +38,4 @@ subroutine restart
       endif
 
       return
-
 end

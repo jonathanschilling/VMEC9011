@@ -8,8 +8,8 @@ module bounds
       integer, parameter :: mup2 = nmax+nmax1
       integer, parameter :: mlo3 = mup2+1
 
-      integer       :: mupper(3) = (/nmax, mup2,  mnd1/)
-      integer       :: mlower(3) = (/   0, nmax1, mlo3/)
+      integer, parameter :: mupper(3) = (/nmax, mup2,  mnd1/)
+      integer, parameter :: mlower(3) = (/   0, nmax1, mlo3/)
 end module bounds
 
 module precond
@@ -135,7 +135,7 @@ module profs
       real(kind=dp) :: pres(nsd)
       real(kind=dp) :: vp(nsd)
       real(kind=dp) :: phip(nrztd)
-      data phips/nsd1*zerod/
+      data phips(1)/zerod/
 end module profs
 
 module scalars
@@ -152,12 +152,12 @@ module scalars
       integer       :: irst
       integer       :: iter1
       integer       :: iter2
-      integer       :: isigng = -1
-      integer       :: meven  = 0
-      integer       :: modd   = 1
-      integer       :: ndamp  = 10
+      integer, parameter :: isigng = -1
+      integer, parameter :: meven  = 0
+      integer, parameter :: modd   = 1
+      integer, parameter :: ndamp  = 10
       integer       :: ns
-      integer       :: ns4    = 25
+      integer, parameter :: ns4    = 25
       integer       :: neqs
       integer       :: nrzt
       integer       :: mns

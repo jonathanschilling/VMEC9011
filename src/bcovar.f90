@@ -167,7 +167,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
         end do
 
         do js = 2, ns-1
-          tcon(js) = min(abs(ard(js,1)/ar(js)),abs(azd(js,1)/az(js)))
+          tcon(js) = min(abs(ard(js,1)/ar(js)), abs(azd(js,1)/az(js)))
         end do
         tcon(ns) = cp5*tcon(ns-1)
       endif

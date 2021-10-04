@@ -1,19 +1,20 @@
-subroutine extrap(rmncc, rmnss, zmncs, zmnsc, lmncs, lmnsc, x3, x4, ns)
+subroutine extrap(rmncc, rmnss, zmncs, zmnsc, lmncs, lmnsc, x3, x4)
 
       use stel_kinds, only: dp
       use name1, only: mnd1, nmax, nmax1
+      use scalars, only: ns
 
       implicit none
 
       real(kind=dp), intent(inout) :: rmncc(ns,0:mnd1)
       real(kind=dp), intent(inout) :: rmnss(ns,0:mnd1)
-      real(kind=dp), intent(in)    ::       x3(0:mnd1)
       real(kind=dp), intent(inout) :: zmncs(ns,0:mnd1)
       real(kind=dp), intent(inout) :: zmnsc(ns,0:mnd1)
-      real(kind=dp), intent(in)    ::       x4(0:mnd1)
       real(kind=dp), intent(inout) :: lmncs(ns,0:mnd1)
       real(kind=dp), intent(inout) :: lmnsc(ns,0:mnd1)
-      integer,       intent(in)    ::       ns
+
+      real(kind=dp), intent(in)    ::       x3(0:mnd1)
+      real(kind=dp), intent(in)    ::       x4(0:mnd1)
 
       integer :: mn, n
 

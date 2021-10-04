@@ -58,9 +58,10 @@ subroutine funct3d
       lodd = 1+nrzt
 
       ! EXTRAPOLATE M>2 MODES AT JS = 2
-      call extrap(xc,          xc(1+  mns), xc(1+2*mns), &
-                  xc(1+3*mns), xc(1+4*mns), xc(1+5*mns), &
-                  xrz3, xrz4, ns)
+      call extrap(xc,          xc(1+  mns), &
+                  xc(1+2*mns), xc(1+3*mns), &
+                  xc(1+4*mns), xc(1+5*mns), &
+                  xrz3, xrz4)
 
       ! temporary re-use of gc for scaled xc
       do l = 1,neqs
@@ -82,8 +83,8 @@ subroutine funct3d
 
       ! COMPUTE CONSTRAINT FORCE (GCON)
       do l = 1,nrzt
-        ru0(l)  = ru(l) + ru(l+nrzt)*sqrts(l)
-        zu0(l)  = zu(l) + zu(l+nrzt)*sqrts(l)
+        ru0(l)  = ru  (l) + ru  (l+nrzt)*sqrts(l)
+        zu0(l)  = zu  (l) + zu  (l+nrzt)*sqrts(l)
         rcon(l) = rcon(l) + rcon(l+nrzt)*sqrts(l)
         zcon(l) = zcon(l) + zcon(l+nrzt)*sqrts(l)
 

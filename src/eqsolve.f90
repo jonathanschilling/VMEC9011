@@ -70,15 +70,16 @@ subroutine eqsolve(nsval, intflag, ierflag)
       ! modd    parity selection label for odd poloidal modes of R and
       ! rb      boundary coefficient array for R (rcc,rss)
       ! zb      boundary coefficient array for Z (zcs,zsc)
-      ! gc      stacked array of R, Z, Lambda Spectral force coefficie
-      ! xc      stacked array of scaled R, Z, Lambda Fourier coefficie
+      ! gc      stacked array of R, Z, Lambda Spectral force coefficients
+      ! xc      stacked array of scaled R, Z, Lambda Fourier coefficients
       ! STACKING ORDER:
-      !   1:mns   => rmncc Fourier coefficients
-      !   1+mns,2*mns => rmnss Fourier coefficients
+      !   1+0*mns:1*mns   => rmncc Fourier coefficients
+      !   1+1*mns,2*mns => rmnss Fourier coefficients
       !   1+2*mns,3*mns => zmncs Fourier coefficients
       !   1+3*mns,4*mns => zmnsc Fourier coefficients
       !   1+4*mns,5*mns => lmncs Fourier coefficients
-      !   1+5*mns,neqs => lmnsc Fourier coefficients
+      !   1+5*mns,6*mns => lmnsc Fourier coefficients
+      ! note: 6*mns = neqs --> xc(1:neqs)
 
       ! INITIALIZE MESH-DEPENDENT SCALARS
       ns    = nsval

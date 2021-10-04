@@ -49,8 +49,8 @@ subroutine funct3d
       real(kind=dp), pointer :: lu(:)
       real(kind=dp), pointer :: lv(:)
 
-      guu => workb(1+12*nrztd:13*nrztd) ! rcon
-      guv => workb(1+14*nrztd:15*nrztd) ! zcon
+      guu => workb(1+13*nrztd:14*nrztd) ! rcon(1+nrztd)
+      guv => workb(1+15*nrztd:16*nrztd) ! zcon(1+nrztd)
       gvv => workb(1+ 6*nrztd: 7*nrztd) ! z1
       lu  => worka(1+10*nrztd:12*nrztd) ! czmn
       lv  => worka(1+ 4*nrztd: 6*nrztd) ! crmn

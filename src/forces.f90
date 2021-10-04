@@ -28,10 +28,11 @@ subroutine forces(guu, guv, gvv)
       real(kind=dp) :: rcon1, zcon1
       real(kind=dp) :: s2, guus2, guvs2, gvvs2
 
-      guus => worka(1+ 5*nrztd: 6*nrztd)
-      guvs => worka(1+11*nrztd:12*nrztd)
+      guus => worka(1+ 5*nrztd: 6*nrztd) ! crmn(lodd)
+      guvs => worka(1+11*nrztd:12*nrztd) ! czmn(lodd)
 
       ! ON ENTRY, ARMN=ZU, BRMN=ZS, AZMN=RU, BZMN=RS, CZMN=R*BSQ.
+      ! ^^ on half-grid: zu12, ru12 !!! from jacobian()
 
       ! IT IS ESSENTIAL THAT CRMN, CZMN AT j=1 ARE ZERO INITIAL.
       ! crmn, czmn contain lv, lu on entry --> need to clear these
@@ -124,11 +125,13 @@ subroutine forces(guu, guv, gvv)
         rcon1    = (rcon(l) - rcon0(l)) * gcon(l)
         zcon1    = (zcon(l) - zcon0(l)) * gcon(l)
 
+        ! take constraint force into account also in bXmn
         brmn(l)  = brmn(l)  + rcon1
         bzmn(l)  = bzmn(l)  + zcon1
         brmn(l1) = brmn(l1) + rcon1*sqrts(l)
         bzmn(l1) = bzmn(l1) + zcon1*sqrts(l)
 
+        ! these become arcon, azcon in tomnsp()
         rcon(l)  =  ru0(l) * gcon(l)
         zcon(l)  =  zu0(l) * gcon(l)
         rcon(l1) = rcon(l) * sqrts(l)

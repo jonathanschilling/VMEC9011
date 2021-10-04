@@ -23,8 +23,8 @@ subroutine jacobian(r1, ru, z1, zu, &
       integer       :: l, lm
       real(kind=dp) :: taumin, taumax
 
-      ! (RS, ZS)=(R, Z) SUB S, (RU12, ZU12)=(R, Z) SUB THETA(=U)
-      ! AND GSQRT=SQRT(G) ARE DIFFERENCED ON HALF MESH
+      ! (RS, ZS)=(R, Z) SUB S, (RU12, ZU12)=(R, Z) SUB THETA(=U) AND GSQRT=SQRT(G)
+      ! ARE DIFFERENCED ON HALF MESH
       do l = 2, nrzt
         lm = l-1
 
@@ -40,8 +40,7 @@ subroutine jacobian(r1, ru, z1, zu, &
         r12(l)  = cp5*(r1(l, meven) + r1(lm, meven) + shalf(l)*(r1(l, modd) + r1(lm, modd)))
 
         ! Jacobian
-        gsqrt(l)= r12(l) * (  ru12(l)*zs(l)                                                                &
-                            - rs(l)*zu12(l)                                                                &
+        gsqrt(l)= r12(l) * (  ru12(l)*zs(l) - rs(l)*zu12(l)                                                &
                             + cp25 * (     ru(l,modd )*z1(l,modd) + ru(lm,modd )*z1(lm,modd)               &
                                          - zu(l,modd )*r1(l,modd) - zu(lm,modd )*r1(lm,modd)               &
                                       + (  ru(l,meven)*z1(l,modd) + ru(lm,meven)*z1(lm,modd)               &
@@ -58,8 +57,11 @@ subroutine jacobian(r1, ru, z1, zu, &
         taumin = min(tau(l), taumin)
         taumax = max(tau(l), taumax)
       end do
-      if (taumin*taumax.lt.czero) &
+      if (taumin*taumax.lt.czero) then
+        ! if product of min and max is less than zero,
+        ! taumin and taumax have different signs
         irst=2
+      end if
 
       return
 end

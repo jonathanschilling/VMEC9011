@@ -2,7 +2,7 @@ subroutine pressure(gsqrt, bsq, wint)
 
       use stel_kinds, only: dp
       use name1, only: nznt
-      use scalars, only: ns, dnorm
+      use scalars, only: ns, hs, dnorm
       use profs, only: vp, mass, pres
       use inputdat, only: gam
       use fsqu, only: wp
@@ -27,8 +27,9 @@ subroutine pressure(gsqrt, bsq, wint)
         pres(js) = mass(js)/vp(js)**gam
       end do
 
-      wp = ddot(ns, vp, 1, pres, 1)/real(ns-1)
+      wp = hs*ddot(ns, vp, 1, pres, 1)
 
+      ! bsq gets a scalar offset of the kinetic pressure on each flux surface
       do js = 2, ns
         do lk = 1, nznt
           bsq(js, lk) = pres(js)

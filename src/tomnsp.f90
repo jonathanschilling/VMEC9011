@@ -85,15 +85,21 @@ subroutine tomnsp(frcc, frss, fzcs, fzsc, flcs, flsc, &
           ! --> for axis, inner most surface: forces only from restricted poloidal modes
           do k = 1, nzeta
             do js = jmin2(m), jmax
-              frcc(js,n,m) = frcc(js,n,m) + work3(js,k, 1)*cosnv(k,n) + work3(js,k, 2)*sinnvn(k,n)
-              frss(js,n,m) = frss(js,n,m) + work3(js,k, 3)*sinnv(k,n) + work3(js,k, 4)*cosnvn(k,n)
-              fzcs(js,n,m) = fzcs(js,n,m) + work3(js,k, 5)*sinnv(k,n) + work3(js,k, 6)*cosnvn(k,n)
-              fzsc(js,n,m) = fzsc(js,n,m) + work3(js,k, 7)*cosnv(k,n) + work3(js,k, 8)*sinnvn(k,n)
+              frcc(js,n,m) = frcc(js,n,m) + work3(js,k, 1)*cosnv (k,n) &
+                                          + work3(js,k, 2)*sinnvn(k,n)
+              frss(js,n,m) = frss(js,n,m) + work3(js,k, 3)*sinnv (k,n) &
+                                          + work3(js,k, 4)*cosnvn(k,n)
+              fzcs(js,n,m) = fzcs(js,n,m) + work3(js,k, 5)*sinnv (k,n) &
+                                          + work3(js,k, 6)*cosnvn(k,n)
+              fzsc(js,n,m) = fzsc(js,n,m) + work3(js,k, 7)*cosnv (k,n) &
+                                          + work3(js,k, 8)*sinnvn(k,n)
             end do ! js
 
             do js = jlam(m), ns
-              flcs(js,n,m) = flcs(js,n,m) + work3(js,k, 9)*sinnv(k,n) + work3(js,k,10)*cosnvn(k,n)
-              flsc(js,n,m) = flsc(js,n,m) + work3(js,k,11)*cosnv(k,n) + work3(js,k,12)*sinnvn(k,n)
+              flcs(js,n,m) = flcs(js,n,m) + work3(js,k, 9)*sinnv (k,n) &
+                                          + work3(js,k,10)*cosnvn(k,n)
+              flsc(js,n,m) = flsc(js,n,m) + work3(js,k,11)*cosnv (k,n) &
+                                          + work3(js,k,12)*sinnvn(k,n)
             end do ! js
           end do ! k
         end do ! n

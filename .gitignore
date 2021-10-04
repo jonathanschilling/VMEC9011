@@ -35,4 +35,4 @@
 # vmec-specific
 build
 fort.*
-
+test/vmec

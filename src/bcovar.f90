@@ -50,32 +50,26 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! COMPUTE METRIC ELEMENTS GIJ ON HALF MESH
-      ! loop over is leads to radial averaging over l-1 and l
+      ! loop over is leads to summation in radial direction over l-1 and l
       do is = -1, 0
         do l = 2, nrzt
           lme = l + is     ! index for l-th even-m
           lmo = lme + nrzt ! index for l-th  odd-m
 
+          ! temporary storage of (0.5 * s)
           phipog(l) = cp5*sqrts(lme)*sqrts(lme)
 
-          guu(l) = guu(l)                                             &
-                    +       cp5*(  ru(lme)*ru(lme) + zu(lme)*zu(lme)) &
-                    + phipog(l)*(  ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo)) &
-                    +  shalf(l)*(  ru(lme)*ru(lmo) + zu(lme)*zu(lmo))
+          guu(l) = guu(l) + cp5            *( ru(lme)*ru(lme) + zu(lme)*zu(lme) ) &
+                          +       phipog(l)*( ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo) ) &
+                          +        shalf(l)*( ru(lme)*ru(lmo) + zu(lme)*zu(lmo) )
 
-          guv(l) = guv(l)                                             &
-                    +       cp5*(  ru(lme)*rv(lme) + zu(lme)*zv(lme)) &
-                    + phipog(l)*(  ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)) &
-                    +  shalf(l)*(  ru(lme)*rv(lmo) + rv(lme)*ru(lmo)  &
-                                 + zu(lme)*zv(lmo) + zv(lme)*zu(lmo)) * cp5
+          guv(l) = guv(l) + cp5            *( ru(lme)*rv(lme) + zu(lme)*zv(lme)                                     ) &
+                          +       phipog(l)*( ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)                                     ) &
+                          + cp5 *  shalf(l)*( ru(lme)*rv(lmo) + rv(lme)*ru(lmo) + zu(lme)*zv(lmo) + zv(lme)*zu(lmo) )
 
-          gvv(l) = gvv(l)                                             &
-                    +       cp5*(  rv(lme)*rv(lme) + zv(lme)*zv(lme)) &
-                    + phipog(l)*(  rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo)) &
-                    +  shalf(l)*(  rv(lme)*rv(lmo) + zv(lme)*zv(lmo)) &
-                    +       cp5*   r1(lme)*r1(lme) &
-                    + phipog(l)*   r1(lmo)*r1(lmo) &
-                    +  shalf(l)*   r1(lme)*r1(lmo)
+          gvv(l) = gvv(l) + cp5            *( rv(lme)*rv(lme) + zv(lme)*zv(lme) + r1(lme)*r1(lme) ) &
+                          +       phipog(l)*( rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo) + r1(lmo)*r1(lmo) ) &
+                          +        shalf(l)*( rv(lme)*rv(lmo) + zv(lme)*zv(lmo) + r1(lme)*r1(lmo) )
         end do
       end do
 
@@ -83,11 +77,8 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       do l = nrzt,2,-1
         phipog(l) = phip(l)/gsqrt(l)
 
-        lu(l,0) = cp5*phipog(l)*(lu(l,0)+lu(l-1,0)   &
-                +      shalf(l)*(lu(l,1)+lu(l-1,1)))
-
-        lv(l,0) = cp5*phipog(l)*(lv(l,0)+lv(l-1,0)   &
-                +      shalf(l)*(lv(l,1)+lv(l-1,1)))
+        lu(l,0) = cp5 * phipog(l)*( lu(l,0)+lu(l-1,0) + shalf(l) * (lu(l,1)+lu(l-1,1)) )
+        lv(l,0) = cp5 * phipog(l)*( lv(l,0)+lv(l-1,0) + shalf(l) * (lv(l,1)+lv(l-1,1)) )
       end do
 
       ! COMPUTE IOTA PROFILE
@@ -123,15 +114,15 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           bsubv(l,m) = cp5*(bsubv(l,m) + bsubv(l+1,m))
         end do
 
-        ! scale up edge components by 2.0
+        ! 90 loop: scale up edge components by 2.0
         do l = ns, nrzt, ns
           bsubu(l,m) = c2p0*bsubu(l,m)
           bsubv(l,m) = c2p0*bsubv(l,m)
         end do
       end do
 
-      !  COMPUTE R,Z AND LAMBDA PRE-CONDITIONING MATRIX
-      ! ELEMENTS AND FORCE NORMS EVERY NS4 STEPS
+      ! COMPUTE R,Z AND LAMBDA PRE-CONDITIONING MATRIX ELEMENTS
+      ! AND FORCE NORMS EVERY NS4 STEPS
       if (mod(iter2-iter1, ns4) .eq. 0) then
 
         call lamcal(phipog, guu, guv, gvv)
@@ -158,7 +149,6 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           ar(js) = czero
           az(js) = czero
         end do
-
         do js = 2, ns-1
           do lk = 1, nrzt, ns
             ar(js) = ar(js) + wint(js+lk-1) * ru0(js+lk-1)**2

@@ -88,6 +88,7 @@ subroutine funct3d
         rcon(l) = rcon(l) + rcon(l+nrzt)*sqrts(l)
         zcon(l) = zcon(l) + zcon(l+nrzt)*sqrts(l)
 
+        ! init gcon to zero
         gcon(l) = czero
         ! azmn: temporary storage for not-yet-dealiased gcon
         ! rcon0, zcon0 are initialized to 0 in vsetup --> ok to use in first iteration
@@ -104,6 +105,9 @@ subroutine funct3d
         call dcopy(nrzt, zcon, 1, zcon0, 1)
       endif
 
+      ! only put non-zero values into gcon if iter2>1
+      ! --> in the first iteration, gcon stays zero
+      ! --> no constraint force in first iteration
       if (iter2.gt.1) &
         call alias(gcon, azmn, worka,worka,worka, gc, gc(1+mns))
 
@@ -134,6 +138,7 @@ subroutine funct3d
         zax(lk) = z1(1+ns*(lk-1))
       enddo
 
+      ! backup z1 in gco (since z1 gets overwritten in bcovar for iequi=1?)
       if (iequi.eq.1) &
         call dcopy(nrzt, z1, 1, gcon, 1)
 
@@ -143,10 +148,12 @@ subroutine funct3d
                   azmn,  armn,  guu,        guv,        gvv,        brmn(lodd), lu, lv)
       !           ru12   zu12                                       phipog
 
+      ! restore z1 from gcon (since z1 got overwritten in bcovar for iequi=1 ?)
       if (iequi.eq.1) &
         call dcopy(nrzt, gcon, 1, z1, 1)
 
-      bz0 = ddot(nznt,blmn(ns),ns,wint(ns),ns)
+      ! bsubv@LCFS --> <B_zeta> is being computed here
+      bz0 = ddot(nznt, blmn(ns), ns, wint(ns), ns)
 
       ! COMPUTE VACUUM MAGNETIC PRESSURE AT PLASMA EDGE
       ! NOTE: FOR FREE BOUNDARY RUNS, THE PLASMA VOLUME CAN
@@ -184,6 +191,7 @@ subroutine funct3d
         endif
 
         do lk = 1, nznt
+          !                   bsq
           bsqsav(lk,3) = c1p5*bzmn(ns*lk+nrzt) - cp5*bzmn(ns*lk-1+nrzt)
           rbsq(lk)     = bsqvac(lk) * ohs*(r1(ns*lk) + r1(ns*lk+nrzt))
           dbsq(lk)     = abs(bsqvac(lk)-bsqsav(lk,3))

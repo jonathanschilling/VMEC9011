@@ -57,30 +57,19 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           lmo = lme + nrzt ! index for l-th  odd-m
 
           ! temporary storage of (0.5 * s)
-          phipog(l) = sqrts(lme)*sqrts(lme) ! depending on is, this is s_j or s_(j-1)
+          phipog(l) = cp5 * sqrts(lme)*sqrts(lme) ! depending on is, this is s_j or s_(j-1)
 
-          !phipog(l) = shalf(l)*shalf(l) ! this is what is in the article...
+          guu(l) = guu(l) + cp5            *( ru(lme)*ru(lme) + zu(lme)*zu(lme)                                                       ) &
+                          +       phipog(l)*( ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo)                                                       ) &
+                          +        shalf(l)*( ru(lme)*ru(lmo) + zu(lme)*zu(lmo)                                                       )
 
-          ! note that shalf(l) is always on the "same" half-grid
-
-
-! guu:                    +        shalf(l)*( ru(lme)*ru(lmo) + zu(lme)*zu(lmo) )
-
-! gvv:                    +        shalf(l)*( rv(lme)*rv(lmo) + zv(lme)*zv(lmo) + r1(lme)*r1(lmo) )
-                          !                                                       ^^^^^^^^^^^^^^^ ???
-
-
-          guu(l) = guu(l) + cp5            *( ru(lme)*ru(lme) + zu(lme)*zu(lme)                                     ) &
-                          + cp5 *  shalf(l)*( ru(lme)*ru(lmo) + ru(lme)*ru(lmo) + zu(lme)*zu(lmo) + zu(lme)*zu(lmo) ) &
-                          + cp5 * phipog(l)*( ru(lmo)*ru(lmo) + zu(lmo)*zu(lmo)                                     )
-
-          guv(l) = guv(l) + cp5            *( ru(lme)*rv(lme) + zu(lme)*zv(lme)                                     ) &
-                          + cp5 *  shalf(l)*( ru(lme)*rv(lmo) + rv(lme)*ru(lmo) + zu(lme)*zv(lmo) + zv(lme)*zu(lmo) ) &
-                          + cp5 * phipog(l)*( ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)                                     )
+          guv(l) = guv(l) + cp5            *( ru(lme)*rv(lme) + zu(lme)*zv(lme)                                                       ) &
+                          +       phipog(l)*( ru(lmo)*rv(lmo) + zu(lmo)*zv(lmo)                                                       ) &
+                          + cp5 *  shalf(l)*( ru(lme)*rv(lmo) + rv(lme)*ru(lmo) + zu(lme)*zv(lmo) + zv(lme)*zu(lmo)                   )
 
           gvv(l) = gvv(l) + cp5            *( rv(lme)*rv(lme) + zv(lme)*zv(lme)                                     + r1(lme)*r1(lme) ) &
-                          + cp5 *  shalf(l)*( rv(lme)*rv(lmo) + rv(lme)*rv(lmo) + zv(lme)*zv(lmo) + zv(lme)*zv(lmo) + r1(lme)*r1(lmo) ) &
-                          + cp5 * phipog(l)*( rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo)                                     + r1(lmo)*r1(lmo) )
+                          +       phipog(l)*( rv(lmo)*rv(lmo) + zv(lmo)*zv(lmo)                                     + r1(lmo)*r1(lmo) ) &
+                          +        shalf(l)*( rv(lme)*rv(lmo) + zv(lme)*zv(lmo)                                     + r1(lme)*r1(lmo) )
         end do
       end do
 

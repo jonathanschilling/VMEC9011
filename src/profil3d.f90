@@ -82,7 +82,7 @@ subroutine profil3d(rmn, zmn, intflag)
         phiedge = -phiedge
       endif
 
-      ! COMPUTE PHIP, MASS (PRESSURE), IOTA PROFILES ON HALF-G
+      ! COMPUTE PHIP, MASS (PRESSURE), IOTA PROFILES ON HALF-Grid
       torcur = real(isigng)*curtor/(dnorm*twopi)
       do js = 2, ns
         phij      = hs*(js - c1p5)

@@ -71,11 +71,12 @@ subroutine funct3d
       ! INVERSE FOURIER TRANSFORM TO S,THETA,ZETA SPACE
       ! R, Z, AND LAMBDA ARRAYS IN FOURIER SPACE
       do l = 1, nrzt
-        lu(l) = c1p0
+        lu(l) = c1p0 !!! This makes lu == (1 + d(lambda)/du)
         lv(l) = czero
         lu(l+nrzt) = czero
         lv(l+nrzt) = czero
       enddo
+      ! note that lv coming out of totzsp is actually -d(lambda)/dv
       call totzsp(gc, gc(1+mns), gc(1+2*mns), gc(1+3*mns), gc(1+4*mns), gc(1+5*mns), &
                   r1, ru,        rv,          z1,          zu,          zv,          &
                   lu, lv,        rcon,        zcon, &

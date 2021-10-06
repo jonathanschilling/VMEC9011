@@ -21,15 +21,17 @@ subroutine getiota(phipog, guu, guv, wint, lu, lv)
       real(kind=dp) :: top, bot
 
       if (ncurr.ne.0) then
+
+        ! zero-current algorithm from Hirshman & Hogan (1986) "ORMEC", Sec. 2.3
+
         do js = 2, ns
 
-          top = jv(js)
+          top = jv(js) ! user-specified profile of enclosed toroidal current
           bot = czero
 
           do lk = 1, nznt
-            top = top - wint(js,lk)*(  guu(js,lk)*lv(js,lk)  &
-                                     + guv(js,lk)*lu(js,lk) )
-            bot = bot + wint(js,lk)*   guu(js,lk)*phipog(js,lk)
+            top = top - wint(js,lk)*( guu(js,lk)*lv(js,lk) + guv(js,lk)*lu(js,lk) )
+            bot = bot + wint(js,lk)*  guu(js,lk)*phipog(js,lk)
           end do
 
           iotas(js) = top/bot

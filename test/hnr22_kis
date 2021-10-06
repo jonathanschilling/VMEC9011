@@ -7,7 +7,7 @@ c  mass profile expansion coefficients am(i)
 c  iota profile expansion coefficients ai(i)
    8.330E-01  -1.000E-00   4.000E-00  -4.800E-00   1.950E-00  0.
    curr profile expansion coefficients ac(i)
-   -0.0000e-03  0.00000e-01  2.500000e-01 -3.8750e-01  1.60000e-01 0.
+   -0.0000e-03  0.00000e-01  2.500000e-01 -3.8750e-01  1.60000e-01
 c  mb  nb      rb          zb        raxis       zaxis
     0   5  6.7485E-04 -1.1719E-03  0.0 0.0
     0   4 -4.4119E-03  2.7242E-03  0.0 0.0

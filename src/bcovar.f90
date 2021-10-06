@@ -74,14 +74,16 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! PUT LAMBDA DERIVATIVES ON RADIAL HALF-MESH
+      ! This also re-scales lu, lv to include a factor phip/gsqrt == phipog
+      ! for the zero-current algorithm that needs to be kept in mind for later on!
       do l = nrzt,2,-1
         phipog(l) = phip(l)/gsqrt(l)
 
-        lu(l,0) = cp5 * phipog(l)*( lu(l,0)+lu(l-1,0) + shalf(l) * (lu(l,1)+lu(l-1,1)) )
-        lv(l,0) = cp5 * phipog(l)*( lv(l,0)+lv(l-1,0) + shalf(l) * (lv(l,1)+lv(l-1,1)) )
+        lu(l,0) = phipog(l) * cp5*( lu(l,0)+lu(l-1,0) + shalf(l) * (lu(l,1)+lu(l-1,1)) )
+        lv(l,0) = phipog(l) * cp5*( lv(l,0)+lv(l-1,0) + shalf(l) * (lv(l,1)+lv(l-1,1)) )
       end do
 
-      ! COMPUTE IOTA PROFILE
+      ! COMPUTE IOTA PROFILE (consistent with prescribed current profile if ncurr != 0)
       call getiota(phipog, guu, guv, wint, lu, lv)
 
       ! PUT LAMBDA FORCES ON RADIAL HALF-MESH.

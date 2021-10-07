@@ -14,9 +14,9 @@ subroutine lamcal(phipog, guu, guv, gvv)
       real(kind=dp) :: dsum, ddot
 
       real(kind=dp), intent(in) :: phipog(nrzt) ! phi'/sqrt(g) * wint --> ready for integration; on half-grid
-      real(kind=dp), intent(in) :: guu(nrzt)    ! \
-      real(kind=dp), intent(in) :: guv(nrzt)    ! |- metric elements on half--grid
-      real(kind=dp), intent(in) :: gvv(nrzt)    ! /
+      real(kind=dp), intent(in) :: guu(nrzt)    !
+      real(kind=dp), intent(in) :: guv(nrzt)    ! metric elements on half--grid
+      real(kind=dp), intent(in) :: gvv(nrzt)    !
 
       real(kind=dp) :: blam(nsd1)
       real(kind=dp) :: clam(nsd1)

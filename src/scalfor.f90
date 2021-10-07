@@ -31,7 +31,7 @@ subroutine scalfor(gcx, &
         jmax = ns-1
 
       do m = 0, mpol1
-        mp = mod(m, 2) + 1
+        mp = mod(m, 2) + 1 ! m-parity: even m --> 1, odd-m --> 2
         do n = 0, nmax
 
           do js = jmin2(m), jmax
@@ -44,11 +44,14 @@ subroutine scalfor(gcx, &
             dx(2,n,1) = dx(2,n,1) + bx(2,n,1)
 
           ! TODO: What happens here ?
+          ! corrections at LCFS ???
           dx(ns,n,m) = c1p1*dx(ns,n,m)
           bx(ns,n,m) =  cp9*bx(ns,n,m)
         end do
       end do
 
+      ! solve tri-diagonal system for cc/ss and cs/sc coefficients separately
+      ! in order to precondition force matrices
       do ntype = 1, 2
         call trid(ax, dx, bx, gcx(1,0,0,ntype), gm, alf, jmin2, jmax)
       end do

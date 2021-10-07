@@ -36,6 +36,9 @@ subroutine precondn(lu, bsq, gsqrt, r12,            &
       real(kind=dp) :: t1, t2, t3
 
       if (iter2.le.1) then
+
+        ! setup interpolation magic (?)
+
         do js = 2, ns
           sm(js) = sqrt( (js - c1p5)/(js - c1p0) )
           sp(js) = sqrt( (js -  cp5)/(js - c1p0) )
@@ -86,8 +89,9 @@ subroutine precondn(lu, bsq, gsqrt, r12,            &
         end do
       end do
 
+      ! radial interpolation onto some other mesh ???
       do js = 1, ns
-        axm(js,1) =-ax(js,1)
+        axm(js,1) =-ax(js,1) ! neg sign ???
         axm(js,2) = ax(js,2) * sm(js) * sp(js-1)
         axd(js,1) = ax(js,1)                     + ax(js+1,1)
         axd(js,2) = ax(js,3) * sm(js)**2         + ax(js+1,4) * sp(js)**2

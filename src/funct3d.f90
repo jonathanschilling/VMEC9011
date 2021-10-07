@@ -181,8 +181,8 @@ subroutine funct3d
 
         if (ivac.ge.1) then
           ctor = isigng*twopi*dnorm*(                          &
-                   c1p5*ddot(nznt,clmn(ns  ),ns,wint(ns),ns)   &
-                 - cp5 *ddot(nznt,clmn(ns-1),ns,wint(ns),ns) )
+                   c1p5*ddot(nznt, clmn(ns  ), ns, wint(ns), ns)   &
+                 - cp5 *ddot(nznt, clmn(ns-1), ns, wint(ns), ns) )
 
           call convert(rmnc, zmns, lmns, xm, xn, ns,          &
                        xc,          xc(1+  mns), xc(1+2*mns), &

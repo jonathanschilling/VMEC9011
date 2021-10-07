@@ -20,10 +20,10 @@ subroutine pressure(gsqrt, bsq, wint)
 
       do js = 2, ns
         vp(js) = ddot(nznt, gsqrt(js,1), ns, wint(js,1), ns)
+        vp(js) = dnorm*abs(vp(js))
       end do
 
       do js = 2, ns
-        vp(js)   = dnorm*abs(vp(js))
         pres(js) = mass(js)/vp(js)**gam
       end do
 

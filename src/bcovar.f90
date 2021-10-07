@@ -97,12 +97,13 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
       ! COMPUTE SUM OF KINETIC AND MAGNETIC PRESSURES
       ! AND RETURN IF FINAL OUTPUT LOOP (IEQUI=1)
-      ! ON ENTRY, BSQ IS THE KINETIC PRESSURE
+      ! ON ENTRY, BSQ IS THE KINETIC PRESSURE ( =pres on each surface; see pressure() )
       wb = -wp
       do l = 2,nrzt
         bsq(l)    = bsq(l) + cp5 * (lv(l,0)*bsubu(l,0) + lu(l,0)*bsubv(l,0))
-        phipog(l) = phipog(l)*wint(l)
         wb        = wb + hs*dnorm*wint(l)*abs(gsqrt(l))*bsq(l)
+
+        phipog(l) = phipog(l)*wint(l)
       end do
 
       if (iequi.eq.1) &
@@ -147,6 +148,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
         fnorm1 = c1p0/ddot(4*mns-ns, xc(ns+1), 1, xc(ns+1), 1)
 
         ! COMPUTE CONSTRAINT FORCE SCALING FACTOR (TCON)
+        ! ar, az: flux-surface averages of (dR/du)^2, (dZ/du)^2 (without Jacobian...)
         do js = 2, ns-1
           ar(js) = czero
           az(js) = czero
@@ -158,11 +160,13 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
           end do
         end do
 
+        ! TODO: plot tcon profile over iterations
         do js = 2, ns-1
           tcon(js) = min(abs(ard(js,1)/ar(js)), abs(azd(js,1)/az(js)))
         end do
         tcon(ns) = cp5*tcon(ns-1)
-      endif
+
+      endif ! update preconditioner
 
       ! STORE LU * LV COMBINATIONS USED IN FORCES
       do l = 2, nrzt

@@ -145,6 +145,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
         volume = hs * sum(vp(2:ns))
         fnorm  = dnorm/(ddot(nrzt, guu, 1, wint, 1) * (wb/volume)**2)
 
+        ! leave out forces on axis (?) --> start at ns+1, 4*mns-ns elements
         fnorm1 = c1p0/ddot(4*mns-ns, xc(ns+1), 1, xc(ns+1), 1)
 
         ! COMPUTE CONSTRAINT FORCE SCALING FACTOR (TCON)

@@ -28,6 +28,7 @@ subroutine lamcal(phipog, guu, guv, gvv)
       integer       :: js, l, m, n, lmn
       real(kind=dp) :: tnn, tmn, tmm
 
+      ! A(s), B(s), C(s) in Betancourt (1988) "BETAS", p. 559
       do js = 2, ns
         blam(js) = ddot(nznt, guu(js), ns, phipog(js), ns)
         dlam(js) = ddot(nznt, guv(js), ns, phipog(js), ns)*c2p0*real(nfp)
@@ -49,6 +50,9 @@ subroutine lamcal(phipog, guu, guv, gvv)
             tnn = -c1p0
           end if
 
+
+          ! note: sign(a,b) = |a| * sgn(b)
+          ! note: 2/x = 1/(0.5*x)
 
           do js = jlam(m), ns
             faclam(js+lmn) = -c2p0*c2p0/(       (blam(js) + blam(js+1))            * tnn   &

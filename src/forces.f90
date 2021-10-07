@@ -14,6 +14,12 @@ subroutine forces(guu, guv, gvv)
 
       implicit none
 
+      ! on entry, these contain (lu*lv combinations at end of bcovar):
+      ! guu : sqrt(g)*B^u*B^u
+      ! guv : sqrt(g)*B^u*B^v
+      ! gvv : sqrt(g)*B^v*B^v
+      ! on the half-grid.
+      ! on exit, they contain: ???
       real(kind=dp), intent(inout) :: guu(nrztd)
       real(kind=dp), intent(inout) :: guv(nrztd)
       real(kind=dp), intent(inout) :: gvv(nrztd)
@@ -67,10 +73,9 @@ subroutine forces(guu, guv, gvv)
       do l = 1, nrzt
         l1 = l + nrzt
 
-        bsqr(l) = cp25*(bsqr(l) + bsqr(l+1))
-
-        czmn(l) = cp25*(czmn(l) + czmn(l+1))
-
+        ! average half-grid quantities onto full grid
+        bsqr(l) = cp25*(bsqr(l) + bsqr(l+1)) ! additional factor of 1/2 ???
+        czmn(l) = cp25*(czmn(l) + czmn(l+1)) ! additional factor of 1/2 ???
         guu (l) =  cp5*(guu (l) + guu (l+1))
         guus(l) =  cp5*(guus(l) + guus(l+1))
         guv (l) =  cp5*(guv (l) + guv (l+1))
@@ -78,6 +83,9 @@ subroutine forces(guu, guv, gvv)
         gvv (l) =  cp5*(gvv (l) + gvv (l+1))
         gvvs(l) =  cp5*(gvvs(l) + gvvs(l+1))
 
+        ! actually do some MHD
+        ! These are the "final" forms of even-m aXmn and bXmn where X=r,z
+        ! crmn contains some intermediate quantity required below
         armn(l) = armn(l+1) - armn(l) + cp5*(crmn(l)          + crmn(l+1)           ) - (gvv(l)*r1(l) + gvvs(l)*r1(l1)                                )
         crmn(l) =                       cp5*(crmn(l)*shalf(l) + crmn(l+1)*shalf(l+1))
         azmn(l) = azmn(l+1) - azmn(l)
@@ -85,21 +93,24 @@ subroutine forces(guu, guv, gvv)
         bzmn(l) =  -r1(l1)*bsqr(l)    + cp5*(bzmn(l)          + bzmn(l+1)           ) - (guu(l)*zu(l) + guus(l)*zu(l1) + guv(l)*zv(l) + guvs(l)*zv(l1))
       end do
 
-      do l=1,nrzt
-        l1 = l+nrzt
+      do l = 1, nrzt
+        l1 = l + nrzt
 
+        ! s = sqrt(s)*sqrt(s) on the full grid
         s2 = sqrts(l)**2
 
         guus2 = guu(l)*s2
         guvs2 = guv(l)*s2
         gvvs2 = gvv(l)*s2
 
+        ! final "MHD" form of odd-m parts of aXmn, bXmn
         armn(l1) =      armn(l1+1) - armn(l1)  - zu(l1)*czmn(l) - zu(l)*bsqr(l) + crmn(l) - (gvvs(l)*r1(l) + gvvs2*r1(l1))
         azmn(l1) =      azmn(l1+1) - azmn(l1)  + ru(l1)*czmn(l) + ru(l)*bsqr(l)
 
         brmn(l1) = cp5*(brmn(l1+1) + brmn(l1)) + z1(l1)*czmn(l)                           - (guus(l)*ru(l) + guus2*ru(l1) + guvs(l)*rv(l) + guvs2*rv(l1))
         bzmn(l1) = cp5*(bzmn(l1+1) + bzmn(l1)) - r1(l1)*czmn(l)                           - (guus(l)*zu(l) + guus2*zu(l1) + guvs(l)*zv(l) + guvs2*zv(l1))
 
+        ! actually build final form of cXmn now that temporary stuff in crmn, czmn is no longer needed
         crmn(l)  = guv (l)*ru(l) + guvs(l)*ru(l1) + gvv (l)*rv(l) + gvvs(l)*rv(l1)
         crmn(l1) = guvs(l)*ru(l) + guvs2  *ru(l1) + gvvs(l)*rv(l) + gvvs2  *rv(l1)
         czmn(l)  = guv (l)*zu(l) + guvs(l)*zu(l1) + gvv (l)*zv(l) + gvvs(l)*zv(l1)

@@ -207,7 +207,8 @@ subroutine funct3d
         call second(t4)
         timeoff = real(t4)
         timer(1) = timer(1) + (timeoff-timeon)
-      endif ! vacuum contribution
+
+      endif ! vacuum/free-boundary contribution
 
       if(iequi.eq.1)then
         ! COMPUTE REMAINING COVARIANT COMPONENT OF B (BSUBS),

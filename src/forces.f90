@@ -92,19 +92,14 @@ subroutine forces(guu, guv, gvv)
 
         ! actually do some MHD
         ! These are the "final" forms of even-m aXmn and bXmn where X=r,z
-        ! 7
-        armn(l) = armn(l+1) - armn(l) + cp5*(crmn(l) + crmn(l+1)) - (gvv(l)*r1(l) + gvvs(l)*r1(l1))
-        ! 8
-        azmn(l) = azmn(l+1) - azmn(l)
+        armn(l) = armn(l+1) - armn(l) + cp5*(crmn(l) + crmn(l+1)) - (gvv(l)*r1(l) + gvvs(l)*r1(l1)) ! 7
+        azmn(l) = azmn(l+1) - azmn(l)                                                               ! 8
 
-        ! 9
-        brmn(l) =   z1(l1)*bsqr(l)    + cp5*(brmn(l) + brmn(l+1)) - (guu(l)*ru(l) + guus(l)*ru(l1) + guv(l)*rv(l) + guvs(l)*rv(l1))
-        ! 10
-        bzmn(l) =  -r1(l1)*bsqr(l)    + cp5*(bzmn(l) + bzmn(l+1)) - (guu(l)*zu(l) + guus(l)*zu(l1) + guv(l)*zv(l) + guvs(l)*zv(l1))
+        brmn(l) =   z1(l1)*bsqr(l)    + cp5*(brmn(l) + brmn(l+1)) - (guu(l)*ru(l) + guus(l)*ru(l1) + guv(l)*rv(l) + guvs(l)*rv(l1)) ! 9
+        bzmn(l) =  -r1(l1)*bsqr(l)    + cp5*(bzmn(l) + bzmn(l+1)) - (guu(l)*zu(l) + guus(l)*zu(l1) + guv(l)*zv(l) + guvs(l)*zv(l1)) ! 10
 
         ! crmn contains some intermediate quantity required below
-        ! 11
-        crmn(l) = cp5*(crmn(l)*shalf(l) + crmn(l+1)*shalf(l+1))
+        crmn(l) = cp5*(crmn(l)*shalf(l) + crmn(l+1)*shalf(l+1)) ! 11
       end do
 
       ! odd-m force contributions
@@ -121,12 +116,12 @@ subroutine forces(guu, guv, gvv)
 
         ! final "MHD" form of odd-m parts of aXmn, bXmn
         ! 13
-        armn(l1) =      armn(l1+1) - armn(l1)  - zu(l1)*czmn(l) - zu(l)*bsqr(l) + crmn(l) - (gvvs(l)*r1(l) + gvvs2*r1(l1))
-        azmn(l1) =      azmn(l1+1) - azmn(l1)  + ru(l1)*czmn(l) + ru(l)*bsqr(l)
+        armn(l1) = armn(l1+1) - armn(l1) - zu(l1)*czmn(l) - zu(l)*bsqr(l) + crmn(l) - (gvvs(l)*r1(l) + gvvs2*r1(l1))
+        azmn(l1) = azmn(l1+1) - azmn(l1) + ru(l1)*czmn(l) + ru(l)*bsqr(l)
 
         ! 14
-        brmn(l1) = cp5*(brmn(l1+1) + brmn(l1)) + z1(l1)*czmn(l) - (guus(l)*ru(l) + guus2*ru(l1) + guvs(l)*rv(l) + guvs2*rv(l1))
-        bzmn(l1) = cp5*(bzmn(l1+1) + bzmn(l1)) - r1(l1)*czmn(l) - (guus(l)*zu(l) + guus2*zu(l1) + guvs(l)*zv(l) + guvs2*zv(l1))
+        brmn(l1) =     z1(l1)*czmn(l)    + cp5*(brmn(l1+1) + brmn(l1)) - (guus(l)*ru(l) + guus2*ru(l1) + guvs(l)*rv(l) + guvs2*rv(l1))
+        bzmn(l1) =    -r1(l1)*czmn(l)    + cp5*(bzmn(l1+1) + bzmn(l1)) - (guus(l)*zu(l) + guus2*zu(l1) + guvs(l)*zv(l) + guvs2*zv(l1))
 
         ! actually build final form of cXmn now that temporary stuff in crmn, czmn is no longer needed
         ! 15

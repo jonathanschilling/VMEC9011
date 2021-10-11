@@ -242,6 +242,9 @@ subroutine funct3d
       call tomnsp(gc, gc(1+mns), gc(1+2*mns), gc(1+3*mns), gc(1+4*mns), gc(1+5*mns), &
                   armn, brmn, crmn, azmn, bzmn, czmn, blmn, clmn, rcon, zcon, workb,workb,workb)
       do l = 1, neqs
+        ! TODO: Can one maybe omit this if the odd-m force components are not scaled by sqrt(s) ?
+        ! --> comment in newer VMEC versions; are the odd-m force components different there?
+        ! The hnr22_kis test case converges in (3 ... 5) % less iterations if this is commented out!
         gc(l) = gc(l) * scalxc(l)
       enddo
 

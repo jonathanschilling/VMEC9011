@@ -12,21 +12,22 @@ subroutine precondn(lu, bsq, gsqrt, r12,            &
 
       implicit none
 
+      !                     force to precondition:    R   |   Z
       real(kind=dp), intent(in)  :: lu   (ns,nznt)
       real(kind=dp), intent(in)  :: bsq  (ns,nznt)
       real(kind=dp), intent(in)  :: gsqrt(ns,nznt)
       real(kind=dp), intent(in)  :: r12  (ns,nznt)
-      real(kind=dp), intent(in)  :: xs   (ns,nznt)
-      real(kind=dp), intent(in)  :: xu12 (ns,nznt)
-      real(kind=dp), intent(in)  :: xue  (ns,nznt)
-      real(kind=dp), intent(in)  :: xuo  (ns,nznt)
-      real(kind=dp), intent(in)  :: xodd (ns,nznt)
+      real(kind=dp), intent(in)  :: xs   (ns,nznt) ! Z_s | R_s
+      real(kind=dp), intent(in)  :: xu12 (ns,nznt) ! Z_u | R_u
+      real(kind=dp), intent(in)  :: xue  (ns,nznt) ! Z_u | R_u (even-m)
+      real(kind=dp), intent(in)  :: xuo  (ns,nznt) ! Z_u | R_u (odd-m)
+      real(kind=dp), intent(in)  :: xodd (ns,nznt) ! Z   | R   (odd-m)
       real(kind=dp), intent(in)  :: wint (ns,nznt)
-      real(kind=dp), intent(out) :: axm  (nsd1,2)
-      real(kind=dp), intent(out) :: axd  (nsd1,2)
-      real(kind=dp), intent(out) :: bxm  (nsd1,2)
-      real(kind=dp), intent(out) :: bxd  (nsd1,2)
-      real(kind=dp), intent(out) :: cx   (nsd1)
+      real(kind=dp), intent(out) :: axm  (nsd1,2)  ! arm | azm
+      real(kind=dp), intent(out) :: axd  (nsd1,2)  ! ard | azd
+      real(kind=dp), intent(out) :: bxm  (nsd1,2)  ! brm | bzm
+      real(kind=dp), intent(out) :: bxd  (nsd1,2)  ! brd | bzd
+      real(kind=dp), intent(out) :: cx   (nsd1)    ! cr  | cr
 
       real(kind=dp) :: ax(nsd1,4)
       real(kind=dp) :: bx(nsd1,4)

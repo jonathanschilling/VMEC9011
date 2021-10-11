@@ -20,8 +20,8 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       ! TODO: more elegant definition of these BLAS functions
       real(kind=dp) :: ddot
 
-      real(kind=dp), intent(out)   :: bsubu (nrzt,0:1)
-      real(kind=dp), intent(out)   :: bsubv (nrzt,0:1)
+      real(kind=dp), intent(out)   :: bsubu (nrzt,0:1) ! --> clmn (~d(lambda)/d( zeta) => force on  zeta-derivative of lambda)
+      real(kind=dp), intent(out)   :: bsubv (nrzt,0:1) ! --> blmn (~d(lambda)/d(theta) => force on theta-derivative of lambda)
       real(kind=dp)                :: gsqrt (nrzt)
       real(kind=dp)                :: bsq   (nrzt)
       real(kind=dp)                :: r12   (nrzt)
@@ -125,7 +125,7 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       end do
 
       ! COMPUTE R,Z AND LAMBDA PRE-CONDITIONING MATRIX ELEMENTS
-      ! AND FORCE NORMS EVERY NS4 STEPS
+      ! AND FORCE NORMS EVERY NS4(=25) STEPS
       if (mod(iter2-iter1, ns4) .eq. 0) then
 
         call lamcal(phipog, guu, guv, gvv)

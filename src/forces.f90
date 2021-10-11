@@ -41,7 +41,7 @@ subroutine forces(guu, guv, gvv)
       ! ^^ on half-grid: zu12, ru12 !!! from jacobian()
 
       ! IT IS ESSENTIAL THAT CRMN, CZMN AT j=1 ARE ZERO INITIAL.
-      ! crmn, czmn contain lv, lu on entry --> need to clear these
+      ! crmn, czmn contain lv, lu on entry
       do l = 1, nrzt+1, ns
         crmn(l) = czero
         czmn(l) = czero
@@ -54,15 +54,15 @@ subroutine forces(guu, guv, gvv)
         gvvs(l)  = gvv(l)*shalf(l)
 
         ! 2
-        armn(l)  = ohs*armn(l)*czmn(l)
-        azmn(l)  =-ohs*azmn(l)*czmn(l)
+        armn(l)  = ohs*armn(l)*czmn(l) !  1/delta(s) * Z_u * P on half-grid
+        azmn(l)  =-ohs*azmn(l)*czmn(l) ! -1/delta(s) * R_u * P on half-grid
 
         ! 3
-        brmn(l)  = brmn(l)*czmn(l)
-        bzmn(l)  =-bzmn(l)*czmn(l)
+        brmn(l)  = brmn(l)*czmn(l) !  Z_s * R*B^2 on half-grid
+        bzmn(l)  =-bzmn(l)*czmn(l) ! -R_s * R*B^2 on half-grid
 
         ! 4
-        bsqr(l)  = czmn(l)/shalf(l)
+        bsqr(l)  = czmn(l)/shalf(l) ! P/sqrt(s) on half-grid
       end do
 
       ! 5
@@ -90,13 +90,13 @@ subroutine forces(guu, guv, gvv)
         gvv (l) =  cp5*(gvv (l) + gvv (l+1))
         gvvs(l) =  cp5*(gvvs(l) + gvvs(l+1))
 
-        ! actually do some MHD
+        ! actually do some MHD...
         ! These are the "final" forms of even-m aXmn and bXmn where X=r,z
         armn(l) = armn(l+1) - armn(l) + cp5*(crmn(l) + crmn(l+1)) - (gvv(l)*r1(l) + gvvs(l)*r1(l1)) ! 7
         azmn(l) = azmn(l+1) - azmn(l)                                                               ! 8
 
-        brmn(l) =   z1(l1)*bsqr(l)    + cp5*(brmn(l) + brmn(l+1)) - (guu(l)*ru(l) + guus(l)*ru(l1) + guv(l)*rv(l) + guvs(l)*rv(l1)) ! 9
-        bzmn(l) =  -r1(l1)*bsqr(l)    + cp5*(bzmn(l) + bzmn(l+1)) - (guu(l)*zu(l) + guus(l)*zu(l1) + guv(l)*zv(l) + guvs(l)*zv(l1)) ! 10
+        brmn(l) = cp5*(brmn(l) + brmn(l+1)) + z1(l1)*bsqr(l) - (guu(l)*ru(l) + guus(l)*ru(l1) + guv(l)*rv(l) + guvs(l)*rv(l1)) ! 9
+        bzmn(l) = cp5*(bzmn(l) + bzmn(l+1)) - r1(l1)*bsqr(l) - (guu(l)*zu(l) + guus(l)*zu(l1) + guv(l)*zv(l) + guvs(l)*zv(l1)) ! 10
 
         ! crmn contains some intermediate quantity required below
         crmn(l) = cp5*(crmn(l)*shalf(l) + crmn(l+1)*shalf(l+1)) ! 11
@@ -120,8 +120,8 @@ subroutine forces(guu, guv, gvv)
         azmn(l1) = azmn(l1+1) - azmn(l1) + ru(l1)*czmn(l) + ru(l)*bsqr(l)
 
         ! 14
-        brmn(l1) =     z1(l1)*czmn(l)    + cp5*(brmn(l1+1) + brmn(l1)) - (guus(l)*ru(l) + guus2*ru(l1) + guvs(l)*rv(l) + guvs2*rv(l1))
-        bzmn(l1) =    -r1(l1)*czmn(l)    + cp5*(bzmn(l1+1) + bzmn(l1)) - (guus(l)*zu(l) + guus2*zu(l1) + guvs(l)*zv(l) + guvs2*zv(l1))
+        brmn(l1) = cp5*(brmn(l1+1) + brmn(l1)) + z1(l1)*czmn(l) - (guus(l)*ru(l) + guus2*ru(l1) + guvs(l)*rv(l) + guvs2*rv(l1))
+        bzmn(l1) = cp5*(bzmn(l1+1) + bzmn(l1)) - r1(l1)*czmn(l) - (guus(l)*zu(l) + guus2*zu(l1) + guvs(l)*zv(l) + guvs2*zv(l1))
 
         ! actually build final form of cXmn now that temporary stuff in crmn, czmn is no longer needed
         ! 15

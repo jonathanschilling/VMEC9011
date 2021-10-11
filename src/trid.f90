@@ -14,7 +14,7 @@ subroutine trid(a, d, b, c, gam, alf, jmin, nn)
       real(kind=dp), intent(out)   :: gam(0:mnd1,ns) ! only internal temporary storage
       real(kind=dp), intent(out)   :: alf(0:mnd1,ns) ! only internal temporary storage
       integer,       intent(in)    :: jmin(0:3)
-      integer,       intent(in)    :: nn
+      integer,       intent(in)    :: nn ! jmax
 
       integer :: imodes, in, in1, mn, i, i1, n2
 

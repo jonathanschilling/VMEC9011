@@ -8,6 +8,7 @@ module bounds
       integer, parameter :: mup2 = nmax+nmax1
       integer, parameter :: mlo3 = mup2+1
 
+      !                             m =     0     1     >1
       integer, parameter :: mupper(3) = (/nmax, mup2,  mnd1/)
       integer, parameter :: mlower(3) = (/   0, nmax1, mlo3/)
 end module bounds
@@ -117,7 +118,7 @@ module mnarray
       real(kind=dp), parameter :: mscale(0:mpol1) = (/cp707d,(oned,i=1,mpol1)/)
       real(kind=dp), parameter :: nscale(0:nmax1) = (/cp707d,(oned,i=1,nmax1)/)
       integer,       parameter :: jmin1(0:mpol)   = (/1, 1, (2, i=1,mpol1)/)
-      integer,       parameter :: jmin2(0:mpol)   = (/1, 2, (3, i=1,mpol1)/)
+      integer,       parameter :: jmin2(0:mpol)   = (/1, 2, (3, i=1,mpol1)/) ! used in scalfor/trid
       integer,       parameter :: jlam(0:mpol)    = (/2, 3, (3, i=1,mpol1)/)
 
 end module mnarray

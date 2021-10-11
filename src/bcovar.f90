@@ -130,21 +130,23 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
         call lamcal(phipog, guu, guv, gvv)
 
-        call precondn(lu, bsq, gsqrt, r12,                        &
-                      zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), wint, &
+        call precondn(lu, bsq, gsqrt, r12, wint,            &
+                      zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
                       arm, ard, brm, brd, cr)
 
-        call precondn(lu, bsq, gsqrt, r12,                        &
-                      rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), wint, &
+        call precondn(lu, bsq, gsqrt, r12, wint,            &
+                      rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
                       azm, azd, bzm, bzd, cr)
 
         do l = 2, nrzt
           guu(l) = guu(l) * r12(l)**2
         end do
 
+        ! normalization factor for "invariant" force residuals
         volume = hs * sum(vp(2:ns))
         fnorm  = dnorm/(ddot(nrzt, guu, 1, wint, 1) * (wb/volume)**2)
 
+        ! normalization factor for preconditioned force residuals
         ! leave out forces on axis (?) --> start at ns+1, 4*mns-ns elements
         fnorm1 = c1p0/ddot(4*mns-ns, xc(ns+1), 1, xc(ns+1), 1)
 

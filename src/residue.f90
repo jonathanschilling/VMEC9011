@@ -15,6 +15,7 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
 
       ! TODO: more elegant definition of these BLAS functions
       real(kind=dp) :: ddot
+      external dscal
 
       real(kind=dp) :: gcr(ns,0:nmax,0:mpol1,2)
       real(kind=dp) :: gcz(ns,0:nmax,0:mpol1,2)
@@ -36,7 +37,7 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       end if
 
       ! CONSTRUCT INVARIANT RESIDUALS
-      bz0  = c2p0*hs/bz0**2
+      bz0  = hs * c2p0/bz0**2
       fsql = bz0 * ddot(2*mns, gcl, 1, gcl, 1)
       call getfsq(gcr, gcz, fsqr, fsqz, fnorm, meven)
 
@@ -48,19 +49,30 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       call scalfor(gcz, azm, bzm, azd, bzd, cr, work, work(1,2), work(1,3), work(1,4), work(1,5))
 
       ! REDUCE R-Z FORCES IF INITIALLY VERY LARGE
+      ! if in first iteration: scale  after computing fsqX1
+      !      other iterations: scale before computing fsqX1
       fac = c1p0/(c1p0 + (fsqr+fsqz))
-      if (iter1.gt.1) &
+      if (iter1.gt.1) then
+        ! any further iteration (but not first)
         call dscal(4*mns, fac, gc, 1)
+      end if
 
       call getfsq(gcr, gcz, fsqr1, fsqz1, fnorm1, modd)
-      if (iter1.eq.1) &
+
+      if (iter1.eq.1) then
+        ! only in first iteration
         call dscal(4*mns, fac, gc, 1)
+      end if
 
       ! CONSTRUCT PRECONDITIONED (SCALED) LAMBDA FORCES
       do l = 1, 2*mns
         gc(l+4*mns) = faclam(l)*gc(l+4*mns)
       end do
       fsql1 = hs * ddot(2*mns, gcl, 1, gcl, 1)
+
+      ! output:
+      ! 1.  "invariant" force residuals: fsqr,  fsqz  (scaled by fnorm) and fsql  (scaled by hs/bz0^2)
+      ! 2. precondioned force residuals: fsqr1, fsqz1 (scaled by fnorm) and fsql1 (scaled by hs)
 
       return
 end

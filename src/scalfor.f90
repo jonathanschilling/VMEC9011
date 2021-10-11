@@ -12,17 +12,19 @@ subroutine scalfor(gcx, &
 
       implicit none
 
-      real(kind=dp) :: gcx(ns,0:nmax,0:mpol1,2)
-      real(kind=dp) :: axm(nsd1,2)
-      real(kind=dp) :: bxm(nsd1,2)
-      real(kind=dp) :: axd(nsd1,2)
-      real(kind=dp) :: bxd(nsd1,2)
-      real(kind=dp) :: cx(nsd)
-      real(kind=dp) :: bx(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: dx(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: ax(ns,0:nmax,0:mpol1)
-      real(kind=dp) :: gm(*)
-      real(kind=dp) :: alf(*)
+      real(kind=dp), intent(inout) :: gcx(ns,0:nmax,0:mpol1,2) ! force Fourier coefficients to precondition
+
+      real(kind=dp), intent(in)    :: axm(nsd1,2) ! preconditioner matrix elements
+      real(kind=dp), intent(in)    :: bxm(nsd1,2)
+      real(kind=dp), intent(in)    :: axd(nsd1,2)
+      real(kind=dp), intent(in)    :: bxd(nsd1,2)
+      real(kind=dp), intent(in)    :: cx (nsd   )
+
+      real(kind=dp), intent(out) :: bx(ns,0:nmax,0:mpol1) ! temporary arrays
+      real(kind=dp), intent(out) :: dx(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(out) :: ax(ns,0:nmax,0:mpol1)
+      real(kind=dp), intent(out) :: gm(*)
+      real(kind=dp), intent(out) :: alf(*)
 
       integer :: jmax, js, m, mp, n, ntype
 
@@ -34,17 +36,23 @@ subroutine scalfor(gcx, &
         mp = mod(m, 2) + 1 ! m-parity: even m --> 1, odd-m --> 2
         do n = 0, nmax
 
+          ! assemble preconditioning matrix elements
           do js = jmin2(m), jmax
             bx(js,n,m) = axm(js  ,mp) + bxm(js  ,mp)*m**2
             dx(js,n,m) = axd(js  ,mp) + bxd(js  ,mp)*m**2 + cx(js)*(n*nfp)**2
             ax(js,n,m) = axm(js+1,mp) + bxm(js+1,mp)*m**2
           end do
 
-          if (m.eq.1) &
+          if (m.eq.1) then
+            ! TODO: what is this?
+            ! m=1-component of ns=2 for all n
+            ! maybe has to do with m=1-constraint for innermost flux surface at js=2?
             dx(2,n,1) = dx(2,n,1) + bx(2,n,1)
+          end if
 
           ! TODO: What happens here ?
           ! corrections at LCFS ???
+          ! only relevant in free-boundary mode?
           dx(ns,n,m) = c1p1*dx(ns,n,m)
           bx(ns,n,m) =  cp9*bx(ns,n,m)
         end do
@@ -53,6 +61,10 @@ subroutine scalfor(gcx, &
       ! solve tri-diagonal system for cc/ss and cs/sc coefficients separately
       ! in order to precondition force matrices
       do ntype = 1, 2
+        ! ax: super-diagonal
+        ! dx:       diagonal
+        ! bx: sub  -diagonal elements
+        ! gcx: right-hand side and solution
         call trid(ax, dx, bx, gcx(1,0,0,ntype), gm, alf, jmin2, jmax)
       end do
 

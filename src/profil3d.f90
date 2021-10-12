@@ -106,6 +106,7 @@ subroutine profil3d(rmn, zmn, intflag)
       do lt = 1, ntheta2
         do lz = 1, nzeta
           do js = 2, ns
+            ! m=0 means that cos(theta_i * m)*mscale(m) == mscale(0) always
             wint(js+ns*lk) = cosmui(lt, 0)/mscale(0)
           enddo
           lk = lk+1

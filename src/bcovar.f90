@@ -138,11 +138,11 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
                       rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
                       azm, azd, bzm, bzd, cr)
 
+        ! normalization factor for "invariant" force residuals
+        ! see Eqn. (46) in the 1983 article
         do l = 2, nrzt
           guu(l) = guu(l) * r12(l)**2
         end do
-
-        ! normalization factor for "invariant" force residuals
         volume = hs * sum(vp(2:ns))
         fnorm  = dnorm/(ddot(nrzt, guu, 1, wint, 1) * (wb/volume)**2)
 

@@ -45,8 +45,8 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       if (iter2.le.1) then
         ! setup interpolation magic
         do js = 2, ns
-          sm(js) = sqrt( (js - c1p5)/(js - c1p0) )
-          sp(js) = sqrt( (js -  cp5)/(js - c1p0) )
+          sm(js) = sqrt( (js - c1p5)/(js - c1p0) ) ! sqrt(s_{j-1/2})/sqrt(s_j)
+          sp(js) = sqrt( (js -  cp5)/(js - c1p0) ) ! sqrt(s_{j+1/2})/sqrt(s_j)
         end do
         sm(1) = czero
         sp(0) = czero
@@ -66,7 +66,9 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
          cx(js) = czero
       end do
 
+      ! compute matrix elements on half-grid
       do js = 2, ns
+
         ! COMPUTE DOMINANT (1/DELTA-S)**2 PRECONDITIONING MATRIX ELEMENTS
         do lk = 1, nznt
           ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
@@ -95,6 +97,7 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       end do
 
       ! radial interpolation onto some other mesh ???
+      ! averaging of neighboring half-grid points onto full grid
       do js = 1, ns
         axm(js,1) =-ax(js,1) ! neg sign ???
         axm(js,2) = ax(js,2) * sm(js) * sp(js-1)

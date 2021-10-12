@@ -19,8 +19,7 @@ subroutine pressure(gsqrt, bsq, wint)
       integer :: js, lk
 
       do js = 2, ns
-        vp(js) = ddot(nznt, gsqrt(js,1), ns, wint(js,1), ns)
-        vp(js) = dnorm*abs(vp(js))
+        vp(js) = dnorm*abs(ddot(nznt, gsqrt(js,1), ns, wint(js,1), ns))
       end do
 
       do js = 2, ns

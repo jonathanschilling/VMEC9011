@@ -71,8 +71,8 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       fsql1 = hs * ddot(2*mns, gcl, 1, gcl, 1)
 
       ! output:
-      ! 1.  "invariant" force residuals: fsqr,  fsqz  (scaled by fnorm) and fsql  (scaled by hs/bz0^2)
-      ! 2. precondioned force residuals: fsqr1, fsqz1 (scaled by fnorm) and fsql1 (scaled by hs)
+      ! 1.  "invariant" force residuals: fsqr,  fsqz  (scaled by fnorm ) and fsql  (scaled by hs/bz0^2)
+      ! 2. precondioned force residuals: fsqr1, fsqz1 (scaled by fnorm1) and fsql1 (scaled by hs)
 
       return
 end

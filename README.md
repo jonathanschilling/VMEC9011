@@ -1,4 +1,4 @@
-# VMEC_9011
+# VMEC9011
 
 This is one of the first versions of VMEC, denoted `VMEC9011`.
 

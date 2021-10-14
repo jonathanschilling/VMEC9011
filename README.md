@@ -1,6 +1,6 @@
-# VMEC 1.0
+# VMEC9011
 
-This is the first version of VMEC.
+This is one of the first versions of VMEC, denoted `VMEC9011`.
 
 ## Notes
 

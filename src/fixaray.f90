@@ -94,7 +94,8 @@ subroutine fixaray(ierflag)
         xmpq(m,2) = real(m**4)
         xmpq(m,3) = real(m**5)
 
-        t1 = -cp5*real(isigng)*dnorm/real((1+m)**4)
+        ! later: 1/xpmq(m,1)**2 = 1/[m(m-1)]^2 = 1/{(m^2-m)^2} = 1/{m^4 - 2*m^3 + m^2}
+        t1 = -cp5*real(isigng)*dnorm/real((1+m)**4) ! TODO: what is (1+m)^4 ???
         do n = 0, nmax
 
           faccon(n,m) = t1/(mscale(m)*nscale(n))**2

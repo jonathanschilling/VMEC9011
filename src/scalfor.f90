@@ -14,7 +14,8 @@ subroutine scalfor(gcx, &
 
       real(kind=dp), intent(inout) :: gcx(ns,0:nmax,0:mpol1,2) ! force Fourier coefficients to precondition
 
-      real(kind=dp), intent(in)    :: axm(nsd1,2) ! preconditioner matrix elements
+      ! preconditioner matrix elements from precondn()
+      real(kind=dp), intent(in)    :: axm(nsd1,2)
       real(kind=dp), intent(in)    :: bxm(nsd1,2)
       real(kind=dp), intent(in)    :: axd(nsd1,2)
       real(kind=dp), intent(in)    :: bxd(nsd1,2)

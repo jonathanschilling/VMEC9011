@@ -230,7 +230,7 @@ subroutine funct3d
         !          bsubs       br    bphi        bz
 
         return
-      endif
+      endif ! output file quantities
 
       ! COMPUTE MHD FORCES ON INTEGER-MESH
       call forces(guu, guv, gvv)

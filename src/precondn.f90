@@ -74,7 +74,7 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
           ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
 
           t1 = ohs  *  xu12(js, lk)
-          t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js)
+          t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js) ! 1/4 from additional half-grid radial derivative terms ???
           t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
 
           ax(js,1) = ax(js,1) + ptau(lk)*  t1    * t1

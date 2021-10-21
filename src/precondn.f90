@@ -99,17 +99,17 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       ! radial interpolation onto some other mesh ???
       ! averaging of neighboring half-grid points onto full grid
       do js = 1, ns
-        axm(js,1) =-ax(js,1) ! neg sign ???
-        axm(js,2) = ax(js,2) * sm(js) * sp(js-1)
-        axd(js,1) = ax(js,1)                     + ax(js+1,1)
-        axd(js,2) = ax(js,3) * sm(js)**2         + ax(js+1,4) * sp(js)**2
+        axm(js,1) =-ax(js,1) ! neg sign ???                               ! off-diagonal, even-m, radial
+        axm(js,2) = ax(js,2) * sm(js) * sp(js-1)                          ! off-diagonal,  odd-m, radial
+        axd(js,1) = ax(js,1)                     + ax(js+1,1)             !     diagonal, even-m, radial
+        axd(js,2) = ax(js,3) * sm(js)**2         + ax(js+1,4) * sp(js)**2 !     diagonal,  odd-m, radial
 
-        bxm(js,1) = bx(js,1)
-        bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)
-        bxd(js,1) = bx(js,2)                     + bx(js+1,3)
-        bxd(js,2) = bx(js,2) * sm(js)**2         + bx(js+1,3) * sp(js)**2
+        bxm(js,1) = bx(js,1)                                              ! off-diagonal, even-m, poloidal
+        bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)                          ! off-diagonal,  odd-m, poloidal
+        bxd(js,1) = bx(js,2)                     + bx(js+1,3)             !     diagonal, even-m, poloidal
+        bxd(js,2) = bx(js,2) * sm(js)**2         + bx(js+1,3) * sp(js)**2 !     diagonal,  odd-m, poloidal
 
-        cx (js)   = cx(js)                       + cx(js+1)
+        cx (js)   = cx(js)                       + cx(js+1)               !     diagonal,         toroidal
       end do
 
       return

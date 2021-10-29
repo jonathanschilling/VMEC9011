@@ -10,8 +10,8 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
       use realsp, only: r1, ru, rv, z1, zu, zv, ru0, zu0
       use profs, only: phip, vp
       use fsqu, only: wp, wb, fnorm, fnorm1
-      use precond, only: arm, ard, brm, brd,    &
-                         azm, azd, bzm, bzd, cr
+      use precond, only: arm, ard, arp, brm, brd,    &
+                         azm, azd, azp, bzm, bzd, cr
       use xstuff, only: xc
       use spectra, only: tcon
 
@@ -132,11 +132,11 @@ subroutine bcovar(bsubu, bsubv, gsqrt, bsq, r12, rs, zs, &
 
         call precondn(lu, bsq, gsqrt, r12, wint,            &
                       zs, zu12, zu, zu(1+nrzt), z1(1+nrzt), &
-                      arm, ard, brm, brd, cr)
+                      arm, ard, arp, brm, brd, cr)
 
         call precondn(lu, bsq, gsqrt, r12, wint,            &
                       rs, ru12, ru, ru(1+nrzt), r1(1+nrzt), &
-                      azm, azd, bzm, bzd, cr)
+                      azm, azd, azp, bzm, bzd, cr)
 
         ! normalization factor for "invariant" force residuals
         ! see Eqn. (46) in the 1983 article

@@ -1,6 +1,6 @@
 subroutine precondn(lu, bsq, gsqrt, r12, wint, &
                     xs, xu12, xue, xuo, xodd,  &
-                    axm, axd, bxm, bxd, cx)
+                    axm, axd, axp, bxm, bxd, cx)
 
       use stel_kinds, only: dp
       use name0, only: czero, cp25, cp5, c1p0, c1p5
@@ -30,6 +30,7 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       ! preconditioning matrix elements outputs
       real(kind=dp), intent(out) :: axm  (nsd1,2)  ! aRm  | aZm
       real(kind=dp), intent(out) :: axd  (nsd1,2)  ! aRd  | aZd
+      real(kind=dp), intent(out) :: axp  (nsd1,2)  ! aRp  | aZp
       real(kind=dp), intent(out) :: bxm  (nsd1,2)  ! bRm  | bZm
       real(kind=dp), intent(out) :: bxd  (nsd1,2)  ! bRd  | bZd
       real(kind=dp), intent(out) :: cx   (nsd1)    ! cR   | cZ
@@ -99,10 +100,12 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       ! radial interpolation onto some other mesh ???
       ! averaging of neighboring half-grid points onto full grid
       do js = 1, ns
-        axm(js,1) =-ax(js,1) ! neg sign ???                               ! off-diagonal, even-m, radial
-        axm(js,2) = ax(js,2) * sm(js) * sp(js-1)                          ! off-diagonal,  odd-m, radial
+        axm(js,1) =-ax(js,1) ! neg sign ???                               ! sub-diagonal, even-m, radial
+        axm(js,2) = ax(js,2) * sm(js) * sp(js-1)                          ! sub-diagonal,  odd-m, radial
         axd(js,1) = ax(js,1)                     + ax(js+1,1)             !     diagonal, even-m, radial
         axd(js,2) = ax(js,3) * sm(js)**2         + ax(js+1,4) * sp(js)**2 !     diagonal,  odd-m, radial
+        axp(js,1) =-ax(js+1,1) ! neg sign ???                             ! sup-diagonal, even-m, radial
+        axp(js,2) = ax(js+1,2) * sm(js+1) * sp(js)                        ! sup-diagonal,  odd-m, radial
 
         bxm(js,1) = bx(js,1)                                              ! off-diagonal, even-m, poloidal
         bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)                          ! off-diagonal,  odd-m, poloidal

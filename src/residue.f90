@@ -6,8 +6,8 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
       use scalars, only: ns, mns, iter1, hs, meven, modd
       use fsqu, only: fsqr, fsqz, fsql, fsqr1, fsqz1, fsql1, &
                       fnorm, fnorm1, fedge
-      use precond, only: arm, brm, ard, brd, cr, &
-                          azm, bzm, azd, bzd
+      use precond, only: arm, brm, ard, brd, arp, cr, &
+                         azm, bzm, azd, bzd, azp
       use xstuff, only: gc
       use scalefac, only: faclam
 
@@ -45,8 +45,8 @@ subroutine residue(gcr, gcz, gcl, bz0, work)
                        + ddot(mnd2, gcz(ns,0,0,1), ns, gcz(ns,0,0,1), ns) )
 
       ! PERFORM PRECONDITIONING AND COMPUTE RESIDUES
-      call scalfor(gcr, arm, brm, ard, brd, cr, work, work(1,2), work(1,3), work(1,4), work(1,5))
-      call scalfor(gcz, azm, bzm, azd, bzd, cr, work, work(1,2), work(1,3), work(1,4), work(1,5))
+      call scalfor(gcr, arm, brm, ard, brd, arp, cr, work, work(1,2), work(1,3), work(1,4), work(1,5))
+      call scalfor(gcz, azm, bzm, azd, bzd, azp, cr, work, work(1,2), work(1,3), work(1,4), work(1,5))
 
       ! REDUCE R-Z FORCES IF INITIALLY VERY LARGE
       ! if in first iteration: scale  after computing fsqX1

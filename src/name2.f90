@@ -19,10 +19,12 @@ module precond
       implicit none
       real(kind=dp) :: arm(nsd1,2)
       real(kind=dp) :: ard(nsd1,2)
+      real(kind=dp) :: arp(nsd1,2)
       real(kind=dp) :: brm(nsd1,2)
       real(kind=dp) :: brd(nsd1,2)
       real(kind=dp) :: azm(nsd1,2)
       real(kind=dp) :: azd(nsd1,2)
+      real(kind=dp) :: azp(nsd1,2)
       real(kind=dp) :: bzm(nsd1,2)
       real(kind=dp) :: bzd(nsd1,2)
       real(kind=dp) :: cr (nsd1)

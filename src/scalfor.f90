@@ -1,5 +1,5 @@
 subroutine scalfor(gcx, &
-                   axm, bxm, axd, bxd, cx, &
+                   axm, bxm, axd, bxd, axp, cx, &
                    bx, dx, ax, gm, alf)
 
       use stel_kinds, only: dp
@@ -19,6 +19,7 @@ subroutine scalfor(gcx, &
       real(kind=dp), intent(in)    :: bxm(nsd1,2)
       real(kind=dp), intent(in)    :: axd(nsd1,2)
       real(kind=dp), intent(in)    :: bxd(nsd1,2)
+      real(kind=dp), intent(in)    :: axp(nsd1,2)
       real(kind=dp), intent(in)    :: cx (nsd   )
 
       real(kind=dp), intent(out) :: bx(ns,0:nmax,0:mpol1) ! temporary arrays
@@ -39,9 +40,9 @@ subroutine scalfor(gcx, &
 
           ! assemble preconditioning matrix elements
           do js = jmin2(m), jmax
-            bx(js,n,m) = axm(js  ,mp) + bxm(js  ,mp)*m**2
-            dx(js,n,m) = axd(js  ,mp) + bxd(js  ,mp)*m**2 + cx(js)*(n*nfp)**2
-            ax(js,n,m) = axm(js+1,mp) + bxm(js+1,mp)*m**2
+            bx(js,n,m) = axm(js,mp) + bxm(js  ,mp)*m**2
+            dx(js,n,m) = axd(js,mp) + bxd(js  ,mp)*m**2 + cx(js)*(n*nfp)**2
+            ax(js,n,m) = axp(js,mp) + bxm(js+1,mp)*m**2
           end do
 
           if (m.eq.1) then

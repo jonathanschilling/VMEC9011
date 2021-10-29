@@ -42,7 +42,7 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
 
       integer       :: i, js, lk
       real(kind=dp) :: t1, t2, t3
-      real(kind=dp) :: axm_js_2, axp_js_2, axd_js_3, axd_js_4, a, b, c
+      real(kind=dp) :: axm_js_2, axp_js_2, axd_js_3, axd_js_4, D, r,g, b
 
       if (iter2.le.1) then
         ! setup interpolation magic
@@ -106,45 +106,67 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
 
         if (js .ge. 2) then
 
-          a = 0.0_dp
-          b = 0.0_dp
-          c = 0.0_dp
+          r = 0.0_dp
+          g = 0.0_dp
 
           do lk = 1, nznt
             ptau = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
 
-            a = a + ptau*shalf(js)*ohs*xu12(js,lk) * ( shalf(js)*ohs*xu12(js,lk) + cp25/shalf(js)*(xue(js,lk) + shalf(js)*xuo(js,lk)) )
+            D = ptau * xu12(js,lk)**2
 
-            b = b + ptau*cp25/shalf(js) * (xue(js-1,lk) + shalf(js)*xuo(js-1,lk)) * ( shalf(js)*ohs*xu12(js,lk) + cp25/shalf(js) * (xue(js,lk) + shalf(js)*xuo(js,lk)) )
+            r = r + shalf(js)**2 * D * ohs**2
+            g = g + shalf(js)**2 * D * ohs**2
 
-            c = c + ptau*cp25/shalf(js) * (xue(js,lk) + shalf(js)*xuo(js,lk)) * ( shalf(js)*ohs*xu12(js,lk) + cp25/shalf(js) * (xue(js,lk) + shalf(js)*xuo(js,lk)) )
+            r = r + cp25*( ohs*(xue(js,lk)-xue(js-1,lk)) + shalf(js)*ohs*(xuo(js,lk)-xuo(js-1,lk)) ) * ptau *xu12(js,lk)
+            g = g + cp5*ohs*xue(js,lk)*ptau*xu12(js,lk)
+            g = g + cp5*ohs*xuo(js,lk)*shalf(js)*ptau*xu12(js,lk)
+
+            r = r + xue(js-1,lk)*xue(js,lk)*ptau/(16.0_dp * shalf(js)**2)
+            g = g + xue(js  ,lk)*xue(js,lk)*ptau/(16.0_dp * shalf(js)**2)
+
+            r = r + ( xue(js-1,lk)*xuo(js,lk) + xuo(js-1,lk)*xue(js,lk) ) * ptau/(16.0_dp * shalf(js))
+            g = g + xue(js,lk)*xuo(js,lk) * ptau/(8.0_dp * shalf(js))
+
+            r = r + xuo(js-1,lk)*xuo(js,lk)*ptau/16.0_dp
+            g = g + xuo(js  ,lk)*xuo(js,lk)*ptau/16.0_dp
 
           end do
 
-          axm_js_2 = axm_js_2 - a/shalf(js)**2 + b/shalf(js)**2
-          axd_js_3 = axd_js_3 + a/shalf(js)**2 + c/shalf(js)**2
+          axm_js_2 = - r/shalf(js)**2
+          axd_js_3 =   g/shalf(js)**2
 
         end if
 
         if (js .le. ns) then
 
-          a = 0.0_dp
+          g = 0.0_dp
           b = 0.0_dp
-          c = 0.0_dp
 
           do lk = 1, nznt
             ptau = r12(js+1,lk)**2 * (bsq(js+1,lk) - pres(js+1)) * wint(js+1,lk)/gsqrt(js+1,lk)
 
-            a = a + ptau*shalf(js+1)*ohs*xu12(js+1,lk) * (-shalf(js+1)*ohs*xu12(js+1,lk) + cp25/shalf(js+1)*(xue(js+1,lk) + shalf(js+1)*xuo(js+1,lk)) )
+            D = ptau * xu12(js+1,lk)**2
 
-            b = b + ptau*cp25/shalf(js+1) * (xue(js+1,lk) + shalf(js+1)*xuo(js+1,lk)) * (-shalf(js+1)*ohs*xu12(js+1,lk) + cp25/shalf(js+1) * (xue(js,lk) + shalf(js+1)*xuo(js,lk)) )
+            b = b + shalf(js+1)**2 * D * ohs**2
+            g = g + shalf(js+1)**2 * D * ohs**2
 
-            c = c + ptau*cp25/shalf(js+1) * (xue(js,lk) + shalf(js+1)*xuo(js,lk)) * (-shalf(js+1)*ohs*xu12(js+1,lk) + cp25/shalf(js+1) * (xue(js,lk) + shalf(js+1)*xuo(js,lk)) )
+            b = b + cp25*( ohs*(xue(js+1,lk)-xue(js,lk)) + shalf(js+1)*ohs*(xuo(js+1,lk)-xuo(js,lk)) ) * ptau *xu12(js+1,lk)
+            g = g - cp5*ohs*xue(js,lk)*ptau*xu12(js+1,lk)
+            g = g - cp5*ohs*xuo(js,lk)*shalf(js)*ptau*xu12(js+1,lk)
+
+            b = b - xue(js+1,lk)*xue(js,lk)*ptau/(16.0_dp * shalf(js+1)**2)
+            g = g + xue(js  ,lk)*xue(js,lk)*ptau/(16.0_dp * shalf(js+1)**2)
+
+            b = b - ( xue(js+1,lk)*xuo(js,lk) + xuo(js+1,lk)*xue(js,lk) ) * ptau/(16.0_dp * shalf(js+1))
+            g = g + xue(js,lk)*xuo(js,lk) * ptau/(8.0_dp * shalf(js+1))
+
+            b = b - xuo(js+1,lk)*xuo(js,lk)*ptau/16.0_dp
+            g = g + xuo(js  ,lk)*xuo(js,lk)*ptau/16.0_dp
 
           end do
 
-          axp_js_2 = axp_js_2 + a/shalf(js+1)**2 + b/shalf(js+1)**2
-          axd_js_4 = axd_js_4 - a/shalf(js+1)**2 + c/shalf(js+1)**2
+          axd_js_4 =  g/shalf(js+1)**2
+          axp_js_2 = -b/shalf(js+1)**2
         end if
 
         axm(js,2) = axm_js_2 * sm(js) * sp(js-1)

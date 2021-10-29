@@ -41,7 +41,8 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       real(kind=dp) :: ptau(nznt)
 
       integer       :: i, js, lk
-      real(kind=dp) :: t1, t2, t3, axm_js_2, axp_js_2
+      real(kind=dp) :: t1, t2, t3
+      real(kind=dp) :: axm_js_2, axp_js_2, axd_js_3, axd_js_4
 
       if (iter2.le.1) then
         ! setup interpolation magic
@@ -79,9 +80,6 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
           t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
 
           ax(js,1) = ax(js,1) + ptau(lk)*  t1    * t1
-
-          ax(js,3) = ax(js,3) + ptau(lk)*( t1+t2)**2
-          ax(js,4) = ax(js,4) + ptau(lk)*(-t1+t3)**2
         end do
 
         ! COMPUTE ORDER M**2 PRECONDITIONING MATRIX ELEMENTS
@@ -105,34 +103,40 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
         axd(js,1) = ax(js,1) + ax(js+1,1)
         axp(js,1) =          - ax(js+1,1)
 
+        axm_js_2 = 0.0_dp
+        axp_js_2 = 0.0_dp
+        axd_js_3 = 0.0_dp
+        axd_js_4 = 0.0_dp
+
         if (js .ge. 2) then
-        !  axm(js,2) =   ax(js  ,2) * sm(js  ) * sp(js-1)
-           axm_js_2 = 0.0_dp
-           do lk = 1, nznt
-             ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
-             t1 = ohs  *  xu12(js, lk)
-             t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js)
-             t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
-             axm_js_2 = axm_js_2 + ptau(lk)*(-t1+t3)*(t1+t2)
-           end do
-           axm(js,2) = axm_js_2 * sm(js) * sp(js-1)
+          ! axm
+          do lk = 1, nznt
+            ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
+            t1 = ohs  *  xu12(js, lk)
+            t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js)
+            t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
+            axm_js_2 = axm_js_2 + ptau(lk)*(-t1+t3)*(t1+t2)
+
+            axd_js_3 = axd_js_3 + ptau(lk)*( t1+t2)**2
+          end do
         end if
 
         if (js .le. ns) then
-          ! axp(js,2) =   ax(js+1,2) * sm(js+1) * sp(js  )
-          axp_js_2 = 0.0_dp
+          ! axp
           do lk = 1, nznt
             ptau(lk) = r12(js+1,lk)**2 * (bsq(js+1,lk) - pres(js+1)) * wint(js+1,lk)/gsqrt(js+1,lk)
             t1 = ohs  *  xu12(js+1, lk)
             t2 = cp25 * (xue(js+1,lk)/shalf(js+1) + xuo(js+1,lk)) / shalf(js+1)
             t3 = cp25 * (xue(js  ,lk)/shalf(js+1) + xuo(js  ,lk)) / shalf(js+1)
             axp_js_2 = axp_js_2 + ptau(lk)*(-t1+t3)*(t1+t2)
+
+            axd_js_4 = axd_js_4 + ptau(lk)*(-t1+t3)**2
           end do
-          axp(js,2) = axp_js_2 * sm(js+1) * sp(js)
         end if
 
-        axd(js,2) =   ax(js  ,3) * sm(js  ) * sm(js  ) &
-                    + ax(js+1,4) * sp(js  ) * sp(js  )
+        axm(js,2) = axm_js_2 * sm(js) * sp(js-1)
+        axp(js,2) = axp_js_2 * sm(js+1) * sp(js)
+        axd(js,2) = axd_js_3 * sm(js) * sm(js) + axd_js_4 * sp(js) * sp(js)
 
         bxm(js,1) = bx(js,1)                                              ! off-diagonal, even-m, poloidal
         bxm(js,2) = bx(js,1) * sm(js) * sp(js-1)                          ! off-diagonal,  odd-m, poloidal

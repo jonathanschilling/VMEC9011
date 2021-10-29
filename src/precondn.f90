@@ -38,7 +38,7 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
       ! internal temporary storage
       real(kind=dp) :: ax(nsd1,4)
       real(kind=dp) :: bx(nsd1,4) ! why 4? only 3 are used... (maybe to ease init loop?)
-      real(kind=dp) :: ptau(nznt)
+      real(kind=dp) :: ptau
 
       integer       :: i, js, lk
       real(kind=dp) :: t1, t2, t3
@@ -73,23 +73,18 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
 
         ! COMPUTE DOMINANT (1/DELTA-S)**2 PRECONDITIONING MATRIX ELEMENTS
         do lk = 1, nznt
-          ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
+          ptau = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
 
-          t1 = ohs  *  xu12(js, lk)
-          t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js)
-          t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
+          t3 = ohs  *  xu12(js, lk)
 
-          ax(js,1) = ax(js,1) + ptau(lk)*  t1    * t1
-        end do
+          ax(js,1) = ax(js,1) + ptau * t3 * t3
 
-        ! COMPUTE ORDER M**2 PRECONDITIONING MATRIX ELEMENTS
-        do lk=1, nznt
           t1 = cp5 * (xs(js,lk) + cp5*xodd(js,  lk)/shalf(js))
           t2 = cp5 * (xs(js,lk) + cp5*xodd(js-1,lk)/shalf(js))
 
-          bx(js,1) = bx(js,1) + ptau(lk)*t1*t2
-          bx(js,2) = bx(js,2) + ptau(lk)*t1**2
-          bx(js,3) = bx(js,3) + ptau(lk)*t2**2
+          bx(js,1) = bx(js,1) + ptau*t1*t2
+          bx(js,2) = bx(js,2) + ptau*t1**2
+          bx(js,3) = bx(js,3) + ptau*t2**2
 
           cx(js) = cx(js) + cp25 * lu(js,lk)**2 * gsqrt(js,lk)*wint(js,lk)
         end do
@@ -103,34 +98,40 @@ subroutine precondn(lu, bsq, gsqrt, r12, wint, &
         axd(js,1) = ax(js,1) + ax(js+1,1)
         axp(js,1) =          - ax(js+1,1)
 
+        ! odd-m
         axm_js_2 = 0.0_dp
         axp_js_2 = 0.0_dp
         axd_js_3 = 0.0_dp
         axd_js_4 = 0.0_dp
 
         if (js .ge. 2) then
-          ! axm
+
+
           do lk = 1, nznt
-            ptau(lk) = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
+            ptau = r12(js,lk)**2 * (bsq(js,lk) - pres(js)) * wint(js,lk)/gsqrt(js,lk)
+
             t1 = ohs  *  xu12(js, lk)
             t2 = cp25 * (xue(js  ,lk)/shalf(js) + xuo(js  ,lk)) / shalf(js)
             t3 = cp25 * (xue(js-1,lk)/shalf(js) + xuo(js-1,lk)) / shalf(js)
-            axm_js_2 = axm_js_2 + ptau(lk)*(-t1+t3)*(t1+t2)
 
-            axd_js_3 = axd_js_3 + ptau(lk)*( t1+t2)**2
+
+            axm_js_2 = axm_js_2 + ptau*(-t1+t3)*(t1+t2)
+
+            axd_js_3 = axd_js_3 + ptau*( t1+t2)**2
           end do
         end if
 
         if (js .le. ns) then
-          ! axp
           do lk = 1, nznt
-            ptau(lk) = r12(js+1,lk)**2 * (bsq(js+1,lk) - pres(js+1)) * wint(js+1,lk)/gsqrt(js+1,lk)
+            ptau = r12(js+1,lk)**2 * (bsq(js+1,lk) - pres(js+1)) * wint(js+1,lk)/gsqrt(js+1,lk)
+
             t1 = ohs  *  xu12(js+1, lk)
             t2 = cp25 * (xue(js+1,lk)/shalf(js+1) + xuo(js+1,lk)) / shalf(js+1)
             t3 = cp25 * (xue(js  ,lk)/shalf(js+1) + xuo(js  ,lk)) / shalf(js+1)
-            axp_js_2 = axp_js_2 + ptau(lk)*(-t1+t3)*(t1+t2)
 
-            axd_js_4 = axd_js_4 + ptau(lk)*(-t1+t3)**2
+            axp_js_2 = axp_js_2 + ptau*(-t1+t3)*(t1+t2)
+
+            axd_js_4 = axd_js_4 + ptau*(-t1+t3)**2
           end do
         end if
 

@@ -21,7 +21,7 @@ subroutine alias(gcon, zcon, work1, work2, work3, gcs, gsc)
       real(kind=dp) :: fm
 
       ! BEGIN DE-ALIASING (TRUNCATION OF GCON IN FOURIER-SPACE
-      do m = 1, mpol1-1 ! --> exclude m=0, mpol-2 (lowest and highest)
+      do m = 1, mpol1-1 ! --> exclude m=0, mpol-1 (lowest and highest)
 
         ! clean workspace
         do l = 1,4*ns*nzeta

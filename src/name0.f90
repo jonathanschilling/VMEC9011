@@ -12,7 +12,7 @@ module name0
       real(kind=dp), parameter :: cp15   = 1.5e-01_dp
       real(kind=dp), parameter :: cp25   = 2.5e-01_dp
       real(kind=dp), parameter :: cp5    = 5.0e-01_dp
-      real(kind=dp), parameter :: cp707d = 7.071e-01_dp
+      real(kind=dp), parameter :: cp707d = 7.071e-01_dp ! TODO: should be 1/sqrt(2)
       real(kind=dp), parameter :: cp9    = 9.0e-01_dp
       real(kind=dp), parameter :: cp96   = 9.6e-01_dp
       real(kind=dp), parameter :: c1p0   = oned
